@@ -18,10 +18,35 @@ public class PatientListDAO {
 		map.put("doctorCode", doctorCode);
 		map.put("patientName", patientName);
 		map.put("birth", birth);
+		
+		// ✅ 페이징 기본값
+	    int page = 1;
+	    int pageSize = 10;
+	    int startRow = (page - 1) * pageSize + 1;
+	    int endRow = page * pageSize;
+	    map.put("startRow", startRow);
+	    map.put("endRow", endRow);
+		
 		list = conn.selectList("patientMapper.getPatientList", map);
 		conn.close();
 		return list;
 	}
+	
+	// ✅ AJAX 호출용 Map 버전
+    public List<PatientVO> getPatientList(Map<String, Object> map) {
+        SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+        List<PatientVO> list = conn.selectList("patientMapper.getPatientList", map);
+        conn.close();
+        return list;
+    }
+	
+	// ✅ 전체 건수 조회
+    public int getTotalCount() {
+        SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+        int count = conn.selectOne("patientMapper.getTotalCount");
+        conn.close();
+        return count;
+    }
 
 	public PatientVO getPatientDetail(int patientNo){
 		PatientVO vo = null;

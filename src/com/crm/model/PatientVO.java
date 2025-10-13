@@ -11,8 +11,14 @@ public class PatientVO {
 	private String phone;
 	private String inDate;
 	private String status;
-	
-	public PatientVO(){};
+
+	private String medicalDate;
+	private String employeeName;
+	private String department;
+	private String diagnosis;
+
+	public PatientVO() {
+	};
 
 	public PatientVO(int patientNo, String patientName, String adress, String birth, String gender, String path,
 			String phone, String inDate, String status) {
@@ -26,8 +32,6 @@ public class PatientVO {
 		setInDate(inDate);
 		setStatus(status);
 	}
-
-
 
 	public int getPatientNo() {
 		return patientNo;
@@ -92,6 +96,7 @@ public class PatientVO {
 	public void setInDate(String inDate) {
 		this.inDate = inDate;
 	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -100,11 +105,44 @@ public class PatientVO {
 		this.status = status;
 	}
 
+	public String getMedicalDate() {
+		return medicalDate;
+	}
+
+	public void setMedicalDate(String medicalDate) {
+		this.medicalDate = medicalDate;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public String getDiagnosis() {
+		return diagnosis;
+	}
+
+	public void setDiagnosis(String diagnosis) {
+		this.diagnosis = diagnosis;
+	}
+
 	@Override
 	public String toString() {
 		return "PatientVO [patientNo=" + patientNo + ", patientName=" + patientName + ", adress=" + adress + ", birth="
 				+ birth + ", gender=" + gender + ", path=" + path + ", phone=" + phone + ", inDate=" + inDate
-				+ ", status=" + status + "]\n";
+				+ ", status=" + status + ", medicalDate=" + medicalDate + ", employeeName=" + employeeName
+				+ ", department=" + department + ", diagnosis=" + diagnosis + "]\n";
 	}
 
 }

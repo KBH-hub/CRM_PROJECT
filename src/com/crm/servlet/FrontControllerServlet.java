@@ -30,11 +30,16 @@ public class FrontControllerServlet extends HttpServlet {
 		// 일을 할 Action을 찾아온다
 				//5								//2
 		Action action = ActionFactory.getAction(cmd);
+		
+		// response 객체를 request로 넘겨줌
+		request.setAttribute("response", response);
 
 		// 결과 페이지로 이동한다
 				//8			//6
-		String url = action.execute(request);		//9
-		request.getRequestDispatcher("/" + url).forward(request, response);
+		String url = action.execute(request, response);		//9
+		if (url != null) {
+            request.getRequestDispatcher("/" + url).forward(request, response);
+        }
 	}
 
 }

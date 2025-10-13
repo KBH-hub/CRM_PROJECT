@@ -12,6 +12,11 @@
 		<result property="phone" column="phone" />
 		<result property="inDate" column="in_date" />
 		<result property="status" column="status" />
+		
+		<result property="medicalDate" column="medical_date" />
+	    <result property="employeeName" column="employee_name" />
+	    <result property="department" column="department" />
+	    <result property="diagnosis" column="diagnosis" />
 	</resultMap>
 	
 	<resultMap id="MedicalRecordMap" type="com.crm.model.MedicalRecordVO">
@@ -23,68 +28,73 @@
 		<result property="department" column="department" />
 		<result property="content" column="content" />
 		<result property="insurance" column="insurance" />
+	    <result property="department" column="department" />
+	    <result property="diagnosis" column="diagnosis" />
 	</resultMap>
 
 	<select id="getPatientList" parameterType="map" resultMap="PatientMap">
-		SELECT
-		P.PATIENT_NO,
-		P.PATIENT_NAME,
-		P.PHONE,
-		LATEST_MR.MEDICAL_DATE,
-		E.EMPLOYEE_NAME,
-		D.DEPARTMENT,
-		LATEST_MR.STATUS,
-		LATEST_MR.DIAGNOSIS
-		FROM
-		PATIENT P
-		LEFT JOIN (
-		SELECT
-		MR.PATIENT_NO,
-		MR.MEDICAL_DATE,
-		MR.DOCTOR_CODE,
-		MR.DIAGNOSIS,
-		MR.STATUS,
-		ROW_NUMBER() OVER (PARTITION BY
-		MR.PATIENT_NO ORDER BY MR.MEDICAL_DATE DESC,
-		MR.MEDICAL_NO DESC) AS rn
-		FROM
-		MEDICAL_RECORD MR
-		) LATEST_MR ON P.PATIENT_NO = LATEST_MR.PATIENT_NO
-		AND LATEST_MR.rn = 1
-		LEFT JOIN
-		DOCTOR D ON LATEST_MR.DOCTOR_CODE =
-		D.DOCTOR_CODE
-		LEFT JOIN
-		EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
-		<!-- <where> 태그는 내부에 유효한 조건이 하나라도 있을 때만 WHERE 절을 생성하고, 불필요한 AND 키워드를 자동으로 
-			제거해줍니다. -->
-		<where>
-			P.DEL_FLAG IS NULL -- 삭제되지 않은 환자는 항상 조회
-	
-			<!-- 조건 1: 내원일 (medicalDate 파라미터가 비어있지 않을 때만 조건 추가) -->
-			<if test="startDate != null and startDate != ''">
-				AND LATEST_MR.MEDICAL_DATE &gt;= #{startDate}
-			</if>
-			<if test="endDate != null and endDate != ''">
-				AND LATEST_MR.MEDICAL_DATE BETWEEN &lt;= #{endDate}
-			</if>
-	
-			<!-- 조건 2: 담당의사 (doctorCode 파라미터가 비어있지 않을 때만 조건 추가) -->
-			<if test="doctorCode != null and doctorCode != ''">
-				AND D.DOCTOR_CODE = #{doctorCode}
-			</if>
-	
-			<!-- 조건 3: 환자 이름 (patientName 파라미터가 비어있지 않을 때만 조건 추가) -->
-			<if test="patientName != null and patientName != ''">
-				AND P.PATIENT_NAME LIKE '%' || #{patientName} || '%'
-			</if>
-			<if test="birth != null and birth != ''">
-				AND P.birth LIKE '%' || #{birth} || '%'
-			</if>
-		</where>
-		ORDER BY
-		P.PATIENT_NO
+		SELECT *
+		FROM (
+		  SELECT ROWNUM AS rn, A.*
+		  FROM (
+		    SELECT
+		      P.PATIENT_NO,
+		      P.PATIENT_NAME,
+		      P.PHONE,
+		      TO_CHAR(LATEST_MR.MEDICAL_DATE, 'YYYY-MM-DD') AS MEDICAL_DATE,
+		      E.EMPLOYEE_NAME,
+		      D.DEPARTMENT,
+		      LATEST_MR.STATUS,
+		      LATEST_MR.DIAGNOSIS
+		    FROM PATIENT P
+		    LEFT JOIN (
+		      SELECT
+		        MR.PATIENT_NO,
+		        MR.MEDICAL_DATE,
+		        MR.DOCTOR_CODE,
+		        MR.DIAGNOSIS,
+		        MR.STATUS,
+		        ROW_NUMBER() OVER (PARTITION BY MR.PATIENT_NO ORDER BY MR.MEDICAL_DATE DESC, MR.MEDICAL_NO DESC) AS rn
+		      FROM MEDICAL_RECORD MR
+		    ) LATEST_MR
+		      ON P.PATIENT_NO = LATEST_MR.PATIENT_NO
+		     AND LATEST_MR.rn = 1
+		    LEFT JOIN DOCTOR D
+		      ON LATEST_MR.DOCTOR_CODE = D.DOCTOR_CODE
+		    LEFT JOIN EMPLOYEE E
+		      ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+		
+		    <where>
+		      P.DEL_FLAG IS NULL
+		      <if test="startDate != null and startDate != ''">
+		        AND LATEST_MR.MEDICAL_DATE &gt;= #{startDate}
+		      </if>
+		      <if test="endDate != null and endDate != ''">
+		        AND LATEST_MR.MEDICAL_DATE &lt;= #{endDate}
+		      </if>
+		      <if test="doctorCode != null and doctorCode != ''">
+		        AND D.DOCTOR_CODE = #{doctorCode}
+		      </if>
+		      <if test="patientName != null and patientName != ''">
+		        AND P.PATIENT_NAME LIKE '%' || #{patientName} || '%'
+		      </if>
+		      <if test="birth != null and birth != ''">
+		        AND P.BIRTH LIKE '%' || #{birth} || '%'
+		      </if>
+		    </where>
+		
+		    ORDER BY P.PATIENT_NO
+		  ) A
+		  WHERE ROWNUM &lt;= #{endRow, jdbcType=NUMERIC}
+		)
+		WHERE rn &gt;= #{startRow, jdbcType=NUMERIC}
 	</select>
+	
+	<!-- ✅ 전체 건수 -->
+	<select id="getTotalCount" resultType="int">
+	  SELECT COUNT(*) FROM PATIENT WHERE DEL_FLAG IS NULL
+	</select>
+
 
 	<select id="getPatientDetail" resultMap="PatientMap">
 		SELECT

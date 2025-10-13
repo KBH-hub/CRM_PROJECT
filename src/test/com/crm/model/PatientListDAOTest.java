@@ -19,7 +19,7 @@ public class PatientListDAOTest {
 	public static void start() throws Exception {
 		dao = new PatientListDAO();
 	}
-	//@Test
+	@Test
 	public void getPatientListTest(){
 		List<PatientVO> list = dao.getPatientList("", "", "", "", "");
 		System.out.println(list);

@@ -12,7 +12,9 @@ public class ActionFactory {
 		switch (cmd) {
 		case "smsUI":
 			a = new SmsUIAction();
+			break;
 		}
+		
 		return a;// 4
 	}
 

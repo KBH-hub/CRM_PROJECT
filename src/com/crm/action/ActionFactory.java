@@ -1,5 +1,6 @@
 package com.crm.action;
 
+import com.crm.action.smsService.ReserveSmsUIAction;
 import com.crm.action.smsService.SmsUIAction;
 
 public class ActionFactory {
@@ -13,7 +14,10 @@ public class ActionFactory {
 		case "smsUI":
 			a = new SmsUIAction();
 			break;
+		case "reserveSmsUI":
+			a = new ReserveSmsUIAction();
 		}
+		
 		
 		return a;// 4
 	}

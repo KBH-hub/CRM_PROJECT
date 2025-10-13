@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>예약 상세</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<style>
+.custom-modal-size {
+	height: 90vh;
+	max-height: 100%;
+}
+.btn-primary {
+  background-color: #84c4ff !important;
+  border-color: #84c4ff !important;
+}
+input[readonly] {
+	background-color: #f8f9fa !important;
+}
+</style>
+</head>
+<body class="p-3">
+
+	<!-- 예약 상세 열기 버튼 -->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#reservationDetailModal">예약 상세</button>
+
+	<!-- 예약 상세 모달 -->
+	<div class="modal fade" id="reservationDetailModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content custom-modal-size">
+				<div class="modal-header">
+					<h5 class="modal-title fw-bold">예약 상세</h5>
+					<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+				</div>
+
+				<div class="modal-body">
+					<form id="reservationForm">
+						<div class="mb-3 col-md-4">
+							<label class="form-label">이름</label>
+							<input type="text" class="form-control" value="이승희" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">일시</label>
+							<div class="row g-2 align-items-center">
+								<div class="col-md-4 col-12">
+									<input type="date" id="visitDate" class="form-control"
+										value="2025-09-15" readonly>
+								</div>
+								<div class="col-md-3 col-6">
+									<input type="time" id="visitTime" class="form-control"
+										value="08:30" readonly>
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-3 col-md-4">
+							<label class="form-label">환자연락처</label>
+							<input type="text" class="form-control" value="010-1111-2222" readonly>
+						</div>
+
+						<div class="mb-3 col-md-4">
+						<input type="text" class="form-control" value="신경외과 / 나신경 / DN002" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">내원 사유</label>
+							<!-- 상세 모드용 input -->
+							<input type="text" id="visitReasonInput" class="form-control"
+								value="수술 이후 손발 저림" readonly>
+							<!-- 수정 모드용 textarea -->
+							<textarea id="visitReasonTextarea" class="form-control d-none">수술 이후 손발 저림</textarea>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 삭제 확인 모달 -->
+	<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content text-center border border-danger">
+				<div class="modal-body">
+					<p class="fs-5 fw-bold text-danger mb-4">삭제하시겠습니까!?</p>
+					<div class="d-flex justify-content-center gap-3">
+						<button type="button" class="btn btn-primary" id="confirmDeleteBtn">확인</button>
+						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	document.addEventListener("DOMContentLoaded", () => {
+	  const editBtn = document.getElementById("editBtn");
+	  const saveBtn = document.getElementById("saveBtn");
+	  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+	  const dateInput = document.getElementById("visitDate");
+	  const timeInput = document.getElementById("visitTime");
+	  const doctorSelect = document.getElementById("doctorDept");
+
+	  const reasonInput = document.getElementById("visitReasonInput");
+	  const reasonTextarea = document.getElementById("visitReasonTextarea");
+
+	  // 수정 버튼 클릭 시
+	  editBtn.addEventListener("click", (e) => {
+	    e.preventDefault();
+	    dateInput.removeAttribute("readonly");
+	    timeInput.removeAttribute("readonly");
+	    doctorSelect.removeAttribute("disabled");
+
+	    reasonInput.classList.add("d-none");
+	    reasonTextarea.classList.remove("d-none");
+	    reasonTextarea.value = reasonInput.value;
+
+	    document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 수정";
+	    editBtn.classList.add("d-none");
+	    saveBtn.classList.remove("d-none");
+	  });
+
+	  // 저장 버튼 클릭 시
+	  saveBtn.addEventListener("click", (e) => {
+	    e.preventDefault();
+	    dateInput.setAttribute("readonly", true);
+	    timeInput.setAttribute("readonly", true);
+	    doctorSelect.setAttribute("disabled", true);
+
+	    reasonInput.value = reasonTextarea.value;
+	    reasonTextarea.classList.add("d-none");
+	    reasonInput.classList.remove("d-none");
+
+	    document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
+	    saveBtn.classList.add("d-none");
+	    editBtn.classList.remove("d-none");
+
+	    alert("예약 정보가 저장되었습니다.");
+	  });
+
+	  // 삭제 확인 버튼 클릭 시
+	  confirmDeleteBtn.addEventListener("click", () => {
+	    const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
+	    deleteModal.hide();
+
+	    alert("예약이 삭제되었습니다."); // 실제 삭제 로직 연결 가능
+	  });
+	});
+	</script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>의사 주간 근무표</title>
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet">
+
+<style>
+  body {
+    background-color: #f3f8fc;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  .table th {
+    background-color: #dce6f1;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .table td {
+    text-align: center;
+    vertical-align: middle;
+    height: 40px;
+  }
+
+  .circle {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #7ca7d8;
+  }
+
+  .date-header {
+    background-color: #b7cde6 !important;
+    font-weight: bold;
+  }
+
+  .week-range {
+    background-color: #b7cde6;
+    padding: 8px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 600;
+    color: #000;
+    width: 50%;
+  }
+
+  /* 드롭다운 */
+  .dropdown-menu {
+    min-width: 300px;
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+  }
+  .dropdown-item span {
+    width: 33%;
+    text-align: left;
+  }
+  .dropdown-item span:nth-child(1) { width: 10px; }
+  .dropdown-item span:nth-child(2) { width: 70px; }
+  .dropdown-item span:nth-child(3) { width: 50px; }
+  .dropdown-item:hover {
+    background-color: #e9f1fa;
+  }
+</style>
+</head>
+
+<body class="bg-body-tertiary">
+	<div class="container-fluid">
+  <div class="row">
+
+    <!-- 여기서 사이드바를 주입 -->
+    <div id="sidebar-slot" class="col-2 p-0"></div>
+
+    <!-- 메인 -->
+    <main class="col-10 p-4">
+  <div class="container bg-white border rounded shadow-sm p-4">
+    <h1 class="fw-bold text-center">의사 주간 근무표</h1>
+
+    <div class="mb-3 d-flex justify-content-start gap-2">
+      <button class="btn btn-primary btn-sm">선택 지우기</button>
+      <button class="btn btn-primary btn-sm" id="doctorListBtn">의사 명단</button>
+      <button class="btn btn-danger btn-sm">편집하기</button>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center mb-3">
+      <button class="btn btn-outline-secondary btn-sm me-2">◀</button>
+      <div class="week-range">2025년 9월 15일 - 2025년 9월 21일</div>
+      <button class="btn btn-outline-secondary btn-sm ms-2">▶</button>
+    </div>
+
+    <table class="table table-bordered align-middle text-center">
+      <thead>
+        <tr class="date-header">
+          <th rowspan="2"></th>
+          <th rowspan="2">이름</th>
+          <th rowspan="2">진료과</th>
+          <th colspan="2">9/15 월</th>
+          <th colspan="2">9/16 화</th>
+          <th colspan="2">9/17 수</th>
+          <th colspan="2">9/18 목</th>
+          <th colspan="2">9/19 금</th>
+          <th colspan="2">9/20 토</th>
+          <th colspan="2">9/21 일</th>
+        </tr>
+        <tr class="table-light">
+          <th>오전</th><th>오후</th>
+          <th>오전</th><th>오후</th>
+          <th>오전</th><th>오후</th>
+          <th>오전</th><th>오후</th>
+          <th>오전</th><th>오후</th>
+          <th>오전</th><th>오후</th>
+          <th>오전</th><th>오후</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>김의사</td>
+          <td>정형외과</td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td></td>
+          <td></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>박원장</td>
+          <td>정형외과</td>
+          <td></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>원장</td>
+          <td>정형외과</td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>나신경</td>
+          <td>신경외과</td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td><td><span class="circle"></span></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>홍길동</td>
+          <td>신경외과</td>
+          <td></td><td></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td>
+          <td></td><td></td>
+          <td></td><td><span class="circle"></span></td>
+          <td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>사공외과</td>
+          <td>신경외과</td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>이명의</td>
+          <td>영상의학과</td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>김철수</td>
+          <td>마취통증의학과</td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td><span class="circle"></span></td><td><span class="circle"></span></td>
+          <td></td><td></td><td></td><td></td>
+        </tr>
+
+        <!-- 마지막 행 (+ 버튼 + dropdown) -->
+        <tr>
+          <td>
+            <div class="dropdown">
+              <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                +
+              </button>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item">
+                  <span>김철수</span>
+                  <span>마취통증의학과</span>
+                  <span>DA001</span>
+                </li>
+                <li class="dropdown-item">
+                  <span>김이박</span>
+                  <span>정형외과</span>
+                  <span>D0004</span>
+                </li>
+                <li class="dropdown-item">
+                  <span>김이박</span>
+                  <span>신경외과</span>
+                  <span>DN001</span>
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td colspan="17"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </main>
+		</div>
+	</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
+	  async function loadSidebar(activeKey) {
+	    const slot = document.getElementById('sidebar-slot');
+	    const resp = await fetch('./sidebar.html'); // 경로는 프로젝트 구조에 맞게
+	    const html = await resp.text();
+	    slot.innerHTML = html;
+
+	    // 활성 메뉴 표시 (data-route 값을 사용)
+	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
+	    if (current) {
+	      // 전부 초기화
+	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
+	        a.classList.remove('active','bg-primary','text-white');
+	        a.classList.add('text-dark');
+	      });
+	      // 현재만 활성
+	      current.classList.add('active','bg-primary','text-white');
+	      current.classList.remove('text-dark');
+	    }
+	  }
+
+	  // 이 페이지의 활성 키만 바꿔주면 됨
+	  loadSidebar('manageDoctorSchedule');
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tableBody = document.querySelector("table tbody");
+
+  document.querySelectorAll(".dropdown-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const spans = item.querySelectorAll("span");
+      const name = spans[0].textContent.trim();
+      const dept = spans[1].textContent.trim();
+      const code = spans[2].textContent.trim();
+
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td><input type="checkbox"></td>
+        <td>${name}</td>
+        <td>${dept}</td>
+        <td><span></span></td><td><span></span></td>
+        <td><span></span></td><td><span></span></td>
+        <td><span></span></td><td><span></span></td>
+        <td><span></span></td><td><span></span></td>
+        <td><span></span></td><td><span></span></td>
+        <td><span></span></td><td><span></span></td>
+        <td><span></span></td><td><span></span></td>
+      `;
+
+      const lastRow = tableBody.lastElementChild;
+      tableBody.insertBefore(newRow, lastRow);
+    });
+  });
+});
+document.addEventListener("DOMContentLoaded", () => {
+	  const editBtn = document.querySelector(".btn-danger");
+	  let editing = false;
+
+	  editBtn.addEventListener("click", () => {
+	    const allRows = document.querySelectorAll("table tbody tr");
+	    const lastRow = allRows[allRows.length - 1]; // 마지막 행 (+버튼)
+	    const firstColCells = document.querySelectorAll("table tbody tr td:first-child"); // 1열 (체크박스)
+	    const firstHeader = document.querySelector("table thead tr th:first-child"); // 헤더의 첫 열
+	    const deleteBtn = document.querySelector(".btn-primary"); // 선택 지우기
+	    const doctorListBtn = document.querySelectorAll(".btn-primary")[1]; // 의사 명단 버튼
+
+	    editing = !editing;
+
+	    if (editing) {
+	      // === 편집 모드 ON ===
+	      editBtn.textContent = "저장하기";
+
+	      // 버튼 숨기기
+	      if (deleteBtn) deleteBtn.style.display = "none";
+	      if (doctorListBtn) doctorListBtn.style.display = "none";
+
+	      // 맨 아래 행, 맨 왼쪽 열 숨기기
+	      if (lastRow) lastRow.style.display = "none";
+	      firstColCells.forEach(td => td.style.display = "none");
+	      if (firstHeader) firstHeader.style.display = "none";
+
+	      // 셀 클릭 활성화 (단, 이름/진료과 제외)
+	      document.querySelectorAll("table tbody tr").forEach(row => {
+	        row.querySelectorAll("td").forEach((cell, index) => {
+	          // index 0: 체크박스, 1: 이름, 2: 진료과
+	          if (index > 2 && !cell.querySelector("button")) {
+	            cell.style.cursor = "pointer";
+	            cell.addEventListener("click", toggleCircle);
+	          } else {
+	            cell.style.cursor = "default"; // 이름/진료과 등은 클릭 불가
+	            cell.removeEventListener("click", toggleCircle);
+	          }
+	        });
+	      });
+
+	    } else {
+	      // === 편집 모드 OFF ===
+	      editBtn.textContent = "편집하기";
+
+	      // 숨긴 버튼 복구
+	      if (deleteBtn) deleteBtn.style.display = "";
+	      if (doctorListBtn) doctorListBtn.style.display = "";
+
+	      // 숨긴 행/열 복구
+	      if (lastRow) lastRow.style.display = "";
+	      firstColCells.forEach(td => td.style.display = "");
+	      if (firstHeader) firstHeader.style.display = "";
+
+	      // 클릭 이벤트 제거
+	      document.querySelectorAll("table tbody tr td").forEach(cell => {
+	        cell.style.cursor = "default";
+	        cell.removeEventListener("click", toggleCircle);
+	      });
+	    }
+	  });
+
+	  function toggleCircle(e) {
+	    const cell = e.currentTarget;
+	    const hasCircle = cell.querySelector(".circle");
+	    cell.innerHTML = hasCircle ? "" : '<span class="circle"></span>';
+	  }
+	});
+	document.getElementById("doctorListBtn").addEventListener("click", () => {
+	  window.location.href = "manageDoctorList.html";
+	});
+
+
+</script>
+  
+</body>
+</html>

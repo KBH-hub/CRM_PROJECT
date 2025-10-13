@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="smsMapper">
+
+	<resultMap id="CommonSmsMap" type="com.crm.model.CommonSmsVO">
+		<result property="commonSmsNo" column="common_sms_no" />
+		<result property="employeeId" column="employee_id" />
+		<result property="employeeName" column="employee_name" />
+		<result property="patientNo" column="patient_no" />
+		<result property="patientName" column="patient_name" />
+		<result property="phone" column="phone" />
+		<result property="datetime" column="datetime" />
+		<result property="templateName" column="template_name" />		
+		<result property="content" column="content" />
+	</resultMap>
+	
+	<resultMap id="ReserveSmsMap" type="com.crm.model.ReserveSmsVO">
+	    <result property="reserveSmsNo" column="reserve_sms_no" />
+	    <result property="employeeId" column="employee_id" />
+	    <result property="employeeName" column="employee_name" />
+	    <result property="reserveNo" column="reserve_no" />
+	    <result property="patientName" column="patient_name" />
+	    <result property="phone" column="phone" />
+	    <result property="datetime" column="datetime" />
+	    <result property="templateName" column="template_name" />       
+	    <result property="content" column="content" />
+	</resultMap>
+	
+	<select id="getReserveRecipient" parameterType="list" resultMap="ReserveSmsMap">
+		select r.reserve_no, p.patient_name, p.phone
+		from reserve r
+		join patient p on p.patient_no = r.patient_no
+		where r.reserve_no in
+		<foreach collection="list" item="itemNo" open="(" separator="," close=")">
+			#{itemNo}
+	    </foreach>
+	</select>
+	
+	<select id="getCommonRecipient" parameterType="list" resultMap="CommonSmsMap">
+		select patient_no, patient_name, phone
+		from patient
+		where patient_no in
+		<foreach collection="list" item="itemNo" open="(" separator="," close=")">
+			#{itemNo}
+	    </foreach>
+	</select>
+	
+	<select id="getTemplate" resultMap="ReserveSmsMap">
+		select template_name, content
+		from template
+		<if test="templateName != null and templateName != ''">
+			where template_name like '%' || #{templateName} || '%'
+		</if>
+	</select>
+	
+	<select id="getReserveSms" resultMap="ReserveSmsMap">
+		select rs.reserve_sms_no, p.patient_name, e.employee_name, p.phone, TO_CHAR(rs.datetime,
+		'YYYY-MM-DD HH24:MI') as datetime, rs.template_name
+		from reserve_sms rs
+		join template t on t.template_name = rs.template_name
+		join employee e on e.employee_id = rs.employee_id
+		join reserve r on r.reserve_no = rs.reserve_no
+		join patient p on p.patient_no = r.patient_no
+	</select>
+	
+	<insert id="addReserveSms" parameterType="map">
+		insert into reserve_sms (RESERVE_SMS_NO , EMPLOYEE_ID
+		, TEMPLATE_NAME , RESERVE_NO , DATETIME) values
+		(reserve_sms_no.nextval, #{employeeId}, #{templateName}, #{reserveNo}, sysdate)
+	</insert>
+	
+	<select id="getCommonSms" resultMap="CommonSmsMap">
+		select
+		cs.common_sms_no,
+		p.patient_name,
+		e.employee_name,
+		p.phone,
+		TO_CHAR(cs.datetime, 'YYYY-MM-DD HH24:MI') as datetime,
+		cs.content
+		from
+		common_sms cs
+		join employee e on e.employee_id = cs.employee_id
+		join patient p on p.patient_no = cs.patient_no
+	</select>
+	
+	<insert id="addCommonSms" parameterType="map">
+		insert
+		into common_sms
+		(COMMON_SMS_NO , PATIENT_NO , EMPLOYEE_ID , DATETIME , CONTENT)
+		values (common_sms_no.nextval, #{patientNo}, #{employeeId}, sysdate, #{content})
+	</insert>
+	
+	<select id="getCommonSmsDetail" resultMap="CommonSmsMap">
+		select
+		cs.common_sms_no,
+		p.patient_name,
+		e.employee_name,
+		p.phone,
+		TO_CHAR(cs.datetime, 'YYYY-MM-DD HH24:MI') as datetime,
+		cs.content	
+		from
+		common_sms cs
+		join employee e on e.employee_id = cs.employee_id
+		join patient p on p.patient_no = cs.patient_no
+		where cs.common_sms_no = #{commonSmsNo}
+	</select>
+	
+
+</mapper>

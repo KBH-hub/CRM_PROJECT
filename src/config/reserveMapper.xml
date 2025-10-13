@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reserveMapper">
+
+	<resultMap id="ReserveMap" type="com.crm.model.ReserveVO">
+	  <id     property="reserveNo"   column="reserve_no"/>
+	  <result property="patientName" column="patient_name"/>
+	  <result property="reserveDay"    column="reserveDay"/>
+	  <result property="reserveTime"    column="reserveTime" />
+	  <result property="employeeName"      column="employee_name"/>
+	  <result property="department"  column="department"/>
+	  <result property="phone"  column="phone"/>
+	  <result property="reason"  column="reason"/>
+	  <result property="reserveCount" column="reserveCount"/>
+	  <result property="patientNo" column="patient_no"/>
+	  <result property="doctorScheduleNo" column="doctor_schedule_no"/>
+	</resultMap>
+
+	<select id="getReserveList" parameterType="map"
+		resultMap="ReserveMap">
+		SELECT
+		r.reserve_no, p.patient_name,
+		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+		TO_CHAR(r.datetime,'HH24:MI') AS reserveTime,
+		d.department, e.employee_name
+		FROM reserve r
+		JOIN patient p ON r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE r.del_flag IS NULL
+
+		<if test="month != null and month != ''">
+			AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
+			<if test="weekStart != null and weekEnd != null">
+				AND TO_CHAR(r.datetime, 'DD') BETWEEN #{weekStart} AND
+				#{weekEnd}
+				<if test="day != null and day != ''">
+					AND TO_CHAR(r.datetime, 'DD') = #{day}
+					<if test="hour != null and hour != ''">
+						AND TO_CHAR(r.datetime, 'HH24') = #{hour}
+					</if>
+				</if>
+			</if>
+		</if>
+		ORDER BY r.datetime
+	</select>
+
+	<select id="countReserveMonth" resultMap="ReserveMap">
+		SELECT
+		TO_CHAR(datetime, 'YYYY-MM-DD') AS reserveDay,
+		COUNT(*) AS reserveCount
+		FROM reserve
+		WHERE del_flag IS NULL
+		AND TO_CHAR(datetime, 'YYYY-MM') = #{month}
+		GROUP BY TO_CHAR(datetime, 'YYYY-MM-DD')
+		ORDER BY reserveDay
+	</select>
+
+	<select id="countReserveWeekByTime" resultMap="ReserveMap">
+		SELECT
+		TO_CHAR(datetime, 'YYYY-MM-DD') AS reserveDay,
+		TO_CHAR(datetime, 'HH24:MI') AS reserveTime,
+		COUNT(*) AS reserveCount
+		FROM reserve
+		WHERE
+		del_flag IS NULL
+		AND TO_CHAR(datetime, 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
+		GROUP BY TO_CHAR(datetime, 'YYYY-MM-DD'),
+		TO_CHAR(datetime, 'HH24:MI')
+		ORDER BY reserveDay, reserveTime
+	</select>
+
+	<select id="countReserveWeekByDay" resultMap="ReserveMap">
+		SELECT
+		TO_CHAR(datetime, 'YYYY-MM-DD') AS reserveDay,
+		COUNT(*) AS reserveCount
+		FROM reserve
+		WHERE del_flag IS NULL
+		AND TO_CHAR(datetime, 'YYYY-MM-DD')
+		BETWEEN #{startDate} AND #{endDate}
+		GROUP BY TO_CHAR(datetime,
+		'YYYY-MM-DD')
+		ORDER BY reserveDay
+	</select>
+
+	<select id="getReserveDay" resultMap="ReserveMap">
+		SELECT
+		r.reserve_no,
+		p.patient_name,
+		d.department,
+		e.employee_name,
+		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+		TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime
+		FROM reserve r
+		JOIN patient p ON r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE r.del_flag IS NULL
+		AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{targetDate}
+		ORDER BY r.datetime
+	</select>
+
+	<select id="getReserveDetail" resultMap="ReserveMap">
+		SELECT
+		r.reserve_no,
+		p.patient_name,
+		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+		TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
+		p.phone,
+		d.department,
+		e.employee_name,
+		r.reason
+		FROM reserve r
+		JOIN patient p ON r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE r.reserve_no = #{reserveNo}
+	</select>
+
+	<select id="getPatientName" resultMap="ReserveMap">
+		SELECT
+		p.patient_no,
+		p.patient_name,
+		p.phone,
+		MAX(mr.medical_date) AS reserveDay
+		FROM patient p
+		LEFT JOIN medical_record mr ON p.patient_no = mr.patient_no
+		WHERE p.patient_name = #{patientName}
+		AND p.del_flag IS NULL
+		GROUP BY p.patient_no, p.patient_name, p.phone
+		ORDER BY MAX(mr.medical_date) DESC
+	</select>
+
+	<select id="getPossibleDoctor" resultMap="ReserveMap">
+		SELECT
+		ds.doctor_schedule_no,
+		d.department,
+		e.employee_name
+		FROM doctor_schedule ds
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE ds.work_date = TO_DATE(#{workDate}, 'YYYY-MM-DD')
+		AND (
+		(TO_CHAR(TO_DATE(#{reserveDateTime}, 'YYYY-MM-DD HH24:MI'), 'HH24') &lt; 12 AND ds.am = 'Y')
+		OR
+		(TO_CHAR(TO_DATE(#{reserveDateTime}, 'YYYY-MM-DD HH24:MI'), 'HH24') &gt;= 13 AND ds.pm = 'Y')
+		)
+		AND NOT EXISTS (
+			SELECT 1 FROM reserve r
+			WHERE r.doctor_schedule_no = ds.doctor_schedule_no
+			AND r.datetime = TO_DATE(#{reserveDateTime}, 'YYYY-MM-DD HH24:MI')
+			AND r.del_flag IS NULL
+		)
+		ORDER BY d.department, e.employee_name
+	</select>
+	
+	<select id="reserveCheck" parameterType="com.crm.model.ReserveVO"
+		resultType="int">
+		select count(doctor_schedule_no)
+		from reserve
+		where doctor_schedule_no = #{doctorScheduleNo}
+		and datetime=TO_DATE(#{reserveDay} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI')
+	</select>
+
+	<insert id="addReserve" parameterType="com.crm.model.ReserveVO">
+		INSERT INTO reserve (
+		reserve_no,
+		doctor_schedule_no,
+		patient_no,
+		datetime,
+		reason
+		) VALUES (
+		reserve_no.NEXTVAL,
+		#{doctorScheduleNo},
+		#{patientNo},
+		TO_DATE(#{reserveDay} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI'),
+		#{reason}
+		)
+	</insert>
+
+	<update id="editReserve" parameterType="com.crm.model.ReserveVO">
+		UPDATE reserve
+		SET
+		doctor_schedule_no = #{doctorScheduleNo},
+		datetime =
+		TO_DATE(#{reserveDay} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI'),
+		reason = #{reason}
+		WHERE reserve_no = #{reserveNo}
+	</update>
+
+	<update id="deleteReserve" parameterType="list">
+		UPDATE reserve
+	    SET del_flag = SYSDATE
+	    WHERE reserve_no IN
+	    <foreach collection="list" item="no" open="(" separator="," close=")">
+	        #{no}
+	    </foreach>
+	</update>
+
+	<!-- 나중에 기존 count 메서드 사용할 수 있으면 재사용하기 -->
+	<select id="countDailyReserve" parameterType="map"
+		resultMap="ReserveMap">
+		SELECT TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay, COUNT(*) AS reserveCount
+		FROM reserve r
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE r.del_flag IS NULL
+		<if test="employeeId != null and employeeId != ''">
+			AND e.employee_id = #{employeeId}
+		</if>
+		AND TRUNC(r.datetime) = TRUNC(SYSDATE)
+		GROUP BY TO_CHAR(r.datetime, 'YYYY-MM-DD')
+		ORDER BY reserveDay
+	</select>
+
+	<select id="countMyReserve" parameterType="map"
+		resultMap="ReserveMap">
+		SELECT
+		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+		COUNT(*) AS reserveCount
+		FROM reserve r
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		<where>
+			r.del_flag IS NULL
+			<if test="employeeId != null and employeeId != ''">
+				AND e.employee_id = #{employeeId}
+			</if>
+			<if test="month != null and month != ''">
+				AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
+			</if>
+			<if test="weekStart != null and weekEnd != null">
+				AND TO_CHAR(r.datetime, 'YYYY-MM-DD') BETWEEN
+				#{weekStart} AND
+				#{weekEnd}
+			</if>
+			<if test="targetDate != null and targetDate != ''">
+				AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{targetDate}
+			</if>
+		</where>
+		GROUP BY TO_CHAR(r.datetime, 'YYYY-MM-DD')
+		ORDER BY reserveDay
+	</select>
+
+	<select id="getMyReserveList" parameterType="map"
+		resultMap="ReserveMap">
+		SELECT
+		r.reserve_no,
+		p.patient_name,
+		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+		TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
+		d.department,
+		e.employee_name,
+		r.reason
+		FROM reserve r
+		JOIN patient p ON r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		<where>
+			r.del_flag IS NULL
+			<if test="employeeId != null and employeeId != ''">
+				AND e.employee_id = #{employeeId}
+				<if test="month != null and month != ''">
+					AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
+					<if test="weekStart != null and weekEnd != null">
+						AND TO_CHAR(r.datetime, 'YYYY-MM-DD') BETWEEN
+						#{weekStart} AND
+						#{weekEnd}
+						<if test="targetDate != null and targetDate != ''">
+							AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{targetDate}
+							<if test="targetHour != null and targetHour != ''">
+								AND TO_CHAR(r.datetime, 'HH24') = #{targetHour}
+							</if>
+						</if>
+					</if>
+				</if>
+			</if>
+		</where>
+		ORDER BY r.datetime
+	</select>
+
+</mapper>

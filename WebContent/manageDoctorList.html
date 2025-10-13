@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>의사 명단</title>
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet">
+
+<style>
+  body {
+    background-color: #f3f8fc;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+  }
+
+  .table {
+    background-color: #fff;
+    border: 2px solid #b7cde6;
+  }
+
+  .table th {
+    background-color: #b7cde6;
+    color: #000;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+
+  .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .btn-custom-blue {
+    background-color: #9dc3e6;
+    border: none;
+    color: #000;
+    font-weight: 600;
+  }
+
+  .btn-custom-blue:hover {
+    background-color: #84b3df;
+  }
+</style>
+</head>
+
+<body class="bg-body-tertiary">
+		<div class="container-fluid">
+		  <div class="row g-0">
+		
+		    <!-- 여기서 사이드바를 주입 -->
+		    <div id="sidebar-slot" class="col-2 p-0"></div>
+		
+		    <!-- 메인 -->
+		    <main class="col-10 p-4">
+		  <div class="container">
+		    <h1>의사 명단</h1>
+		
+		    <table class="table table-bordered align-middle">
+		      <thead>
+		        <tr>
+		          <th style="width: 20%;">의사코드</th>
+		          <th style="width: 30%;">이름</th>
+		          <th style="width: 50%;">진료과</th>
+		        </tr>
+		      </thead>
+		      <tbody>
+		        <tr><td>D0001</td><td>김의사</td><td>정형외과</td></tr>
+		        <tr><td>D0002</td><td>박원장</td><td>정형외과</td></tr>
+		        <tr><td>D0003</td><td>원 장</td><td>정형외과</td></tr>
+		        <tr><td>D0004</td><td>김이박</td><td>정형외과</td></tr>
+		        <tr><td>DN0001</td><td>김이박</td><td>신경외과</td></tr>
+		        <tr><td>DN0002</td><td>나신경</td><td>신경외과</td></tr>
+		        <tr><td>DN0003</td><td>홍길동</td><td>신경외과</td></tr>
+		        <tr><td>DN0004</td><td>사공길동</td><td>신경외과</td></tr>
+		        <tr><td>DR001</td><td>이명의</td><td>영상의학과</td></tr>
+		        <tr><td>DA001</td><td>김철수</td><td>마취통증의학과</td></tr>
+		      </tbody>
+		    </table>
+		  </div>
+	  </main>
+	</div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
+	  async function loadSidebar(activeKey) {
+	    const slot = document.getElementById('sidebar-slot');
+	    const resp = await fetch('./sidebar.html'); // 경로는 프로젝트 구조에 맞게
+	    const html = await resp.text();
+	    slot.innerHTML = html;
+
+	    // 활성 메뉴 표시 (data-route 값을 사용)
+	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
+	    if (current) {
+	      // 전부 초기화
+	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
+	        a.classList.remove('active','bg-primary','text-white');
+	        a.classList.add('text-dark');
+	      });
+	      // 현재만 활성
+	      current.classList.add('active','bg-primary','text-white');
+	      current.classList.remove('text-dark');
+	    }
+	  }
+
+	  // 이 페이지의 활성 키만 바꿔주면 됨
+	  loadSidebar('manageDoctorSchedule');
+  </script>
+</body>
+</html>

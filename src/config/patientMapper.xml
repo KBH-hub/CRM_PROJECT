@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="patientMapper">
+
+	<resultMap id="PatientMap" type="com.crm.model.PatientVO">
+		<result property="patientNo" column="patient_no" />
+		<result property="patientName" column="patient_name" />
+		<result property="adress" column="adress" />
+		<result property="birth" column="birth" />
+		<result property="gender" column="gender" />
+		<result property="path" column="path" />
+		<result property="phone" column="phone" />
+		<result property="inDate" column="in_date" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<resultMap id="MedicalRecordMap" type="com.crm.model.MedicalRecordVO">
+		<result property="medicalNo" column="medical_no" />
+		<result property="medicalDate" column="medical_date" />
+		<result property="diagnosis" column="diagnosis" />
+		<result property="firstCome" column="first_come" />
+		<result property="employeeName" column="employee_name" />
+		<result property="department" column="department" />
+		<result property="content" column="content" />
+		<result property="insurance" column="insurance" />
+	</resultMap>
+
+	<select id="getPatientList" parameterType="map" resultMap="PatientMap">
+		SELECT
+		P.PATIENT_NO,
+		P.PATIENT_NAME,
+		P.PHONE,
+		LATEST_MR.MEDICAL_DATE,
+		E.EMPLOYEE_NAME,
+		D.DEPARTMENT,
+		LATEST_MR.STATUS,
+		LATEST_MR.DIAGNOSIS
+		FROM
+		PATIENT P
+		LEFT JOIN (
+		SELECT
+		MR.PATIENT_NO,
+		MR.MEDICAL_DATE,
+		MR.DOCTOR_CODE,
+		MR.DIAGNOSIS,
+		MR.STATUS,
+		ROW_NUMBER() OVER (PARTITION BY
+		MR.PATIENT_NO ORDER BY MR.MEDICAL_DATE DESC,
+		MR.MEDICAL_NO DESC) AS rn
+		FROM
+		MEDICAL_RECORD MR
+		) LATEST_MR ON P.PATIENT_NO = LATEST_MR.PATIENT_NO
+		AND LATEST_MR.rn = 1
+		LEFT JOIN
+		DOCTOR D ON LATEST_MR.DOCTOR_CODE =
+		D.DOCTOR_CODE
+		LEFT JOIN
+		EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+		<!-- <where> 태그는 내부에 유효한 조건이 하나라도 있을 때만 WHERE 절을 생성하고, 불필요한 AND 키워드를 자동으로 
+			제거해줍니다. -->
+		<where>
+			P.DEL_FLAG IS NULL -- 삭제되지 않은 환자는 항상 조회
+	
+			<!-- 조건 1: 내원일 (medicalDate 파라미터가 비어있지 않을 때만 조건 추가) -->
+			<if test="startDate != null and startDate != ''">
+				AND LATEST_MR.MEDICAL_DATE &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND LATEST_MR.MEDICAL_DATE BETWEEN &lt;= #{endDate}
+			</if>
+	
+			<!-- 조건 2: 담당의사 (doctorCode 파라미터가 비어있지 않을 때만 조건 추가) -->
+			<if test="doctorCode != null and doctorCode != ''">
+				AND D.DOCTOR_CODE = #{doctorCode}
+			</if>
+	
+			<!-- 조건 3: 환자 이름 (patientName 파라미터가 비어있지 않을 때만 조건 추가) -->
+			<if test="patientName != null and patientName != ''">
+				AND P.PATIENT_NAME LIKE '%' || #{patientName} || '%'
+			</if>
+			<if test="birth != null and birth != ''">
+				AND P.birth LIKE '%' || #{birth} || '%'
+			</if>
+		</where>
+		ORDER BY
+		P.PATIENT_NO
+	</select>
+
+	<select id="getPatientDetail" resultMap="PatientMap">
+		SELECT
+	    P.PATIENT_NO,
+	    P.PATIENT_NAME,
+	    P.PHONE,
+	    P.ADDRESS,
+	    P.IN_DATE,
+	    P.BIRTH,
+	    P.GENDER,
+	    P.PATH,
+	    E.EMPLOYEE_NAME AS LATEST_DOCTOR_NAME,
+	    D.DEPARTMENT AS LATEST_DEPARTMENT,
+	    LATEST_MR.STATUS AS LATEST_STATUS
+		FROM
+	    PATIENT P
+		LEFT JOIN (
+		SELECT
+	    MR.PATIENT_NO,
+	    MR.DOCTOR_CODE,
+	    MR.STATUS,
+	    ROW_NUMBER() OVER (PARTITION BY MR.PATIENT_NO ORDER BY MR.MEDICAL_DATE DESC, MR.MEDICAL_NO DESC) AS rn
+	    FROM
+	    MEDICAL_RECORD MR
+	    ) LATEST_MR ON P.PATIENT_NO = LATEST_MR.PATIENT_NO AND LATEST_MR.rn = 1
+	    LEFT JOIN
+	    DOCTOR D ON LATEST_MR.DOCTOR_CODE = D.DOCTOR_CODE
+		LEFT JOIN
+	    EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+		WHERE
+	    P.PATIENT_NO = #{patientNo}
+		AND P.DEL_FLAG IS NULL
+	</select>
+	
+	<select id="getMedicalRecord" resultMap="MedicalRecordMap">
+		SELECT
+		MR.MEDICAL_NO,
+		TO_CHAR(MR.MEDICAL_DATE, 'YYYY-MM-DD') AS MEDICAL_DATE,
+		MR.DIAGNOSIS,
+		MR.FIRST_COME,
+		E.EMPLOYEE_NAME,
+		D.DEPARTMENT,
+		MR.CONTENT,
+		MR.INSURANCE
+		FROM
+		MEDICAL_RECORD MR
+		JOIN
+		DOCTOR D ON MR.DOCTOR_CODE = D.DOCTOR_CODE
+		JOIN
+		EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+		WHERE
+		MR.PATIENT_NO= #{patientNo}
+		ORDER BY
+		MR.MEDICAL_DATE DESC
+	</select>
+	
+	<insert id="addPatient" parameterType="map">
+		INSERT INTO PATIENT (
+		PATIENT_NO,
+		PATIENT_NAME,
+		PHONE,
+		IN_DATE
+		) VALUES (
+		PATIENT_NO.NEXTVAL,
+		#{patientName}, #{phone}, SYSDATE)
+	</insert>
+
+	<update id="deletePatient">
+			UPDATE PATIENT
+			SET
+			DEL_FLAG = SYSDATE WHERE
+			PATIENT_NO = #{patientNo}
+	</update>
+
+	<update id="editPatient" parameterType="map">
+		UPDATE PATIENT
+		SET
+		PATIENT_NAME = #{patientName},
+		PHONE = #{phone},
+		ADDRESS = #{address},
+		BIRTH = #{birth},
+		GENDER = #{gender},
+		PATH = #{path}
+		WHERE
+		PATIENT_NO = #{patientNo}
+	</update>
+
+</mapper>

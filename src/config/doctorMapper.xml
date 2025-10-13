@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="doctorMapper">
+
+	<resultMap id="DoctorMap" type="com.crm.model.ManageDoctorVO">
+		<result property="doctorScheduleNo" column="doctor_schedule_no" />
+		<result property="doctorCode" column="doctor_code" />
+		<result property="employeeName" column="employee_name" />
+		<result property="department" column="department" />
+		<result property="workDate" column="work_date" />
+		<result property="am" column="am" />
+		<result property="pm" column="pm" />
+		<result property="delFlag" column="del_flag" />
+	</resultMap>
+	
+	<select id="getDoctorSchedule" parameterType="map" resultMap="DoctorMap">
+		select ds.doctor_schedule_no, d.doctor_code, d.department,
+		e.employee_name, TO_CHAR(ds.work_date, 'YYYY-MM-DD') AS work_date, ds.am, ds.pm
+		from doctor_schedule ds
+		join doctor d on d.doctor_code = ds.doctor_code
+		join employee e on e.employee_id = d.employee_id
+		where e.del_flag IS NULL AND d.del_flag IS NULL AND ds.del_flag IS NULL
+		and TO_CHAR(ds.work_date, 'YYYY-MM-DD') &gt;= #{startDate}
+		and TO_CHAR(ds.work_date, 'YYYY-MM-DD') &lt;= #{endDate}
+		order by doctor_schedule_no
+	</select>
+	
+	<select id="getDoctorName" parameterType="map" resultMap="DoctorMap">
+		SELECT
+		D.DOCTOR_CODE AS doctorCode,
+		E.EMPLOYEE_NAME AS employeeName,
+		D.DEPARTMENT AS department
+		FROM
+		DOCTOR D
+		JOIN
+		EMPLOYEE E ON E.EMPLOYEE_ID = D.EMPLOYEE_ID
+		WHERE
+		D.DEL_FLAG IS NULL
+		AND D.DOCTOR_CODE NOT IN (
+		SELECT DISTINCT DS.DOCTOR_CODE
+		FROM DOCTOR_SCHEDULE DS
+		WHERE DS.WORK_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		)
+		ORDER BY
+		D.DOCTOR_CODE
+	</select>
+	
+	<insert id="addDoctorSchedule" parameterType="map">
+		insert into doctor_schedule (doctor_schedule_no, doctor_code, work_date, am, pm, del_flag)
+		values (
+		doctor_schedule_no.nextval,
+		#{doctorCode},
+		to_date(#{workDate}, 'YYYY-MM-DD'),
+		'N', 'N', null)
+	</insert>
+	
+	<update id="editDoctorSchedule" parameterType="map">
+		update doctor_schedule set am = #{am}, pm = #{pm}
+		where doctor_schedule_no = #{doctorScheduleNo}
+	</update>
+	
+	<update id="deleteDoctorSchedule">
+		update doctor_schedule set del_flag = sysdate
+		where doctor_schedule_no = #{doctorScheduleNo}
+	</update>
+	
+	<select id="getDoctorList" resultMap="DoctorMap">
+		select d.doctor_code, e.employee_name, d.department
+		from doctor d
+		join employee e on e.employee_id = d.employee_id
+		where d.del_flag is null
+		order by doctor_code
+	</select>
+
+</mapper>

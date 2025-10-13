@@ -1,0 +1,94 @@
+package com.crm.model;
+
+public class ReserveSmsVO {
+
+	private int reserveSmsNo;
+	private String employeeId;
+	private String employeeName;
+	private int reserveNo;
+	private String patientName;
+	private String phone;
+	private String datetime;
+	private String templateName;
+	private String content;
+	
+	
+	public ReserveSmsVO(){};
+	
+	public ReserveSmsVO(int reserveSmsNo, String employeeId, String employeeName, int reserveNo, String patientName,
+			String phone, String datetime, String templateName, String content) {
+		setReserveSmsNo(reserveSmsNo);
+		setEmployeeId(employeeId);
+		setEmployeeName(employeeName);
+		setReserveNo(reserveNo);
+		setPatientName(patientName);
+		setPhone(phone);
+		setDatetime(datetime);
+		setTemplateName(templateName);
+		setContent(content);
+	}
+	
+	public int getReserveSmsNo() {
+		return reserveSmsNo;
+	}
+	public void setReserveSmsNo(int reserveSmsNo) {
+		this.reserveSmsNo = reserveSmsNo;
+	}
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+	public int getReserveNo() {
+		return reserveNo;
+	}
+	public void setReserveNo(int reserveNo) {
+		this.reserveNo = reserveNo;
+	}
+	public String getPatientName() {
+		return patientName;
+	}
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getDatetime() {
+		return datetime;
+	}
+	public void setDatetime(String datetime) {
+		this.datetime = datetime;
+	}
+	public String getTemplateName() {
+		return templateName;
+	}
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	@Override
+	public String toString() {
+		return "ReserveSmsVO [reserveSmsNo=" + reserveSmsNo + ", employeeId=" + employeeId + ", employeeName="
+				+ employeeName + ", reserveNo=" + reserveNo + ", patientName=" + patientName + ", phone=" + phone
+				+ ", datetime=" + datetime + ", templateName=" + templateName + ", content=" + content + "]\n";
+	}
+	
+	
+}

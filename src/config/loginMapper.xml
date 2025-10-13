@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="loginMapper">
+	<select id="selectLogin" parameterType="map" resultType="string">
+		SELECT
+		AUTHORITY
+		FROM EMPLOYEE
+		WHERE EMPLOYEE_ID = #{employeeId}
+		AND PW = #{pw}
+		AND DEL_FLAG IS NULL
+	</select>
+
+	<insert id="insertLoginLog" parameterType="map">
+		INSERT INTO login_log
+		(login_no, employee_id, login_ip, login_date)
+		VALUES (login_no.nextval, #{employeeId}, #{loginIp}, SYSDATE)
+	</insert>
+
+	<select id="sideBarInfo" parameterType="string" resultType="map">
+		SELECT
+		e.employee_name AS employee_name,
+		e.position AS position,
+		ll.login_ip AS login_ip,
+		TO_CHAR(ll.login_date, 'YYYY/MM/DD HH24:MI:SS') AS login_date
+		FROM login_log ll
+		JOIN employee e ON e.employee_id = ll.employee_id
+		WHERE e.employee_id = #{employeeId}
+		AND ll.login_date = (
+			SELECT MAX(login_date)
+			FROM login_log
+			WHERE employee_id = #{employeeId}
+		)
+	</select>
+
+</mapper>

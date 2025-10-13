@@ -7,9 +7,9 @@
 
 **예시**
 ```bash
-PatientList
-ReserveList
-PatientAdd
+patientList
+reserveList
+patientAdd
 ```
 
 ---

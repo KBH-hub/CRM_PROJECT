@@ -1,62 +1,52 @@
 package com.crm.action.patient;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import com.crm.action.Action;
-import com.crm.model.PatientListDAO;
-import com.crm.model.PatientVO;
+import com.crm.model.*;
 import com.google.gson.Gson;
 
 public class GetPatientListAction implements Action {
 
-	@Override
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    public String execute(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-	    String startDate   = request.getParameter("startDate");
-	    String endDate     = request.getParameter("endDate");
-	    String doctorCode  = request.getParameter("doctorCode");
-	    String patientName = request.getParameter("patientName");
-	    String birth       = request.getParameter("birth");
+        // ✅ 파라미터 수집 및 페이징 계산
+        int page = parseInt(req.getParameter("page"), 1);
+        int pageSize = parseInt(req.getParameter("pageSize"), 10);
+        int startRow = (page - 1) * pageSize + 1;
+        int endRow = page * pageSize;
 
-	    // ✅ 페이지 번호와 크기 수집
-	    int page = 1;
-	    int pageSize = 10;
-	    String p1 = request.getParameter("page");
-	    String p2 = request.getParameter("pageSize");
-	    if (p1 != null && !p1.isEmpty()) page = Integer.parseInt(p1);
-	    if (p2 != null && !p2.isEmpty()) pageSize = Integer.parseInt(p2);
+        Map<String, Object> map = new HashMap<>();
+        map.put("startDate", req.getParameter("startDate"));
+        map.put("endDate", req.getParameter("endDate"));
+        map.put("doctorCode", req.getParameter("doctorCode"));
+        map.put("patientName", req.getParameter("patientName"));
+        map.put("birth", req.getParameter("birth"));
+        map.put("startRow", startRow);
+        map.put("endRow", endRow);
 
-	    int startRow = (page - 1) * pageSize + 1;
-	    int endRow = page * pageSize;
+        // ✅ DAO 호출
+        PatientListDAO dao = new PatientListDAO();
+        List<PatientVO> list = dao.getPatientList(map);
+        int totalCount = dao.getTotalCount();
 
-	    PatientListDAO dao = new PatientListDAO();
+        // ✅ JSON 응답용 결과 Map
+        Map<String, Object> result = new HashMap<>();
+        result.put("list", list);
+        result.put("totalCount", totalCount);
 
-	    // ✅ 검색용 + 페이징 포함 map
-	    Map<String, Object> map = new HashMap<>();
-	    map.put("startDate", startDate);
-	    map.put("endDate", endDate);
-	    map.put("doctorCode", doctorCode);
-	    map.put("patientName", patientName);
-	    map.put("birth", birth);
-	    map.put("startRow", startRow);
-	    map.put("endRow", endRow);
+        resp.setContentType("application/json; charset=UTF-8");
+        resp.getWriter().print(new Gson().toJson(result));
+        return null;
+    }
 
-	    List<PatientVO> list = dao.getPatientList(map);
-	    int totalCount = dao.getTotalCount(); // mapper.xml에 COUNT(*) 쿼리 필요
-
-	    Map<String, Object> result = new HashMap<>();
-	    result.put("list", list);
-	    result.put("totalCount", totalCount);
-
-	    response.setContentType("application/json; charset=UTF-8");
-	    response.getWriter().print(new Gson().toJson(result));
-
-	    return null;
-	}
-
+    // ✅ 안전한 int 파싱 유틸
+    private int parseInt(String val, int def) {
+        try { return (val == null || val.isEmpty()) ? def : Integer.parseInt(val); }
+        catch (Exception e) { return def; }
+    }
 }

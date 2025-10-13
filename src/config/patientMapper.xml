@@ -90,7 +90,7 @@
 		        AND P.PATIENT_NAME LIKE '%' || #{patientName} || '%'
 		      </if>
 		      <if test="birth != null and birth != ''">
-		        AND P.BIRTH LIKE '%' || #{birth} || '%'
+		        AND P.BIRTH LIKE #{birth} || '%'
 		      </if>
 		    </where>
 		
@@ -102,30 +102,66 @@
 	</select>
 	
 	<!-- ✅ 전체 건수 -->
-	<select id="getTotalCount" resultType="int">
-	  SELECT COUNT(*) FROM PATIENT WHERE DEL_FLAG IS NULL
+	<select id="getTotalCount" parameterType="map" resultType="int">
+	  SELECT COUNT(*)
+	  FROM PATIENT P
+	  LEFT JOIN (
+	    SELECT
+	      MR.PATIENT_NO,
+	      MR.MEDICAL_DATE,
+	      MR.DOCTOR_CODE,
+	      MR.DIAGNOSIS,
+	      MR.STATUS,
+	      ROW_NUMBER() OVER (PARTITION BY MR.PATIENT_NO ORDER BY MR.MEDICAL_DATE DESC, MR.MEDICAL_NO DESC) AS rn
+	    FROM MEDICAL_RECORD MR
+	  ) LATEST_MR
+	    ON P.PATIENT_NO = LATEST_MR.PATIENT_NO
+	   AND LATEST_MR.rn = 1
+	  LEFT JOIN DOCTOR D
+	    ON LATEST_MR.DOCTOR_CODE = D.DOCTOR_CODE
+	  LEFT JOIN EMPLOYEE E
+	    ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+	
+	  <where>
+	    P.DEL_FLAG IS NULL
+	    <if test="startDate != null and startDate != ''">
+	      AND LATEST_MR.MEDICAL_DATE &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	      AND LATEST_MR.MEDICAL_DATE &lt;= #{endDate}
+	    </if>
+	    <if test="doctorCode != null and doctorCode != ''">
+	      AND D.DOCTOR_CODE = #{doctorCode}
+	    </if>
+	    <if test="patientName != null and patientName != ''">
+	      AND P.PATIENT_NAME LIKE '%' || #{patientName} || '%'
+	    </if>
+	    <if test="birth != null and birth != ''">
+	      AND P.BIRTH LIKE #{birth} || '%'
+	    </if>
+	  </where>
 	</select>
 	
 	<select id="getDoctorName" parameterType="map" resultMap="DoctorMap">
-	  SELECT DISTINCT
+	  SELECT 
 	    D.DOCTOR_CODE AS doctorCode,
 	    E.EMPLOYEE_NAME AS employeeName,
 	    D.DEPARTMENT AS department
-	  FROM MEDICAL_RECORD MR
-	  JOIN DOCTOR D ON MR.DOCTOR_CODE = D.DOCTOR_CODE
-	  JOIN EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+	  FROM DOCTOR D
+	  INNER JOIN EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+	  INNER JOIN MEDICAL_RECORD MR 
+	          ON MR.DOCTOR_CODE = D.DOCTOR_CODE
 	  WHERE D.DEL_FLAG IS NULL
 	    AND E.DEL_FLAG IS NULL
 	    <if test="startDate != null and startDate != ''">
-		  AND MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-		</if>
-		<if test="endDate != null and endDate != ''">
-		  AND MR.MEDICAL_DATE &lt; TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
-		</if>
+	      AND MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	      AND MR.MEDICAL_DATE &lt; TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+	    </if>
+	  GROUP BY D.DOCTOR_CODE, E.EMPLOYEE_NAME, D.DEPARTMENT
 	  ORDER BY D.DOCTOR_CODE
 	</select>
-
-
 
 	<select id="getPatientDetail" resultMap="PatientMap">
 		SELECT

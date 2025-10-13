@@ -41,10 +41,10 @@ public class PatientListDAO {
     }
 	
 	// ✅ 전체 건수 조회
-    public int getTotalCount() {
-        SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-        int count = conn.selectOne("patientMapper.getTotalCount");
-        conn.close();
+    public int getTotalCount(Map<String, Object> params) {
+        SqlSession session = DBCP.getSqlSessionFactory().openSession();
+        int count = session.selectOne("patientMapper.getTotalCount", params);
+        session.close();
         return count;
     }
     

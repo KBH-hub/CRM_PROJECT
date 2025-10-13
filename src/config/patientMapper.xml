@@ -117,11 +117,11 @@
 	  WHERE D.DEL_FLAG IS NULL
 	    AND E.DEL_FLAG IS NULL
 	    <if test="startDate != null and startDate != ''">
-	      AND MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-	    </if>
-	    <if test="endDate != null and endDate != ''">
-	      AND MR.MEDICAL_DATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
-	    </if>
+		  AND MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="endDate != null and endDate != ''">
+		  AND MR.MEDICAL_DATE &lt; TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+		</if>
 	  ORDER BY D.DOCTOR_CODE
 	</select>
 

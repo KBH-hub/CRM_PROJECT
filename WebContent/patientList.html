@@ -239,11 +239,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (start > end) {
       alert("시작일은 종료일보다 늦을 수 없습니다.");
       endInput.value = start;
-      validateDates();
-      return false;
     }
 
-    await loadDoctorList(start, end);
+    await loadDoctorList(start, endInput.value);
     return true;
   }
 

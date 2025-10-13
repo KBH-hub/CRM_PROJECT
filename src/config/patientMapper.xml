@@ -111,20 +111,21 @@
 	    D.DOCTOR_CODE AS doctorCode,
 	    E.EMPLOYEE_NAME AS employeeName,
 	    D.DEPARTMENT AS department
-	  FROM
-	    RESERVE R
-	    JOIN DOCTOR_SCHEDULE DS ON R.DOCTOR_SCHEDULE_NO = DS.DOCTOR_SCHEDULE_NO
-	    JOIN DOCTOR D ON DS.DOCTOR_CODE = D.DOCTOR_CODE
-	    JOIN EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
-	  WHERE
-	    R.DEL_FLAG IS NULL
-	    AND D.DEL_FLAG IS NULL
-	    AND DS.DEL_FLAG IS NULL
+	  FROM MEDICAL_RECORD MR
+	  JOIN DOCTOR D ON MR.DOCTOR_CODE = D.DOCTOR_CODE
+	  JOIN EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
+	  WHERE D.DEL_FLAG IS NULL
 	    AND E.DEL_FLAG IS NULL
-	    AND TO_CHAR(R.DATETIME, 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
-	  ORDER BY
-	    D.DOCTOR_CODE
+	    <if test="startDate != null and startDate != ''">
+	      AND MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	      AND MR.MEDICAL_DATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    </if>
+	  ORDER BY D.DOCTOR_CODE
 	</select>
+
+
 
 	<select id="getPatientDetail" resultMap="PatientMap">
 		SELECT

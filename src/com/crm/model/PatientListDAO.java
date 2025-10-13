@@ -47,6 +47,17 @@ public class PatientListDAO {
         conn.close();
         return count;
     }
+    
+    public List<ManageDoctorVO> getDoctorName(String startDate, String endDate){
+		List<ManageDoctorVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		Map<String, Object> map = new HashMap<>();
+		map.put("startDate", startDate);
+		map.put("endDate", endDate);
+		list = conn.selectList("patientMapper.getDoctorName", map);
+		conn.close();
+		return list;
+	}
 
 	public PatientVO getPatientDetail(int patientNo){
 		PatientVO vo = null;

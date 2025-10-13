@@ -1,5 +1,6 @@
 package com.crm.action;
 
+import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.patient.GetPatientListAction;
 import com.crm.action.patient.PatientUIAction;
 
@@ -11,9 +12,12 @@ public class ActionFactory {
 		Action a = null;
 		// 구현부
 		switch (cmd) {
-		case "getPatientListAction":
-		    a = new GetPatientListAction();
+		case "getDoctorListByDateAction":
+		    a = new GetDoctorListByDateAction();
 		    break;
+		case "getPatientListAction":
+			a = new GetPatientListAction();
+			break;
 		case "patientListUI":
 			a = new PatientUIAction();
 			break;

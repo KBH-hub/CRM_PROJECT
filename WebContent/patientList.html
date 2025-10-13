@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>환자 목록</title>
 
-<!-- ✅ Bootstrap 5.3.0 -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 #pager .page-item.active .page-link {
 	background: #212529;
@@ -16,14 +13,12 @@
 	border-color: #212529;
 	border-radius: .6rem;
 }
-
 #pager .page-item.disabled .page-link {
 	color: #bbb;
 	pointer-events: none;
 	background: transparent;
 	border-color: transparent;
 }
-
 #pager .page-link {
 	border: none;
 	background: transparent;
@@ -35,224 +30,275 @@
 <div class="container-fluid">
   <div class="row">
 
-    <!-- 여기서 사이드바를 주입 -->
     <div id="sidebar-slot" class="col-2 p-0"></div>
 
-    <!-- 메인 -->
     <main class="col-10 p-4">
       <h2 class="mb-3 border-bottom pb-2">환자 관리</h2>
-       <div class="card"><div class="card-body">
-			<!-- 🔍 검색 영역 -->
-			<div class="mb-4">
-				<div class="d-flex flex-wrap gap-2 align-items-center">
-					<input type="date" class="form-control w-auto"> <input
-						type="date" class="form-control w-auto"> <select
-						class="form-select w-auto">
-						<option selected disabled hidden>담당의사</option>
-						<option>전체</option>
-						<option>김의사</option>
-						<option>사공길동</option>
-					</select> <select class="form-select w-auto">
-						<option>생년월일</option>
-						<option>이름</option>
-					</select> <input type="text" class="form-control w-auto"
-						placeholder="검색어 입력">
-					<button class="btn btn-primary">검색</button>
-				</div>
-			</div>
+      <div class="card"><div class="card-body">
 
-			<!-- 🧾 환자 목록 테이블 -->
-			<div class="table-responsive">
-				<table class="table table-bordered align-middle text-center">
-					<thead class="table-light">
-						<tr>
-							<th><input type="checkbox" id="selectAll"></th>
-							<th>환자등록번호</th>
-							<th>이름</th>
-							<th>전화번호</th>
-							<th>최근내원일</th>
-							<th>담당의사</th>
-							<th>진료과</th>
-							<th>상태</th>
-							<th>진단명</th>
-							<th>상세</th>
-						</tr>
-					</thead>
-					<tbody id="patientTableBody"></tbody>
-				</table>
-			</div>
+        <!-- 🔍 검색 영역 -->
+        <div class="mb-4">
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <input type="date" id="startDate" class="form-control w-auto">
+            <input type="date" id="endDate" class="form-control w-auto">
+            <select id="doctorSelect" class="form-select w-auto">
+              <option selected disabled hidden>담당의사</option>
+            </select>
+            <select id="searchType" class="form-select w-auto">
+              <option value="birth">생년월일</option>
+              <option value="name">이름</option>
+            </select>
+            <input type="text" id="keyword" class="form-control w-auto" placeholder="검색어 입력">
+            <button class="btn btn-primary" id="searchBtn">검색</button>
+          </div>
+        </div>
 
-			<!-- ⚙ 버튼 영역 -->
-			<div class="my-3 d-flex justify-content-center gap-2">
-				<button class="btn btn-primary" id="add-btn">고객 등록</button>
-				<button class="btn btn-primary" id="sendSmsBtn">선택 메시지 보내기</button>
-				<button class="btn btn-danger">선택 삭제</button>
-			</div>
+        <!-- 🧾 환자 목록 -->
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+              <tr>
+                <th><input type="checkbox" id="selectAll"></th>
+                <th>환자등록번호</th>
+                <th>이름</th>
+                <th>전화번호</th>
+                <th>최근내원일</th>
+                <th>담당의사</th>
+                <th>진료과</th>
+                <th>상태</th>
+                <th>진단명</th>
+                <th>상세</th>
+              </tr>
+            </thead>
+            <tbody id="patientTableBody"></tbody>
+          </table>
+        </div>
 
-			<!-- ✅ 페이지 이동 버튼 -->
-			<nav aria-label="페이지 이동" class="d-flex justify-content-center my-3">
-				<ul id="pager"
-					class="pagination pagination-sm align-items-center gap-2">
-					<!-- 처음 / 이전 -->
-					<li class="page-item"><button class="page-link"
-							data-action="first" aria-label="처음">«</button></li>
-					<li class="page-item"><button class="page-link"
-							data-action="prev" aria-label="이전">‹</button></li>
+        <!-- ⚙ 버튼 -->
+        <div class="my-3 d-flex justify-content-center gap-2">
+          <button class="btn btn-primary" id="add-btn">고객 등록</button>
+          <button class="btn btn-primary" id="sendSmsBtn">선택 메시지 보내기</button>
+          <button class="btn btn-danger">선택 삭제</button>
+        </div>
 
-					<!-- 숫자들 -->
-					<li class="page-item"><button class="page-link" data-page="1">1</button></li>
-					<li class="page-item"><button class="page-link" data-page="2">2</button></li>
-					<li class="page-item"><button class="page-link" data-page="3">3</button></li>
-					<li class="page-item"><button class="page-link" data-page="4">4</button></li>
-					<li class="page-item"><button class="page-link" data-page="5">5</button></li>
-					<li class="page-item"><button class="page-link" data-page="6">6</button></li>
+        <!-- ✅ 페이지네이션 -->
+        <nav aria-label="페이지 이동" class="d-flex justify-content-center my-3">
+          <ul id="pager" class="pagination pagination-sm align-items-center gap-2"></ul>
+        </nav>
+      </div></div>
+    </main>
+  </div>
+</div>
 
-					<!-- 다음 / 마지막 -->
-					<li class="page-item"><button class="page-link"
-							data-action="next" aria-label="다음">›</button></li>
-					<li class="page-item"><button class="page-link"
-							data-action="last" aria-label="마지막">»</button></li>
-				</ul>
-			</nav></div></div>
-			</main>
-		</div>
-	</div>
-	<script>
-  // ✅ sidebar 로드
-  async function loadSidebar(activeKey) {
-    const slot = document.getElementById('sidebar-slot');
-    const resp = await fetch('./sidebar.html');
-    slot.innerHTML = await resp.text();
-    const current = slot.querySelector(`[data-route="${activeKey}"]`);
-    if (current) {
-      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a => {
-        a.classList.remove('active','bg-primary','text-white');
-        a.classList.add('text-dark');
-      });
-      current.classList.add('active','bg-primary','text-white');
-      current.classList.remove('text-dark');
-    }
+<script>
+async function loadSidebar(activeKey) {
+  const slot = document.getElementById('sidebar-slot');
+  const resp = await fetch('./sidebar.html');
+  slot.innerHTML = await resp.text();
+  const current = slot.querySelector(`[data-route="${activeKey}"]`);
+  if (current) {
+    slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a => {
+      a.classList.remove('active','bg-primary','text-white');
+      a.classList.add('text-dark');
+    });
+    current.classList.add('active','bg-primary','text-white');
+    current.classList.remove('text-dark');
   }
-  loadSidebar('patientList');
+}
+loadSidebar('patientList');
 
+// ✅ 전체 선택
+document.addEventListener("DOMContentLoaded", () => {
+  const selectAll = document.getElementById("selectAll");
+  selectAll.addEventListener("change", () => {
+    document.querySelectorAll(".row-check").forEach(chk => chk.checked = selectAll.checked);
+  });
+});
 
-  // ✅ 전체 선택
-  document.addEventListener("DOMContentLoaded", () => {
-    const selectAll = document.getElementById("selectAll");
-    selectAll.addEventListener("change", () => {
-      document.querySelectorAll(".row-check").forEach(chk => chk.checked = selectAll.checked);
+// ✅ 버튼 이동
+document.getElementById("sendSmsBtn").addEventListener("click", () => {
+  window.location.href = "smsService.html?tab=common";
+});
+document.getElementById("add-btn").addEventListener("click", () => {
+  window.location.href = "patientAdd.html";
+});
+
+// ✅ 상세보기
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".detail-btn");
+  if (!btn) return;
+  window.location.href = "patientInfo.html";
+});
+
+// ✅ 환자 목록 + 페이지네이션
+const pageSize = 10;
+let currentPage = 1;
+let totalPages = 1;
+
+async function loadPatientList(page = 1) {
+  try {
+    const resp = await fetch(`controller?cmd=getPatientListAction&page=${page}&pageSize=${pageSize}`);
+    if (!resp.ok) throw new Error("서버 오류");
+    const data = await resp.json();
+    const list = data.list;
+    const totalCount = data.totalCount || 0;
+    totalPages = Math.ceil(totalCount / pageSize);
+    currentPage = page;
+    renderTable(list);
+    renderPager();
+  } catch (err) {
+    console.error(err);
+    alert("환자 목록을 불러오는 중 오류가 발생했습니다.");
+  }
+}
+
+function renderTable(list) {
+  const tbody = document.getElementById("patientTableBody");
+  tbody.innerHTML = "";
+  if (!list || list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-3">조회된 환자 정보가 없습니다.</td></tr>`;
+    return;
+  }
+  list.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="checkbox" class="row-check"></td>
+      <td>${p.patientNo || '-'}</td>
+      <td>${p.patientName || '-'}</td>
+      <td>${p.phone || '-'}</td>
+      <td>${p.medicalDate || '-'}</td>
+      <td>${p.employeeName || '-'}</td>
+      <td>${p.department || '-'}</td>
+      <td>${p.status || '-'}</td>
+      <td>${p.diagnosis || '-'}</td>
+      <td>
+        <button class="btn btn-link p-0 detail-btn">
+          <img src="detail.png" alt="상세보기" width="24" height="24">
+        </button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderPager() {
+  const pager = document.getElementById('pager');
+  pager.innerHTML = "";
+
+  const addBtn = (label, action, disabled=false, active=false) => {
+    const li = document.createElement("li");
+    li.className = `page-item ${disabled?'disabled':''} ${active?'active':''}`;
+    li.innerHTML = `<button class="page-link" data-action="${action}">${label}</button>`;
+    pager.appendChild(li);
+  };
+  addBtn("«","first", currentPage===1);
+  addBtn("‹","prev", currentPage===1);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const li = document.createElement("li");
+    li.className = `page-item ${i===currentPage?'active':''}`;
+    li.innerHTML = `<button class="page-link" data-page="${i}">${i}</button>`;
+    pager.appendChild(li);
+  }
+
+  addBtn("›","next", currentPage===totalPages);
+  addBtn("»","last", currentPage===totalPages);
+
+  pager.querySelectorAll(".page-link").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const p = btn.dataset.page;
+      const act = btn.dataset.action;
+      if (p) loadPatientList(Number(p));
+      else if (act==="first") loadPatientList(1);
+      else if (act==="prev" && currentPage>1) loadPatientList(currentPage-1);
+      else if (act==="next" && currentPage<totalPages) loadPatientList(currentPage+1);
+      else if (act==="last") loadPatientList(totalPages);
     });
   });
+}
 
-  document.getElementById("sendSmsBtn").addEventListener("click", () => {
-    window.location.href = "smsService.html?tab=common";
-  });
-  document.getElementById("add-btn").addEventListener("click", () => {
-    window.location.href = "patientAdd.html";
-  });
+// ✅ 날짜 + 의사목록 + 검색 처리
+document.addEventListener("DOMContentLoaded", () => {
+  const startInput = document.getElementById("startDate");
+  const endInput = document.getElementById("endDate");
+  const doctorSelect = document.getElementById("doctorSelect");
+  const searchType = document.getElementById("searchType");
+  const keywordInput = document.getElementById("keyword");
+  const searchBtn = document.getElementById("searchBtn");
 
-  // ✅ 상세보기
-  document.addEventListener("click", e => {
-    const btn = e.target.closest(".detail-btn");
-    if (!btn) return;
-    window.location.href = "patientInfo.html";
-  });
+  doctorSelect.disabled = true;
 
-  // ✅ 환자 목록 불러오기 + 페이지네이션 처리
-  const pageSize = 10;
-  let currentPage = 1;
-  let totalPages = 1;
+  async function validateDates() {
+    const start = startInput.value;
+    const end = endInput.value;
 
-  async function loadPatientList(page = 1) {
+    if (!start || !end) {
+      doctorSelect.disabled = true;
+      doctorSelect.innerHTML = `<option selected disabled hidden>담당의사</option>`;
+      return false;
+    }
+    if (start > end) {
+      alert("시작일은 종료일보다 늦을 수 없습니다.");
+      endInput.value = start;
+      validateDates();
+      return false;
+    }
+
+    await loadDoctorList(start, end);
+    return true;
+  }
+
+  async function loadDoctorList(startDate, endDate) {
     try {
-      const resp = await fetch(`controller?cmd=getPatientListAction&page=${page}&pageSize=${pageSize}`);
+      const resp = await fetch(`controller?cmd=getDoctorListByDateAction&startDate=${startDate}&endDate=${endDate}`);
+      if (!resp.ok) throw new Error("서버 오류");
+      const list = await resp.json();
+
+      doctorSelect.innerHTML = `<option value="">전체</option>`;
+      list.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d.doctorCode || d.employeeName;
+        opt.textContent = `${d.employeeName} (${d.department}, ${d.doctorCode})`;
+        doctorSelect.appendChild(opt);
+      });
+      doctorSelect.disabled = false;
+    } catch (err) {
+      console.error(err);
+      alert("의사 목록을 불러오는 중 오류가 발생했습니다.");
+      doctorSelect.disabled = true;
+    }
+  }
+
+  startInput.addEventListener("change", validateDates);
+  endInput.addEventListener("change", validateDates);
+
+  searchBtn.addEventListener("click", async () => {
+    if (!await validateDates()) return;
+
+    const startDate = startInput.value;
+    const endDate = endInput.value;
+    const doctor = doctorSelect.value;
+    const type = searchType.value;
+    const keyword = keywordInput.value.trim();
+
+    try {
+      const resp = await fetch(
+        `controller?cmd=getPatientListAction&startDate=${startDate}&endDate=${endDate}&doctor=${doctor}&searchType=${type}&keyword=${keyword}`
+      );
       if (!resp.ok) throw new Error("서버 오류");
       const data = await resp.json();
-      const list = data.list;
-      const totalCount = data.totalCount || 0;
-      totalPages = Math.ceil(totalCount / pageSize);
-      currentPage = page;
-      renderTable(list);
+      renderTable(data.list);
       renderPager();
     } catch (err) {
       console.error(err);
-      alert("환자 목록을 불러오는 중 오류가 발생했습니다.");
+      alert("검색 중 오류가 발생했습니다.");
     }
-  }
+  });
+});
 
-  function renderTable(list) {
-    const tbody = document.getElementById("patientTableBody");
-    tbody.innerHTML = "";
-    if (!list || list.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-3">조회된 환자 정보가 없습니다.</td></tr>`;
-      return;
-    }
-    list.forEach(p => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td><input type="checkbox" class="row-check"></td>
-        <td>${p.patientNo || '-'}</td>
-        <td>${p.patientName || '-'}</td>
-        <td>${p.phone || '-'}</td>
-        <td>${p.medicalDate || '-'}</td>
-        <td>${p.employeeName || '-'}</td>
-        <td>${p.department || '-'}</td>
-        <td>${p.status || '-'}</td>
-        <td>${p.diagnosis || '-'}</td>
-        <td>
-          <button class="btn btn-link p-0 detail-btn">
-            <img src="detail.png" alt="상세보기" width="24" height="24">
-          </button>
-        </td>`;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // ✅ 페이지 버튼 렌더링
-  function renderPager() {
-    const pager = document.getElementById('pager');
-    pager.innerHTML = "";
-
-    const addPageBtn = (label, action, disabled=false, active=false) => {
-      const li = document.createElement("li");
-      li.className = `page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`;
-      li.innerHTML = `<button class="page-link" ${disabled?'tabindex="-1"':''} data-action="${action}">${label}</button>`;
-      pager.appendChild(li);
-    };
-
-    addPageBtn("«","first", currentPage===1);
-    addPageBtn("‹","prev", currentPage===1);
-
-    for (let i = 1; i <= totalPages; i++) {
-      const li = document.createElement("li");
-      li.className = `page-item ${i===currentPage?'active':''}`;
-      li.innerHTML = `<button class="page-link" data-page="${i}">${i}</button>`;
-      pager.appendChild(li);
-    }
-
-    addPageBtn("›","next", currentPage===totalPages);
-    addPageBtn("»","last", currentPage===totalPages);
-
-    pager.querySelectorAll(".page-link").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const p = btn.dataset.page;
-        const action = btn.dataset.action;
-        if (p) loadPatientList(Number(p));
-        else if (action==="first") loadPatientList(1);
-        else if (action==="prev" && currentPage>1) loadPatientList(currentPage-1);
-        else if (action==="next" && currentPage<totalPages) loadPatientList(currentPage+1);
-        else if (action==="last") loadPatientList(totalPages);
-      });
-    });
-  }
-
-  // ✅ 첫 페이지 로드
-  document.addEventListener("DOMContentLoaded", () => loadPatientList(1));
+// ✅ 첫 페이지 로드
+document.addEventListener("DOMContentLoaded", () => loadPatientList(1));
 </script>
 
-	<!-- Bootstrap JS -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

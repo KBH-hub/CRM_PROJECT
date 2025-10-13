@@ -3,7 +3,7 @@
 ## 📌 Git Branch & Commit Convention
 
 ### 🔹 Branch Naming
-> 업무명(영문)을 기준으로 브랜치를 생성합니다.
+> 업무명(영문)을 기준으로 브랜치 생성
 
 **예시**
 ```bash

@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>메시지 전송</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -55,6 +56,10 @@
 	background: transparent;
 	color: #4a4a4a;
 }
+
+#templateList .list-group-item {
+	cursor: pointer;
+}
 </style>
 </head>
 <body class="bg-body-tertiary">
@@ -88,19 +93,29 @@
 					<div class="row justify-content-center align-items-start mt-3">
 						<!-- 왼쪽 영역 -->
 						<div class="col-md-6 text-center">
-							<textarea class="form-control w-75 mx-auto mb-3" rows="10"
+							<textarea id="templateContentBox"
+								class="form-control w-75 mx-auto mb-3" rows="10"
 								placeholder="템플릿을 선택하세요." readonly></textarea>
 							<button type="button" class="btn btn-secondary btn-sm"
 								data-bs-toggle="modal" data-bs-target="#managerReservationModal">명단
 								추가</button>
-							<input type="text"
+							<input id="templateNameBox" type="text"
 								class="form-control d-inline-block w-50 ms-2 mt-2"
 								placeholder="템플릿명" disabled>
 							<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
 							<p>수신자 : 0명</p>
-							<div class="mb-4">
-								<button type="button" class="btn btn-warning btn-sm">초기화</button>
-								<button type="button" class="btn btn-success btn-sm">전송</button>
+							<div
+								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
+								<form action="controller?cmd=reserveSmsUI" method="post"
+									class="m-0">
+									<button type="button" class="btn btn-outline-secondary"
+										id="reserveSmsRecord">보낸 메시지함</button>
+								</form>
+
+								<div class="d-flex gap-2">
+									<button id="btnReset" type="button" class="btn btn-warning btn-sm">초기화</button>
+									<button type="button" class="btn btn-success btn-sm">전송</button>
+								</div>
 							</div>
 						</div>
 
@@ -109,18 +124,14 @@
 							<div class="d-flex justify-content-center mb-2">
 								<input id="templateName" type="text" class="form-control w-75"
 									placeholder="템플릿 검색">
-								<button id="btnSearch" class="btn btn-primary ms-2">검색
-								 <span id="loading" class="spinner" aria-hidden="true"></span>
+								<button id="btnSearch" class="btn btn-primary ms-2">
+									검색 <span id="loading" class="spinner" aria-hidden="true"></span>
 								</button>
 							</div>
 
-							<ul id="templateList" class="list-group w-75 mx-auto text-start" >
+							<ul id="templateList" class="list-group w-75 mx-auto text-start">
 							</ul>
-							<form action="controller?cmd=reserveSmsUI" method="post">
-								<div class="text-center mt-3">
-									<button type="button" class="btn btn-outline-secondary" id="reserveSmsRecord">보낸 메세지함</button>
-								</div>
-							</form>
+
 						</div>
 					</div>
 				</div>
@@ -137,7 +148,8 @@
 						<p>수신자 : 0명</p>
 						<button type="button" class="btn btn-warning btn-sm">초기화</button>
 						<button type="button" class="btn btn-success btn-sm">전송</button>
-						<button type="button" class="btn btn-outline-secondary btn-sm" id="commonSmsRecord">보낸 메세지함</button>
+						<button type="button" class="btn btn-outline-secondary btn-sm"
+							id="commonSmsRecord">보낸 메세지함</button>
 					</div>
 				</div>
 			</div>
@@ -527,12 +539,28 @@
         const $li = $('<li class="list-group-item d-flex justify-content-between align-items-center">');
         $li.append($('<span>').text(name));
         $li.append($('<span>').text(content));
-
+        $ul.append($li);
+        
+        // 클릭 시 왼쪽 영역에 삽입
+        $li.on("click", function(){
+        	$("#templateNameBox").val(name);
+        	$("#templateContentBox").val(content);
+        	
+        	//하이라이트 효과
+        	$("#templateList .list-group-item").removeClass("active");
+        	$(this).addClass("active");
+        });
+        
+        //초기화 버튼
+		$("#btnReset").on("click", function() {
+		  $("#templateContentBox").val("");
+		  $("#templateNameBox").val("");
+		});
         // 상세보기 데이터 저장 + 클릭 핸들러
        // $li.data("templateName", name);
      //   $li.data("content", row.templateContent || '');
 
-        $ul.append($li);
+
       });
     }
 	// ✅ 기본html 관련 js 

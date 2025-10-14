@@ -40,12 +40,12 @@
           <div class="d-flex flex-wrap gap-2 align-items-center">
             <input type="date" id="startDate" class="form-control w-auto">
             <input type="date" id="endDate" class="form-control w-auto">
-            <select id="doctorSelect" class="form-select w-auto">
+            <select id="doctorSelect" class="form-select" style="width:250px;">
               <option value="">담당의사</option>
             </select>
             <select id="searchType" class="form-select w-auto">
-              <option value="birth">생년월일</option>
               <option value="name">이름</option>
+              <option value="birth">생년월일</option>
             </select>
             <input type="text" id="keyword" class="form-control w-auto" placeholder="검색어 입력">
             <button class="btn btn-primary" id="searchBtn">검색</button>
@@ -54,24 +54,24 @@
 
         <!-- 🧾 환자 목록 -->
         <div class="table-responsive">
-          <table class="table table-bordered align-middle text-center">
-            <thead class="table-light">
-              <tr>
-                <th><input type="checkbox" id="selectAll"></th>
-                <th>환자등록번호</th>
-                <th>이름</th>
-                <th>전화번호</th>
-                <th>최근내원일</th>
-                <th>담당의사</th>
-                <th>진료과</th>
-                <th>상태</th>
-                <th>진단명</th>
-                <th>상세</th>
-              </tr>
-            </thead>
-            <tbody id="patientTableBody"></tbody>
-          </table>
-        </div>
+		  <table class="table table-bordered align-middle text-center" style="table-layout: fixed; width: 100%;">
+		    <thead class="table-light">
+		      <tr>
+		        <th style="width:4%;"><input type="checkbox" id="selectAll"></th>
+		        <th style="width:8%;">환자등록번호</th>
+		        <th style="width:10%;">이름</th>
+		        <th style="width:12%;">전화번호</th>
+		        <th style="width:10%;">최근내원일</th>
+		        <th style="width:10%;">담당의사</th>
+		        <th style="width:10%;">진료과</th>
+		        <th style="width:10%;">보험 종류</th>
+		        <th style="width:25%;">진단명</th>
+		        <th style="width:5%;">상세</th>
+		      </tr>
+		    </thead>
+		    <tbody id="patientTableBody"></tbody>
+		  </table>
+		</div>
 
         <!-- ⚙ 버튼 -->
         <div class="my-3 d-flex justify-content-center gap-2">
@@ -256,6 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	  if (start && end && start > end) {
 	    end = start;
 	    endInput.value = start;
+	    await loadDoctorList(start, end);
 	  }
 	
 	  // 날짜 둘 다 있을 때만 의사 목록 로드

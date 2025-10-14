@@ -147,21 +147,40 @@
 	    D.DOCTOR_CODE AS doctorCode,
 	    E.EMPLOYEE_NAME AS employeeName,
 	    D.DEPARTMENT AS department
-	  FROM DOCTOR D
+	  FROM (
+	    SELECT DISTINCT
+	      LATEST_MR.DOCTOR_CODE
+	    FROM PATIENT P
+	    LEFT JOIN (
+	      SELECT
+	        MR.PATIENT_NO,
+	        MR.DOCTOR_CODE,
+	        MR.MEDICAL_DATE,
+	        ROW_NUMBER() OVER (
+	          PARTITION BY MR.PATIENT_NO 
+	          ORDER BY MR.MEDICAL_DATE DESC, MR.MEDICAL_NO DESC
+	        ) AS rn
+	      FROM MEDICAL_RECORD MR
+	    ) LATEST_MR
+	      ON P.PATIENT_NO = LATEST_MR.PATIENT_NO
+	     AND LATEST_MR.rn = 1
+	    <where>
+	      P.DEL_FLAG IS NULL
+	      <if test="startDate != null and startDate != ''">
+	        AND LATEST_MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	      </if>
+	      <if test="endDate != null and endDate != ''">
+	        AND LATEST_MR.MEDICAL_DATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	      </if>
+	    </where>
+	  ) SUB
+	  INNER JOIN DOCTOR D ON SUB.DOCTOR_CODE = D.DOCTOR_CODE
 	  INNER JOIN EMPLOYEE E ON D.EMPLOYEE_ID = E.EMPLOYEE_ID
-	  INNER JOIN MEDICAL_RECORD MR 
-	          ON MR.DOCTOR_CODE = D.DOCTOR_CODE
 	  WHERE D.DEL_FLAG IS NULL
 	    AND E.DEL_FLAG IS NULL
-	    <if test="startDate != null and startDate != ''">
-	      AND MR.MEDICAL_DATE &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
-	    </if>
-	    <if test="endDate != null and endDate != ''">
-	      AND MR.MEDICAL_DATE &lt; TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
-	    </if>
-	  GROUP BY D.DOCTOR_CODE, E.EMPLOYEE_NAME, D.DEPARTMENT
 	  ORDER BY D.DOCTOR_CODE
 	</select>
+
 
 	<select id="getPatientDetail" resultMap="PatientMap">
 		SELECT

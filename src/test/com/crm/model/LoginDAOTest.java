@@ -17,7 +17,7 @@ public class LoginDAOTest {
 		dao = new LoginDAO();
 	}
 
-	//@Test
+	@Test
 	public void loginTest() {
 		String employeeId = "kimus01";
 		String pw = "kus002";
@@ -29,7 +29,7 @@ public class LoginDAOTest {
 		System.out.println(authority);
 	}
 	
-	//@Test
+	@Test
 	public void loginFailTest() {
 		String employeeId = "kimusxx";
 		String pw = "kusxxx";
@@ -39,7 +39,7 @@ public class LoginDAOTest {
 		assertNull(authority);
 	}
 
-	//@Test
+	@Test
 	public void sideBarTest() {
 		Map<String, Object> res = dao.getEmployeeInfo("kimus01");
 		assertNotNull(res);

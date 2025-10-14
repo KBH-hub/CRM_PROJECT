@@ -19,34 +19,34 @@ static ManageDoctorDAO dao;
 	public static void start() throws Exception {
 		dao = new ManageDoctorDAO();
 	}
-	//@Test
+	@Test
 	public void getDoctorScheduleTest(){
 		List<ManageDoctorVO> list = dao.getDoctorSchedule("2025-09-15", "2025-09-15");
 		System.out.println(list);
 		assertTrue(list.size()>0);
 	}
-	//@Test
+	@Test
 	public void getDoctorNameTest(){
 		List<ManageDoctorVO> list = dao.getDoctorName("2025-09-25", "2025-09-25");
 		System.out.println(list);
 		assertTrue(list.size()>0);
 	}
-	//@Test
+	@Test
 	public void addDoctorScheduleTest(){
 		int result = dao.addDoctorSchedule("DA001", "2025-09-25");
 		assertTrue("실패", result>0);
 	}
-	//@Test
+	@Test
 	public void editDoctorScheduleTest(){
 		int result = dao.editDoctorSchedule(14, 'Y', 'Y');
 		assertTrue("실패", result>0);
 	}
-	//@Test
+	@Test
 	public void deleteDoctorScheduleTest(){
 		int result = dao.deleteDoctorSchedule(30);
 		assertTrue("실패", result>0);
 	}
-	//@Test
+	@Test
 	public void getDoctorListTest(){
 		List<ManageDoctorVO> list = dao.getDoctorList();
 		System.out.println(list);

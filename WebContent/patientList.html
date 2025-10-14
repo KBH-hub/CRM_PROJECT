@@ -21,7 +21,6 @@
 		    <input type="date" id="startDate" class="form-control w-auto">
 		    <input type="date" id="endDate" class="form-control w-auto">
 		    <select id="doctorSelect" class="form-select" style="width:250px;">
-		      <option value="">담당의사</option>
 		    </select>
 		    <select id="searchType" class="form-select w-auto">
 		      <option value="name">이름</option>
@@ -212,7 +211,7 @@ function loadDoctorList(startDate, endDate) {
     dataType: "json",
     success: function(list) {
       var $doctorSelect = $("#doctorSelect");
-      $doctorSelect.empty().append('<option value="">전체</option>');
+      $doctorSelect.empty().append('<option value="">담당 의사 선택</option>');
       $.each(list, function(i, d) {
         var code = d.doctorCode ? d.doctorCode : "";
         var opt = '<option value="' + code + '">' +

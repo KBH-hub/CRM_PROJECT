@@ -445,6 +445,9 @@
 	<script type="text/javascript">
 	//template 리스트 불러오기
 	$(function(){
+		//페이지 로드 시, 전체 리스트 출력
+		loadTemplate();
+		
 		//검색 버튼
 		$("#btnSearch").on("click", loadTemplate);
 		
@@ -452,9 +455,6 @@
 		$("#templateName").on("keydown", function(e){
 			if (e.key == "Enter") loadTemplate();
 		});
-		
-		//페이지 로드 시, 전체 리스트 출력
-		loadTemplate();
 	})
 	
   function loadTemplate() {

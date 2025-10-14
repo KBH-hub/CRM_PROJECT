@@ -1,6 +1,6 @@
-<%@ page contentType="application/json; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="application/json; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%
-  String list = (String) request.getAttribute("list");
-  if (list == null) list = "[]";
-  out.print(list);
+  String json = (String) request.getAttribute("json");
+  if (json == null) json = "[]";
+  out.print(json);
 %>

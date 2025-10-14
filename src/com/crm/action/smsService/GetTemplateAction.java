@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.crm.action.Action;
 import com.crm.model.ReserveSmsVO;
 import com.crm.model.SmsDAO;
-import com.google.gson.Gson;
 
 public class GetTemplateAction implements Action {
 
@@ -17,13 +16,9 @@ public class GetTemplateAction implements Action {
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		List<ReserveSmsVO> list = new SmsDAO().getTemplate(request.getParameter("templateName"));
+		request.setAttribute("list", list);
 		
-		Gson gson = new Gson();
-		String json = gson.toJson(list);
-		
-		request.setAttribute("json", json);
-		
-		return "getTemplate.jsp";
+		return "reserveSMSList.jsp";
 	}
 		
 //		// ✅ 수동으로 JSON 문자열 생성

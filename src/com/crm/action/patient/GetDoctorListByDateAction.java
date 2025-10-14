@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.crm.action.Action;
 import com.crm.model.ManageDoctorVO;
 import com.crm.model.PatientListDAO;
+import com.google.gson.Gson;
 
 public class GetDoctorListByDateAction implements Action {
 
@@ -17,23 +18,10 @@ public class GetDoctorListByDateAction implements Action {
         String endDate = request.getParameter("endDate");
 
         PatientListDAO dao = new PatientListDAO();
-        List<ManageDoctorVO> list = dao.getDoctorName(startDate, endDate);
+        List<ManageDoctorVO> result = dao.getDoctorName(startDate, endDate);
 
-        // JSON 직접 생성
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < list.size(); i++) {
-            ManageDoctorVO vo = list.get(i);
-            json.append("{")
-                .append("\"doctorCode\":\"").append(vo.getDoctorCode()).append("\",")
-                .append("\"employeeName\":\"").append(vo.getEmployeeName()).append("\",")
-                .append("\"department\":\"").append(vo.getDepartment()).append("\"")
-                .append("}");
-            if (i < list.size() - 1) json.append(",");
-        }
-        json.append("]");
+        request.setAttribute("result", result);
 
-        response.setContentType("application/json; charset=UTF-8");
-        response.getWriter().write(json.toString());
-		return null;
+        return "getMedicalRecord.jsp";
     }
 }

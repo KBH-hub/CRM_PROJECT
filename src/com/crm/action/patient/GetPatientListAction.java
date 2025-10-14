@@ -29,7 +29,6 @@ public class GetPatientListAction implements Action {
         map.put("startRow", startRow);
         map.put("endRow", endRow);
         
-        // ✅ 검색 조건 처리 (프론트 파라미터 → MyBatis 매핑)
         String searchType = req.getParameter("searchType");
         String keyword = req.getParameter("keyword");
 
@@ -39,22 +38,19 @@ public class GetPatientListAction implements Action {
             map.put("birth", keyword);
         }
 
-        // ✅ DAO 호출
         PatientListDAO dao = new PatientListDAO();
         List<PatientVO> list = dao.getPatientList(map);
         int totalCount = dao.getTotalCount(map);
 
-        // ✅ JSON 응답용 결과 Map
         Map<String, Object> result = new HashMap<>();
         result.put("list", list);
         result.put("totalCount", totalCount);
+        
+        req.setAttribute("result", result);
 
-        resp.setContentType("application/json; charset=UTF-8");
-        resp.getWriter().print(new Gson().toJson(result));
-        return null;
+        return "getPatientList.jsp";
     }
 
-    // ✅ 안전한 int 파싱 유틸
     private int parseInt(String val, int def) {
         try { return (val == null || val.isEmpty()) ? def : Integer.parseInt(val); }
         catch (Exception e) { return def; }

@@ -1,9 +1,7 @@
 package com.crm.action.patient;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,13 +13,13 @@ import com.crm.model.PatientListDAO;
 import com.crm.model.PatientVO;
 import com.google.gson.Gson;
 
-public class GetPatientDetailAction implements Action {
+public class GetMedicalRecordAction implements Action {
 
-    @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        String noParam = req.getParameter("patientNo");
+	@Override
+	public String execute(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		
+		String noParam = req.getParameter("patientNo");
         if (noParam == null || noParam.isEmpty()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "patientNo is missing");
             return null;
@@ -30,14 +28,10 @@ public class GetPatientDetailAction implements Action {
         int patientNo = Integer.parseInt(noParam);
 
         PatientListDAO dao = new PatientListDAO();
-        PatientVO vo = dao.getPatientDetail(patientNo);
-        List<MedicalRecordVO> records = dao.getMedicalRecord(patientNo);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("patient", vo);
-        result.put("records", records);
+        List<MedicalRecordVO> result = dao.getMedicalRecord(patientNo);
 
         req.setAttribute("result", result);
-        return "getPatientDetail.jsp";
-    }
+        return "getMedicalRecord.jsp";
+	}
+
 }

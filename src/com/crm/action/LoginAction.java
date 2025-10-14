@@ -23,7 +23,6 @@ public class LoginAction implements Action {
 		if(authority != null){
 			HttpSession session = request.getSession(true);
 			session.setAttribute("employeeId", employeeId);
-			session.setAttribute("sidebarInfo", new LoginDAO().getEmployeeInfo(employeeId));
 			if("관리자".equals(authority)){
 				url = "reserveList.html";
 			}

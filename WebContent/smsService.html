@@ -60,6 +60,12 @@
 #templateList .list-group-item {
 	cursor: pointer;
 }
+
+.active-template {
+  background-color: #eaf4ff !important; 
+  border-left: 4px solid #0d6efd;       
+  font-weight: 600;
+}
 </style>
 </head>
 <body class="bg-body-tertiary">
@@ -547,14 +553,15 @@
         	$("#templateContentBox").val(content);
         	
         	//하이라이트 효과
-        	$("#templateList .list-group-item").removeClass("active");
-        	$(this).addClass("active");
+        	$("#templateList .active-template").removeClass("active-template");
+        	$(this).addClass("active-template");
         });
         
         //초기화 버튼
 		$("#btnReset").on("click", function() {
 		  $("#templateContentBox").val("");
 		  $("#templateNameBox").val("");
+      	$("#templateList .active-template").removeClass("active-template");
 		});
         // 상세보기 데이터 저장 + 클릭 핸들러
        // $li.data("templateName", name);

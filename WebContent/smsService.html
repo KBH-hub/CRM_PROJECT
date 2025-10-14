@@ -112,12 +112,8 @@
 							<p>수신자 : 0명</p>
 							<div
 								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
-								<form action="controller?cmd=reserveSmsUI" method="post"
-									class="m-0">
-									<button type="submit" class="btn btn-outline-secondary"
+									<button type="button" class="btn btn-outline-secondary"
 										id="reserveSmsRecord">보낸 메시지함</button>
-								</form>
-
 								<div class="d-flex gap-2">
 									<button id="btnReset" type="button" class="btn btn-warning btn-sm">초기화</button>
 									<button type="button" class="btn btn-success btn-sm">전송</button>
@@ -518,6 +514,10 @@
 
       });
     }
+    
+    //보낸 메시지함 클릭
+     $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=reserveSmsUI");
+    
 	// ✅ 기본html 관련 js 
 	  const reserveBtn = document.getElementById('reserveBtn');
 	  const commonBtn  = document.getElementById('commonBtn');

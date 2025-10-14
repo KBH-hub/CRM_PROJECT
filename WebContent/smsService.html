@@ -62,9 +62,9 @@
 }
 
 .active-template {
-  background-color: #eaf4ff !important; 
-  border-left: 4px solid #0d6efd;       
-  font-weight: 600;
+	background-color: #eaf4ff !important;
+	border-left: 4px solid #0d6efd;
+	font-weight: 600;
 }
 </style>
 </head>
@@ -112,10 +112,11 @@
 							<p>수신자 : 0명</p>
 							<div
 								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
-									<button type="button" class="btn btn-outline-secondary"
-										id="reserveSmsRecord">보낸 메시지함</button>
+								<button type="button" class="btn btn-outline-secondary"
+									id="reserveSmsRecord">보낸 메시지함</button>
 								<div class="d-flex gap-2">
-									<button id="btnReset" type="button" class="btn btn-warning btn-sm">초기화</button>
+									<button id="btnReset" type="button"
+										class="btn btn-warning btn-sm">초기화</button>
 									<button type="button" class="btn btn-success btn-sm">전송</button>
 								</div>
 							</div>
@@ -177,23 +178,30 @@
 						<div class="modal-body">
 							<div class="row mb-3">
 								<div class="col-md-3">
-									<label class="form-label">월</label> <select class="form-select">
-										<option>9월</option>
+									<label class="form-label">월</label> <select id="filterMonth"
+										class="form-select">
+										<option value="">전체</option>
 									</select>
 								</div>
 								<div class="col-md-3">
-									<label class="form-label">주</label> <select class="form-select">
-										<option>9월 15일 ~ 9월 21일</option>
+									<label class="form-label">주</label>
+									<select
+										id="filterWeekStart" class="form-select">
+										<option>9월 15일</option>
+									</select>
+									<select id="filterWeekEnd" class="form-select">
+										<option>9월 21일</option>
 									</select>
 								</div>
 								<div class="col-md-3">
-									<label class="form-label">일</label> <select class="form-select">
+									<label class="form-label">일</label>
+									<select id="filterDay" class="form-select">
 										<option>16일</option>
 									</select>
 								</div>
 								<div class="col-md-3">
-									<label class="form-label">시간</label> <select
-										class="form-select">
+									<label class="form-label">시간</label>
+									<select id="filterHour" class="form-select">
 										<option>전체</option>
 									</select>
 								</div>
@@ -213,7 +221,7 @@
 											<th scope="col">진료과</th>
 										</tr>
 									</thead>
-									<tbody>
+									<tbody id="reservationTbody">
 										<tr>
 											<td><input class="row-check" type="checkbox"></td>
 											<td>이승희</td>
@@ -457,7 +465,7 @@
 		});
 	})
 	
-  function loadTemplate() {
+  	function loadTemplate() {
       const name = $("#templateName").val().trim();
 
       $.ajax({
@@ -471,7 +479,7 @@
     	      $("#templateList").html('<li class="list-group-item text-danger">불러오기 실패: ' + (xhr.responseText || status) + '</li>');
     	    }
     	  });
-    }
+     }
 
     // JSON 배열 → <ul> 렌더링
     function renderList(list) {
@@ -514,6 +522,7 @@
 
       });
     }
+    
     
     //보낸 메시지함 클릭
      $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=reserveSmsUI");

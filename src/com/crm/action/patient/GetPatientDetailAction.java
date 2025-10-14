@@ -18,16 +18,11 @@ import com.google.gson.Gson;
 public class GetPatientDetailAction implements Action {
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    public String execute(HttpServletRequest req) throws ServletException, IOException {
 
-        String noParam = req.getParameter("patientNo");
-        if (noParam == null || noParam.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "patientNo is missing");
-            return null;
-        }
+        String param = req.getParameter("patientNo");
 
-        int patientNo = Integer.parseInt(noParam);
+        int patientNo = Integer.parseInt(param);
 
         PatientListDAO dao = new PatientListDAO();
         PatientVO vo = dao.getPatientDetail(patientNo);

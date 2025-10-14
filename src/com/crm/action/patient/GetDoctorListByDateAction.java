@@ -13,14 +13,14 @@ import com.google.gson.Gson;
 public class GetDoctorListByDateAction implements Action {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+    public String execute(HttpServletRequest req) throws IOException {
+        String startDate = req.getParameter("startDate");
+        String endDate = req.getParameter("endDate");
 
         PatientListDAO dao = new PatientListDAO();
         List<ManageDoctorVO> result = dao.getDoctorName(startDate, endDate);
 
-        request.setAttribute("result", result);
+        req.setAttribute("result", result);
 
         return "getMedicalRecord.jsp";
     }

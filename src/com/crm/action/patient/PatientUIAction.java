@@ -11,7 +11,7 @@ import com.crm.action.Action;
 public class PatientUIAction implements Action {
 
 	@Override	//6
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public String execute(HttpServletRequest req) throws ServletException, IOException {
 		return "patientList.html";
 	}
 

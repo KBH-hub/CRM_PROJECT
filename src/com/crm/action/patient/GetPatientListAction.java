@@ -11,10 +11,8 @@ import com.google.gson.Gson;
 public class GetPatientListAction implements Action {
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    public String execute(HttpServletRequest req) throws ServletException, IOException {
 
-        // ✅ 파라미터 수집 및 페이징 계산
         int page = parseInt(req.getParameter("page"), 1);
         int pageSize = parseInt(req.getParameter("pageSize"), 10);
         int startRow = (page - 1) * pageSize + 1;

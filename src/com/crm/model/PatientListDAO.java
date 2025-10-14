@@ -76,18 +76,20 @@ public class PatientListDAO {
 	
 	public int addPatient(String patientName, String phone){
 		int result = 0;
+		int patientNo = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
 		map.put("patientName", patientName);
 		map.put("phone", phone);
 		result = conn.insert("patientMapper.addPatient", map);
 		if (result > 0){
+			patientNo = conn.selectOne("patientMapper.getCurrentPatientNo");
 			conn.commit();
 		} else {
 			conn.rollback();
 		}
 		conn.close();
-		return result;
+		return patientNo;
 	}
 	
 	public int deletePatient(int patientNo){

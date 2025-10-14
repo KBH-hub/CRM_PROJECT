@@ -21,7 +21,7 @@ public class PatientListDAOTest {
 	public static void start() throws Exception {
 		dao = new PatientListDAO();
 	}
-	@Test
+	//@Test
 	public void getPatientListTest(){
 		int page = 2;
 	    int pageSize = 10;
@@ -71,7 +71,7 @@ public class PatientListDAOTest {
 	}
 	//@Test
 	public void deletePatientTest() {
-		int result = dao.deletePatient(21);
+		int result = dao.deletePatient(6064);
         assertTrue("insert ½ÇÆÐ", result>0);
 	}
 

@@ -11,7 +11,7 @@ import com.crm.action.Action;
 public class PatientInfoUIAction implements Action {
 
 	@Override
-	public String execute(HttpServletRequest request, HttpServletResponse response){
+	public String execute(HttpServletRequest req){
 		return "patientInfo.html";
 	}
 

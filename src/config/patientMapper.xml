@@ -247,6 +247,10 @@
 		PATIENT_NO.NEXTVAL,
 		#{patientName}, #{phone}, SYSDATE)
 	</insert>
+	
+	<select id="getCurrentPatientNo" resultType="int">
+    	SELECT PATIENT_NO.CURRVAL FROM DUAL
+	</select>
 
 	<update id="deletePatient">
 			UPDATE PATIENT

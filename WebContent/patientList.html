@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btn) {
       const tr = btn.closest("tr");
       const patientNo = tr.children[1].textContent.trim();
-      window.location.href = `controller?cmd=patientInfoUIAction&patientNo=${encodeURIComponent(patientNo)}`;
+      window.location.href = `controller?cmd=patientInfoUI&patientNo=${encodeURIComponent(patientNo)}`;
     }
   });
 

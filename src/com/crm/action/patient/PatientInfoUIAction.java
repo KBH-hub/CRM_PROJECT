@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.crm.action.Action;
 
-public class PatientUIAction implements Action {
+public class PatientInfoUIAction implements Action {
 
-	@Override	//6
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		return "patientList.html";
+	@Override
+	public String execute(HttpServletRequest request, HttpServletResponse response){
+		return "patientInfo.html";
 	}
 
 }

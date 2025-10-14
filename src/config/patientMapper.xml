@@ -5,7 +5,7 @@
 	<resultMap id="PatientMap" type="com.crm.model.PatientVO">
 		<result property="patientNo" column="patient_no" />
 		<result property="patientName" column="patient_name" />
-		<result property="adress" column="adress" />
+		<result property="address" column="address" />
 		<result property="birth" column="birth" />
 		<result property="gender" column="gender" />
 		<result property="path" column="path" />
@@ -188,7 +188,7 @@
 	    P.PATIENT_NAME,
 	    P.PHONE,
 	    P.ADDRESS,
-	    P.IN_DATE,
+	    TO_CHAR(P.IN_DATE, 'YYYY-MM-DD') AS IN_DATE,
 	    P.BIRTH,
 	    P.GENDER,
 	    P.PATH,

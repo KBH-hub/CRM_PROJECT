@@ -4,7 +4,7 @@ public class PatientVO {
 
 	private int patientNo;
 	private String patientName;
-	private String adress;
+	private String address;
 	private String birth;
 	private String gender;
 	private String path;
@@ -20,11 +20,11 @@ public class PatientVO {
 	public PatientVO() {
 	};
 
-	public PatientVO(int patientNo, String patientName, String adress, String birth, String gender, String path,
+	public PatientVO(int patientNo, String patientName, String address, String birth, String gender, String path,
 			String phone, String inDate, String status) {
 		setPatientNo(patientNo);
 		setPatientName(patientName);
-		setAdress(adress);
+		setAddress(address);
 		setBirth(birth);
 		setGender(gender);
 		setPath(path);
@@ -49,12 +49,12 @@ public class PatientVO {
 		this.patientName = patientName;
 	}
 
-	public String getAdress() {
-		return adress;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getBirth() {
@@ -139,10 +139,10 @@ public class PatientVO {
 
 	@Override
 	public String toString() {
-		return "PatientVO [patientNo=" + patientNo + ", patientName=" + patientName + ", adress=" + adress + ", birth="
-				+ birth + ", gender=" + gender + ", path=" + path + ", phone=" + phone + ", inDate=" + inDate
-				+ ", status=" + status + ", medicalDate=" + medicalDate + ", employeeName=" + employeeName
-				+ ", department=" + department + ", diagnosis=" + diagnosis + "]\n";
+		return "PatientVO [patientNo=" + patientNo + ", patientName=" + patientName + ", address=" + address
+				+ ", birth=" + birth + ", gender=" + gender + ", path=" + path + ", phone=" + phone + ", inDate="
+				+ inDate + ", status=" + status + ", medicalDate=" + medicalDate + ", employeeName=" + employeeName
+				+ ", department=" + department + ", diagnosis=" + diagnosis + "]";
 	}
 
 }

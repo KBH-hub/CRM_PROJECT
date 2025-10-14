@@ -114,7 +114,7 @@
 								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
 								<form action="controller?cmd=reserveSmsUI" method="post"
 									class="m-0">
-									<button type="button" class="btn btn-outline-secondary"
+									<button type="submit" class="btn btn-outline-secondary"
 										id="reserveSmsRecord">보낸 메시지함</button>
 								</form>
 
@@ -632,9 +632,7 @@
 		  }
 		})();
 	  
-	document.getElementById("reserveSmsRecord").addEventListener("click", () => {
-		  window.location.href = "smsRecord.html";
-		});
+
 
 	document.getElementById("commonSmsRecord").addEventListener("click", () => {
 		  window.location.href = "smsRecord.html?tab=common";

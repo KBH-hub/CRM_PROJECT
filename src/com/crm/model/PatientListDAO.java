@@ -9,29 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 
 public class PatientListDAO {
 	
-//	public List<PatientVO> getPatientList(String startDate, String endDate, String doctorCode, String patientName, String birth){
-//		List<PatientVO> list = null;
-//		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-//		Map<String, Object> map = new HashMap<>();
-//		map.put("startDate", startDate);
-//		map.put("endDate", endDate);
-//		map.put("doctorCode", doctorCode);
-//		map.put("patientName", patientName);
-//		map.put("birth", birth);
-//		
-//		// ✅ 페이징 기본값
-//	    int page = 1;
-//	    int pageSize = 10;
-//	    int startRow = (page - 1) * pageSize + 1;
-//	    int endRow = page * pageSize;
-//	    map.put("startRow", startRow);
-//	    map.put("endRow", endRow);
-//		
-//		list = conn.selectList("patientMapper.getPatientList", map);
-//		conn.close();
-//		return list;
-//	}
-	
 	// ✅ AJAX 호출용 Map 버전
     public List<PatientVO> getPatientList(Map<String, Object> map) {
         SqlSession conn = DBCP.getSqlSessionFactory().openSession();

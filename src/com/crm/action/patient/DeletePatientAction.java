@@ -15,7 +15,7 @@ public class DeletePatientAction implements Action {
         String patientNoList = req.getParameter("patientNoList");
         if (patientNoList == null || patientNoList.trim().isEmpty()) {
             req.setAttribute("result", "fail");
-            return "/WEB-INF/json/deletePatient.jsp";
+            return "/WEB-INF/json/result.jsp";
         }
         String[] arr = patientNoList.split(",");
 
@@ -27,6 +27,6 @@ public class DeletePatientAction implements Action {
         }
 
         req.setAttribute("result", result == arr.length ? "success" : "fail");
-        return "/WEB-INF/json/deletePatient.jsp";
+        return "/WEB-INF/json/result.jsp";
     }
 }

@@ -232,7 +232,7 @@ $(document).ready(function() {
         dataType: "json",
         success: function(data) {
           modal.hide();
-          if (data.success) {
+          if (data) {
             showAlert("환자 정보가 삭제되었습니다.", function() {
               window.location.href = "controller?cmd=patientListUI";
             });

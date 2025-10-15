@@ -24,6 +24,6 @@ public class EditPatientAction implements Action {
         int result = dao.editPatient(patientName, phone, address, birth, gender, path, patientNo);
 
         req.setAttribute("result", result > 0 ? "success" : "fail");
-        return "/WEB-INF/json/editPatient.jsp";
+        return "/WEB-INF/json/result.jsp";
     }
 }

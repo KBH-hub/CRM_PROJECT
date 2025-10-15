@@ -49,7 +49,7 @@ public class PatientListModalAction implements Action {
         
         request.setAttribute("result", result);
 
-        return "getPatientList.jsp";
+        return "/WEB-INF/json/result.jsp";
     }
 
     private int parseInt(String val, int def) {

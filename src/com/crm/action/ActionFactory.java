@@ -16,6 +16,7 @@ import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
 import com.crm.action.smsService.ReserveSmsUIAction;
 import com.crm.action.smsService.SmsUIAction;
+import com.crm.action.smsService.sendCommonSMSAction;
 
 public class ActionFactory {
 	private ActionFactory() {
@@ -73,6 +74,9 @@ public class ActionFactory {
 			break;
 		case "getCommonRecipient":
 			a = new GetCommonRecipientAction();
+			break;
+		case "sendCommonSMS":
+			a = new sendCommonSMSAction();
 			break;
 		case "loginUI":
 		case "mainUI":

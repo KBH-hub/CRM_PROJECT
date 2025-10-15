@@ -16,7 +16,6 @@
       
       <h4 class="text-center fw-bold mb-4 text-primary">환자 정보</h4>
 
-        <!-- 기본 정보 테이블 -->
         <table class="table table-bordered align-middle mb-4">
           <tbody>
             <tr>
@@ -58,7 +57,6 @@
           </tbody>
         </table>
 
-        <!-- 진료 기록 -->
         <h4 class="text-center text-white bg-secondary py-2 rounded">진료 기록</h4>
         <div class="row mt-3">
           <div class="col-3">
@@ -73,7 +71,6 @@
           </div>
         </div>
 
-        <!-- 버튼 영역 -->
         <div class="text-end mt-4" id="buttonArea">
           <button class="btn btn-primary px-4" id="reserveBtn">예약하기</button>
           <button class="btn btn-primary px-4" id="sendSmsBtn">메시지 보내기</button>
@@ -82,7 +79,6 @@
           <button class="btn btn-success px-4 d-none" id="saveBtn">저장</button>
         </div>
 
-        <!-- 삭제 확인 모달 -->
         <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center border border-danger">
@@ -97,7 +93,6 @@
           </div>
         </div>
 
-        <!-- 알림 모달 -->
         <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center border border-primary">
@@ -149,7 +144,6 @@ function showAlert(message, onClose) {
   modal.show();
 }
 
-// === 환자 정보 불러오기 ===
 $(document).ready(function() {
   var params = new URLSearchParams(window.location.search);
   var patientNo = params.get("patientNo");
@@ -170,13 +164,12 @@ $(document).ready(function() {
     });
   }
 
-  // === 버튼 기능 ===
   $("#sendSmsBtn").click(function() { window.location.href = "smsService.html?tab=common"; });
   $("#reserveBtn").click(function() { window.location.href = "reserveList.html?tab=reserve"; });
 
   $("#editBtn").click(function() {
     $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {
-      $(id).prop("readonly", false).prop("disabled", false);
+      $(id).prop("disabled", false);
     });
     $("#editBtn, #reserveBtn, #sendSmsBtn, #deleteBtn").addClass("d-none");
     $("#saveBtn").removeClass("d-none");
@@ -245,7 +238,6 @@ $(document).ready(function() {
   });
 });
 
-// === 환자 정보 표시 ===
 function renderPatientInfo(vo) {
   if (!vo) return;
   $("#patientNo").val(vo.patientNo || "");
@@ -261,7 +253,6 @@ function renderPatientInfo(vo) {
   $("#status").val(vo.status || "");
 }
 
-// === 진료 기록 표시 ===
 function renderRecordTable(list) {
   var ul = $("#medicalList");
   ul.empty();

@@ -142,12 +142,12 @@
 				<!-- ✅ 일반 메시지 구역 -->
 				<div class="commonSms fade-section">
 					<div class="text-center">
-						<textarea class="form-control w-75 mx-auto mb-3" rows="10"
-							placeholder="메시지 보내실 내용을 입력하세요."></textarea>
+						<textarea id=contentBox class="form-control w-75 mx-auto mb-3" rows="10"
+							placeholder="메시지 내용을 입력하세요."></textarea>
 						<button type="button" class="btn btn-secondary btn-sm"
 							data-bs-toggle="modal" data-bs-target="#patientListModal">명단
 							추가</button>
-						<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
+						<canvas id=recepientBox class="border d-block w-75 mx-auto my-3" height="100"></canvas>
 						<p>수신자 : 0명</p>
 						<button type="button" class="btn btn-warning btn-sm">초기화</button>
 						<button type="button" class="btn btn-success btn-sm">전송</button>
@@ -251,7 +251,9 @@
 					</div>
 				</div>
 
-				<!-- ✅ 일반메시지-명단추가 모달 -->
+				
+			</div>
+			<!-- ✅ 일반메시지-명단추가 모달 -->
 				<div class="modal fade" id="patientListModal" tabindex="-1"
 					aria-hidden="true">
 					<div
@@ -420,7 +422,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
 		</main>
 	</div>

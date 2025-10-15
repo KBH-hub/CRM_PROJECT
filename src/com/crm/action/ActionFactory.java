@@ -1,6 +1,7 @@
 package com.crm.action;
 
 import com.crm.action.smsService.GetTemplateAction;
+import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
 import com.crm.action.smsService.ReserveSmsUIAction;
 import com.crm.action.smsService.SmsUIAction;
@@ -24,6 +25,9 @@ public class ActionFactory {
 			break;
 		case "reserveListModal":
 			a = new ReserveListModalAction();
+			break;
+		case "patientListUI":
+			a = new PatientListModalAction();
 			break;
 		}
 

@@ -22,13 +22,8 @@ public class ReserveListModalAction implements Action {
 		String day = request.getParameter("day");
 		String hour = request.getParameter("hour");
 		
-		List<ReserveVO> patientList = new ReserveListDAO().getReserveList(month, weekStart, weekEnd, day, hour);
-		request.setAttribute("patientList", patientList);
-		
-		Gson gson = new Gson();
-		String json = gson.toJson(patientList);
-		
-		request.setAttribute("json", json);
+		List<ReserveVO> reserveList = new ReserveListDAO().getReserveList(month, weekStart, weekEnd, day, hour);
+		request.setAttribute("reserveList", reserveList);
 				
 		return "getReserveListModal.jsp";
 	}

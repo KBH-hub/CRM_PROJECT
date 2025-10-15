@@ -570,50 +570,49 @@ const addDays=(d,n)=>{const t=new Date(d);t.setDate(t.getDate()+n);return t;};
 //아래는 week 날짜 계산하는 것
 const startOfWeekMonday=d=>{const t=new Date(d);const day=t.getDay();const diff=(day===0?-6:1-day);t.setDate(t.getDate()+diff);return t;};
 
-//✅ 서버에서 캘린더 데이터를 가져와 fetchedDailyReservationCounts에 저장하고 렌더링하는 함수
+
 async function fetchAndRenderCalendarData() {
     const year = viewDate.getFullYear();
     const month = (viewDate.getMonth() + 1).toString().padStart(2, '0');
-    const monthStr = `${year}-${month}`; // "YYYY-MM" 형식
+    const monthStr = `${year}-${month}`; 
 
     
-    let apiUrl = ''; // cmd를 변경할변수
-    let params = ''; // 그 곳에 들어갈 파라미터 값
+    let apiUrl = ''; 
+    let params = ''; 
     
     
     
     if (viewMode === 'month'){
         apiUrl = 'controller?cmd=countReserveMonth';
-        params = `&month=${monthStr}`; // 백틱 사용
-    } else if (viewMode === 'week') { // 'week' (소문자)로 변경
+        params = `&month=${monthStr}`; 
+    } else if (viewMode === 'week') { 
         apiUrl = 'controller?cmd=countReserveWeekByTime';
         const monday = startOfWeekMonday(viewDate);
-        const sunday = addDays(monday, 6); // 'monday' 변수 사용
-        params = `&startDate=${fmt(monday)}&endDate=${fmt(sunday)}`; // 'monday' 변수 사용
+        const sunday = addDays(monday, 6); 
+        params = `&startDate=${fmt(monday)}&endDate=${fmt(sunday)}`; 
     } else if (viewMode === 'day') {
         apiUrl = 'controller?cmd=getReserveDay';
-        params = `&targetDate=${fmt(viewDate)}`; // 여기도 백틱 사용이 일관성을 위해 좋음
+        params = `&targetDate=${fmt(viewDate)}`; 
     }
     
     
     
     try {
-        // 서버의 GetCalendarDataAction으로 Ajax 요청 (controller?cmd=getCalendarData)
-        // month 파라미터는 "YYYY-MM" 형식으로 전달
+        
         const response = await fetch(`${apiUrl}${params}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // 서버로부터 JSON 데이터 받기 (예: [{"DAY_OF_MONTH":"01","TOTAL_COUNT":5}, ...])
+       
         const data = await response.json(); 
        
 
-        // 받아온 데이터를 전역 변수에 저장
+       
         fetchedDailyReservationCounts = data; 
         
-        // 데이터 로딩 완료 후 캘린더 렌더링
+       
         render();
 
     } catch (error) {
@@ -636,23 +635,19 @@ function renderMonth(){
   const y=viewDate.getFullYear(), m=viewDate.getMonth();
   ymSpan.textContent=`${y}년 ${m+1}월`; 
   
-  // fetchedDailyReservationCounts를 Map 형태로 변환하여 일별 예약 건수에 쉽게 접근
+
   const dailyCountsMap = new Map();
   if (Array.isArray(fetchedDailyReservationCounts)) {
       fetchedDailyReservationCounts.forEach(item => {
-          // item.reserveDay는 String (예: "01"), item.reserveCount는 Number
+        
           dailyCountsMap.set(parseInt(item.reserveDay.split('-')[2]), item.reserveCount); 
       });
   }
 
-  let first=new Date(y,m,1).getDay(); // 0(일) ~ 6(토)
-  if(first===0) first=7; // 일요일을 7로 보정 (월:1, ..., 토:6, 일:7) - CSS와 요일배열이 '월'부터 시작하므로 이 보정은 다시 고민해야 함.
-                        // Bootstrap 요일 헤더가 '일-월-화-수-목-금-토'이므로, firstDay.getDay() (0=일요일) 그대로 쓰는게 맞습니다.
-                        // 아래 코드에서는 0(일요일)부터 시작하는 getDay() 값을 사용하도록 로직을 변경합니다.
-
+  let first=new Date(y,m,1).getDay(); 
+  if(first===0) first=7; 
   const days=new Date(y,m+1,0).getDate();
-  const wd=['일','월','화','수','목','금','토']; // Bootstrap 헤더에 맞춰 '일'부터 시작
-
+  const wd=['일','월','화','수','목','금','토']; 
   let html='<table class="table table-bordered text-center align-middle month-view"><thead><tr>';
   wd.forEach(d=>html+=`<th>${d}</th>`); 
   html+='</tr></thead><tbody>';
@@ -662,8 +657,8 @@ function renderMonth(){
 
   for(let r=0;r<6&&day<=days;r++){ 
     html+='<tr>';
-    for(let c=0;c<7;c++){ // c: 0(일요일) ~ 6(토요일)
-        // 해당 월의 첫 날이 오기 전까지 빈 칸 처리
+    for(let c=0;c<7;c++){ 
+        
         if(!started && c < new Date(y,m,1).getDay()) { 
           html+='<td></td>';
         } else if (day > days) { 
@@ -685,34 +680,19 @@ function renderMonth(){
 }
 
 function renderWeek(){
-    // 1. 현재 주의 월요일 시작점 계산
+    
     const mon = startOfWeekMonday(viewDate); 
-    // 설명: 'viewDate'는 현재 캘린더의 기준 날짜 (예: 9월 17일 수요일).
-    //       'startOfWeekMonday(viewDate)' 함수를 호출하여 'viewDate'가 속한 주의 월요일 날짜(Date 객체)를 'mon' 상수에 할당합니다.
-    //       예: viewDate가 9/17(수)이면, mon은 9/15(월) Date 객체가 됩니다.
-
-    // 2. 월요일부터 일요일까지의 Date 객체 배열 생성
+    
+    
     const weekDays = [...Array(7)].map((_, i) => addDays(mon, i)); 
-    // 설명: 한 주는 7일이므로, 'Array(7)'로 길이가 7인 빈 배열을 만듭니다.
-    //       '[...Array(7)]'로 이터러블 객체를 배열로 변환합니다.
-    //       '.map((_, i) => ...)'를 사용하여 각 인덱스(i)에 대해 반복합니다.
-    //       'addDays(mon, i)'는 'mon' (월요일)에 'i'일(0일, 1일, ..., 6일)을 더한 날짜를 반환합니다.
-    //       결과: 'weekDays'는 'mon', 'mon+1일', ..., 'mon+6일' (즉, 월요일~일요일)에 해당하는 7개의 Date 객체를 담은 배열이 됩니다.
-    //       예: [9/15(월), 9/16(화), 9/17(수), 9/18(목), 9/19(금), 9/20(토), 9/21(일)]
-
-    // 3. 캘린더 상단에 현재 주간 범위 표시
+    
+  
     ymSpan.textContent = `${fmt(weekDays[0])} ~ ${fmt(weekDays[6])}`;
-    // 설명: 'ymSpan'은 캘린더 상단에 "YYYY-MM-DD ~ YYYY-MM-DD" 형식으로 주간 범위를 표시하는 HTML 요소입니다.
-    //       'fmt(Date객체)'는 'Date객체'를 "YYYY-MM-DD" 문자열로 포맷팅하는 헬퍼 함수입니다.
-    //       'weekDays[0]'는 주의 첫 날(월요일), 'weekDays[6]'는 주의 마지막 날(일요일)입니다.
-    //       예: "2025-09-15 ~ 2025-09-21"
-
-    // ⭐ 4. 서버에서 받아온 시간대별 예약 건수 데이터를 Map 형태로 변환 (핵심 로직) ⭐
-    //    키: "YYYY-MM-DD_HH24" (예: "2025-09-15_09"), 값: 해당 키의 예약 건수
+   
+    
+    
     const hourlyCountsMap = new Map();
-    // 설명: 'hourlyCountsMap'은 예약 데이터를 효율적으로 조회하기 위한 JavaScript 'Map' 객체입니다.
-    //       이 Map의 키는 날짜와 시간을 조합한 문자열 (예: "2025-09-15_09"), 값은 해당 시간대의 총 예약 건수가 됩니다.
-
+   
     if (Array.isArray(fetchedDailyReservationCounts)) {
         // 설명: 'fetchedDailyReservationCounts'는 서버에서 가져온 예약 데이터 배열입니다.
         //       이것이 실제로 배열인지 확인하여 오류를 방지합니다. (예: JSON 파싱 실패 등)

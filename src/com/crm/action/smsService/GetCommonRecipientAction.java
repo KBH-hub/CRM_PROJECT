@@ -22,7 +22,6 @@ public class GetCommonRecipientAction implements Action {
 				patientNo.add(Integer.parseInt(no));
 			}
 		}
-
 		SmsDAO dao = new SmsDAO();
 		List<CommonSmsVO> list = dao.getCommonRecipient(patientNo);
 		request.setAttribute("list", list);

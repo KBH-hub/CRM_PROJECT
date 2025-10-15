@@ -79,7 +79,7 @@ public class ReserveListDAOTest {
         }
 	}
 	
-	//@Test
+//	@Test
     public void countReserveWeekByTimeTest() {
         List<ReserveVO> list = dao.countReserveWeekByTime("2025-09-15", "2025-09-21");
         assertTrue(list.size() > 0);

@@ -27,12 +27,11 @@ public class CountReserveMonthAction implements Action {
 		ReserveListDAO dao = new ReserveListDAO();
 		List<ReserveVO> dailyCounts = dao.countReserveMonth(monthParam);
 	
-		 Gson gson = new Gson();
-		 String jsonString = gson.toJson(dailyCounts); 
-
-		request.setAttribute("list", jsonString); 
 		
-		return "json.jsp";
+
+		request.setAttribute("list", dailyCounts); 
+		
+		return "reserveList.jsp";
 	}
 
 	

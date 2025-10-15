@@ -27,7 +27,7 @@ static ManageDoctorDAO dao;
 	}
 	@Test
 	public void getDoctorNameTest(){
-		List<ManageDoctorVO> list = dao.getDoctorName("2025-09-25", "2025-09-25");
+		List<ManageDoctorVO> list = dao.getDoctorName("2025-09-01", "2025-09-25");
 		System.out.println(list);
 		assertTrue(list.size()>0);
 	}

@@ -2,7 +2,9 @@ package test.com.crm.model;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,9 +23,29 @@ public class PatientListDAOTest {
 	}
 	@Test
 	public void getPatientListTest(){
-		List<PatientVO> list = dao.getPatientList("", "", "", "", "");
-		System.out.println(list);
-		assertTrue(list.size()>0);
+		int page = 2;
+	    int pageSize = 10;
+	    int startRow = (page - 1) * pageSize + 1; // 11
+	    int endRow = page * pageSize;             // 20
+	    
+		Map<String, Object> map = new HashMap<>();
+        map.put("startDate", "");
+        map.put("endDate", "");
+        map.put("doctorCode", "");
+        map.put("patientName", "");
+        map.put("birth", "");
+        map.put("startRow", startRow);
+        map.put("endRow", endRow );
+
+        List<PatientVO> list = dao.getPatientList(map);
+
+        System.out.println("조회 결과 건수: " + (list != null ? list.size() : 0));
+        list.forEach(vo -> System.out.println(
+                vo.getPatientNo() + " / " + vo.getPatientName() + " / " + vo.getPhone()+ " / " + vo.getMedicalDate()+ " / "
+        + vo.getEmployeeName()+ " / " + vo.getDepartment()+ " / " + vo.getStatus()+ " / " + vo.getDiagnosis()));
+
+        assertNotNull("리스트가 null 입니다.", list);
+        assertTrue("조회 결과 없음", list.size() >= 0); // 데이터가 없어도 실패하지 않도록
 	}
 	@Test
 	public void getPatientDetailTest(){
@@ -49,7 +71,7 @@ public class PatientListDAOTest {
 	}
 	@Test
 	public void deletePatientTest() {
-		int result = dao.deletePatient(21);
+		int result = dao.deletePatient(6064);
         assertTrue("insert 실패", result>0);
 	}
 

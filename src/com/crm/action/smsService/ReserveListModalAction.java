@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.crm.action.Action;
 import com.crm.model.ReserveListDAO;
 import com.crm.model.ReserveVO;
-import com.google.gson.Gson;
 
 public class ReserveListModalAction implements Action {
 

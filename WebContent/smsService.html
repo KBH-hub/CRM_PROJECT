@@ -142,13 +142,27 @@
 				<!-- ✅ 일반 메시지 구역 -->
 				<div class="commonSms fade-section">
 					<div class="text-center">
-						<textarea id=contentBox class="form-control w-75 mx-auto mb-3" rows="10"
-							placeholder="메시지 내용을 입력하세요."></textarea>
+						<textarea id=contentBox class="form-control w-75 mx-auto mb-3"
+							rows="10" placeholder="메시지 내용을 입력하세요."></textarea>
 						<button type="button" class="btn btn-secondary btn-sm"
 							data-bs-toggle="modal" data-bs-target="#patientListModal">명단
 							추가</button>
-						<canvas id=recepientBox class="border d-block w-75 mx-auto my-3" height="100"></canvas>
-						<p>수신자 : 0명</p>
+						<div class="mt-3 w-75 mx-auto border rounded overflow-auto"
+							style="height: 300px;">
+							<table class="table table-sm mb-0 text-center align-middle">
+								<thead>
+									<tr>
+										<th style="width: 40%; background: transparent;">이름</th>
+										<th style="width: 60%; background: transparent;">전화번호</th>
+									</tr>
+								</thead>
+								<tbody id="recipientTableBody" style="background: transparent;">
+									<!-- JS로 데이터가 들어올 자리 -->
+								</tbody>
+							</table>
+						</div>
+						<p class="text-end w-75 mx-auto mt-2 text-muted" id="recipientCount">수신자 : 0명</p>
+						
 						<button type="button" class="btn btn-warning btn-sm">초기화</button>
 						<button type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
@@ -224,7 +238,7 @@
 										<thead class="table-light">
 											<tr>
 												<th scope="col"><input type="checkbox"
-												 class="select-all"></th>
+													class="select-all"></th>
 												<th scope="col">이름</th>
 												<th scope="col">방문 예정 일</th>
 												<th scope="col">방문 예정 시간</th>
@@ -241,187 +255,103 @@
 								</div>
 							</div>
 
-							
+
 						</div>
 						<div class="modal-footer d-flex justify-content-between">
-								<div class="d-flex gap-2">
-									<button class="btn btn-primary">선택 환자 메시지 보내기</button>
-								</div>
+							<div class="d-flex gap-2">
+								<button class="btn btn-primary">선택 환자 메시지 보내기</button>
 							</div>
+						</div>
 					</div>
 				</div>
 
-				
+
 			</div>
 			<!-- ✅ 일반메시지-명단추가 모달 -->
-				<div class="modal fade" id="patientListModal" tabindex="-1"
-					aria-hidden="true">
-					<div
-						class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-						<div class="modal-content custom-modal-size">
-
-							<div
-								class="modal-header d-flex justify-content-between align-items-center">
-								<h5 class="modal-title fw-bold">환자 목록 (sms)</h5>
-								<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
-							</div>
-
-							<div class="modal-body">
-
-								<!-- 검색 영역 -->
-								<div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-									<input type="date" class="form-control w-auto"
-										value="2025-09-01"> <span>~</span> <input type="date"
-										class="form-control w-auto" value="2025-09-30"> <select
-										class="form-select w-auto">
-										<option selected disabled hidden>담당의사</option>
-										<option>김의사 / 정형외과 / DO001</option>
-										<option>원강 / 정형외과 / DO003</option>
-										<option>나길동 / 신경외과 / DN004</option>
-										<option>사공길동 / 신경외과 / DN005</option>
-										<option>김철수 / 마취통증의학과 / DA001</option>
-									</select>
-
-									<!-- 검색 조건 영역 -->
-									<div class="d-flex align-items-center">
-										<select class="form-select w-auto">
-											<option selected>생년월일</option>
-											<option>이름</option>
-										</select> <input type="text" class="form-control w-auto ms-2"
-											placeholder="검색어 입력">
-										<button class="btn btn-outline-primary ms-2">검색</button>
+			<div class="modal fade" id="patientListModal" tabindex="-1"
+				aria-hidden="true">
+				<div
+					class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+					<div class="modal-content custom-modal-size">
+						<div
+							class="modal-header d-flex justify-content-between align-items-center">
+							<h5 class="modal-title fw-bold">환자 목록 (sms)</h5>
+							<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+						</div>
+						<div class="modal-body">
+							<div class="card">
+								<div class="card-body">
+									<div
+										class="mb-4 d-flex flex-wrap justify-content-between align-items-center">
+										<div class="d-flex flex-wrap gap-2 align-items-center">
+											<input type="date" id="startDate" class="form-control w-auto">
+											<input type="date" id="endDate" class="form-control w-auto">
+											<select id="doctorSelect" class="form-select"
+												style="width: 250px;">
+											</select> <select id="searchType" class="form-select w-auto">
+												<option value="name">이름</option>
+												<option value="birth">생년월일</option>
+											</select> <input type="text" id="keyword" class="form-control w-auto"
+												placeholder="검색어 입력">
+											<button class="btn btn-primary" id="searchBtn">검색</button>
+										</div>
 									</div>
+
+									<div class="table-responsive">
+										<table class="table table-bordered align-middle text-center"
+											style="table-layout: fixed; width: 100%;">
+											<thead class="table-light">
+												<tr>
+													<th style="width: 4%;"><input type="checkbox"
+														class="select-all"></th>
+													<th style="width: 5%;">환자등록번호</th>
+													<th style="width: 10%;">이름</th>
+													<th style="width: 12%;">전화번호</th>
+													<th style="width: 10%;">최근내원일</th>
+													<th style="width: 10%;">담당의사</th>
+													<th style="width: 10%;">진료과</th>
+													<th style="width: 10%;">보험 종류</th>
+													<th style="width: 25%;">진단명</th>
+												</tr>
+											</thead>
+											<tbody id="patientTableBody"></tbody>
+										</table>
+									</div>
+									<nav aria-label="페이지 이동"
+										class="d-flex justify-content-center my-3">
+										<ul id="pager"
+											class="pagination pagination-sm align-items-center gap-2"></ul>
+									</nav>
 								</div>
 
-								<!-- 환자 목록 테이블 -->
-								<table class="table table-bordered align-middle">
-									<thead class="table-light">
-										<tr>
-											<th scope="col"><input type="checkbox"
-												 class="select-all"></th>
-											<th>환자등록번호</th>
-											<th>이름</th>
-											<th>전화번호</th>
-											<th>입원일</th>
-											<th>담당의</th>
-											<th>진료과</th>
-											<th>상태</th>
-											<th>진단명</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><input type="checkbox" class="row-check" checked></td>
-											<td>06071</td>
-											<td>김상철</td>
-											<td>010-1211-6337</td>
-											<td>2025-09-20</td>
-											<td>김의사</td>
-											<td>정형외과</td>
-											<td>외래</td>
-											<td>피로골절</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="row-check" checked></td>
-											<td>06072</td>
-											<td>김병만</td>
-											<td>010-4567-8901</td>
-											<td>2025-09-19</td>
-											<td>김의사</td>
-											<td>정형외과</td>
-											<td>외래</td>
-											<td>염좌</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="row-check" checked></td>
-											<td>06073</td>
-											<td>김아리</td>
-											<td>010-5678-9012</td>
-											<td>2025-09-19</td>
-											<td>박원장</td>
-											<td>정형외과</td>
-											<td>입원 예정</td>
-											<td>중족골골절</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="row-check"></td>
-											<td>06074</td>
-											<td>최상현</td>
-											<td>010-6789-0123</td>
-											<td>2025-09-19</td>
-											<td>원 장</td>
-											<td>정형외과</td>
-											<td>입원 예정</td>
-											<td>복합골절</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="row-check"></td>
-											<td>06075</td>
-											<td>오인표</td>
-											<td>010-7890-1234</td>
-											<td>2025-09-19</td>
-											<td>홍길동</td>
-											<td>정형외과</td>
-											<td>입원 중</td>
-											<td>척추측만</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="row-check"></td>
-											<td>06076</td>
-											<td>밥말리</td>
-											<td>010-8901-2345</td>
-											<td>2025-09-18</td>
-											<td>나신경</td>
-											<td>신경외과</td>
-											<td>입원 중</td>
-											<td>디스크파열</td>
-										</tr>
-									</tbody>
-								</table>
-
-								<!-- ✅ 페이지 이동 버튼 -->
-								<nav aria-label="페이지 이동"
-									class="d-flex justify-content-center my-3">
-									<ul id="pager"
-										class="pagination pagination-sm align-items-center gap-2">
-										<!-- 처음 / 이전 -->
-										<li class="page-item"><button class="page-link"
-												data-action="first" aria-label="처음">«</button></li>
-										<li class="page-item"><button class="page-link"
-												data-action="prev" aria-label="이전">‹</button></li>
-
-										<!-- 숫자들 -->
-										<li class="page-item"><button class="page-link"
-												data-page="1">1</button></li>
-										<li class="page-item"><button class="page-link"
-												data-page="2">2</button></li>
-										<li class="page-item"><button class="page-link"
-												data-page="3">3</button></li>
-										<li class="page-item"><button class="page-link"
-												data-page="4">4</button></li>
-										<li class="page-item"><button class="page-link"
-												data-page="5">5</button></li>
-										<li class="page-item"><button class="page-link"
-												data-page="6">6</button></li>
-
-										<!-- 다음 / 마지막 -->
-										<li class="page-item"><button class="page-link"
-												data-action="next" aria-label="다음">›</button></li>
-										<li class="page-item"><button class="page-link"
-												data-action="last" aria-label="마지막">»</button></li>
-									</ul>
-								</nav>
-							</div>
-
-							<div class="modal-footer d-flex justify-content-between">
-								<div>
-									<button class="btn btn-primary">선택 환자 메시지 보내기</button>
+								<div class="modal fade" id="alertModal" tabindex="-1"
+									aria-hidden="true">
+									<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-content text-center border border-primary">
+											<div class="modal-body">
+												<p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+												<div class="d-flex justify-content-center">
+													<button type="button" class="btn btn-primary px-4"
+														data-bs-dismiss="modal">확인</button>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 
 						</div>
+
+						<div class="modal-footer d-flex justify-content-between">
+							<div>
+								<button id="sendSmsSelectBtn" class="btn btn-primary"
+									data-bs-dismiss="modal">선택 환자 메시지 보내기</button>
+							</div>
+						</div>
+
 					</div>
 				</div>
+			</div>
 		</div>
 		</main>
 	</div>
@@ -487,7 +417,13 @@
     	    }
     	  });
      }
-
+	
+    //초기화 버튼
+	$("#btnReset").on("click", function() {
+	  $("#templateContentBox").val("");
+	  $("#templateNameBox").val("");
+	$("#templateList .active-template").removeClass("active-template");
+	});
     // JSON 배열 → <ul> 렌더링
     function renderList(list) {
       const $ul = $("#templateList").empty();
@@ -516,18 +452,14 @@
         	$(this).addClass("active-template");
         });
         
-        //초기화 버튼
-		$("#btnReset").on("click", function() {
-		  $("#templateContentBox").val("");
-		  $("#templateNameBox").val("");
-      	$("#templateList .active-template").removeClass("active-template");
-		});
+
         // 상세보기 데이터 저장 + 클릭 핸들러
        // $li.data("templateName", name);
      //   $li.data("content", row.templateContent || '');
 
 
       });
+
     }
     
     
@@ -727,7 +659,7 @@ function loadReserveList(){
     dataType: 'json',
     data: params,
     success: renderReserveList,
-    error: () => $('#reserveTable tbody').html('<tr><td colspan="5" class="text-danger">불러오기 실패</td></tr>')
+    error: () => $('#reserveTable tbody').html('<tr><td colspan="6" class="text-danger">불러오기 실패</td></tr>')
   });
 }
 
@@ -751,59 +683,210 @@ function renderReserveList(reserveList){
 	  });
 }
 
-	
-	
-	  
-	  // ✅ 페이지 이동 js
-	(() => {
-		  const pager = document.getElementById('pager');
-		  const minPage = 1;
-		  const maxPage = 6;
-		  let current = 1; // ✅ 1페이지부터 시작
+	// ========환자추가 모달=========
+function renderTable(list) {
+  var $tbody = $("#patientTableBody");
+  $tbody.empty();
+  if (!list || list.length === 0) {
+    $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 환자 정보가 없습니다.</td></tr>");
+    return;
+  }
+  $.each(list, function(i, p) {
+    var tr = `
+      <tr>
+        <td><input type="checkbox" class="row-check"></td>
+        <td>${p.patientNo || '-'}</td>
+        <td>${p.patientName || '-'}</td>
+        <td>${p.phone || '-'}</td>
+        <td>${p.medicalDate || '-'}</td>
+        <td>${p.employeeName || '-'}</td>
+        <td>${p.department || '-'}</td>
+        <td>${p.status || '-'}</td>
+        <td>${p.diagnosis || '-'}</td>
+      </tr>`;
+    $tbody.append(tr);
+  });
+}
 
-		  updateUI();
+function renderPager(totalCount) {
+  var $pager = $("#pager");
+  $pager.empty();
+  if (totalCount === 0 || totalPages <= 1) return;
+  function addBtn(label, action, disabled, active) {
+    var li = `<li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
+                <button class="page-link" data-action="${action}">${label}</button></li>`;
+    $pager.append(li);
+  }
+  addBtn("«", "first", currentPage === 1);
+  addBtn("‹", "prev", currentPage === 1);
+  for (var i = 1; i <= totalPages; i++) addBtn(i, "", false, i === currentPage);
+  addBtn("›", "next", currentPage === totalPages);
+  addBtn("»", "last", currentPage === totalPages);
+  $pager.find(".page-link").click(function() {
+    var act = $(this).data("action");
+    var text = $(this).text();
+    if ($.isNumeric(text)) loadPatientList(Number(text));
+    else if (act === "first") loadPatientList(1);
+    else if (act === "prev" && currentPage > 1) loadPatientList(currentPage - 1);
+    else if (act === "next" && currentPage < totalPages) loadPatientList(currentPage + 1);
+    else if (act === "last") loadPatientList(totalPages);
+  });
+}
 
-		  pager.addEventListener('click', (e) => {
-		    const btn = e.target.closest('.page-link');
-		    if (!btn) return;
+var pageSize = 10;
+var currentPage = 1;
+var totalPages = 1;
+var currentFilter = {
+  startDate: "",
+  endDate: "",
+  doctorCode: "",
+  searchType: "",
+  keyword: ""
+};
 
-		    const page = btn.getAttribute('data-page');
-		    if (page) {
-		      current = Number(page);
-		      updateUI();
-		      return;
-		    }
+function loadPatientList(page) {
+  var params = $.extend({}, currentFilter, {
+    cmd: "patientListModal",
+    page: page,
+    pageSize: pageSize
+  });
+  $.ajax({
+    url: "controller",
+    type: "GET",
+    data: params,
+    dataType: "json",
+    success: function(data) {
+      var list = data.list || [];
+      var totalCount = data.totalCount || 0;
+      if (totalCount === 0) {
+        totalPages = 0;
+        currentPage = 1;
+        renderTable([]);
+        renderPager(0);
+        return;
+      }
+      totalPages = Math.ceil(totalCount / pageSize);
+      currentPage = page;
+      renderTable(list);
+      renderPager(totalCount);
+    },
+    error: function() {
+      showAlert("환자 목록을 불러오는 중 오류가 발생했습니다.");
+    }
+  });
+}
 
-		    const action = btn.getAttribute('data-action');
-		    if (!action) return;
+function validateDates() {
+  var start = $("#startDate").val();
+  var end   = $("#endDate").val();
+  if (start && end && start > end) {
+    end = start;
+    $("#endDate").val(start);
+  }
+  if (start || end) loadDoctorList(start, end);
+  currentFilter = {
+    startDate: start || "",
+    endDate: end || "",
+    doctorCode: $("#doctorSelect").val() || "",
+    searchType: $("#searchType").val() || "",
+    keyword: $("#keyword").val().trim() || ""
+  };
+  loadPatientList(1);
+  return true;
+}
 
-		    if (action === 'first') current = minPage;
-		    if (action === 'prev')  current = Math.max(minPage, current - 1);
-		    if (action === 'next')  current = Math.min(maxPage, current + 1);
-		    if (action === 'last')  current = maxPage;
+  $("#searchBtn").click(function() {
+    currentFilter = {
+      startDate: $("#startDate").val(),
+      endDate: $("#endDate").val(),
+      doctorCode: $("#doctorSelect").val(),
+      searchType: $("#searchType").val(),
+      keyword: $("#keyword").val().trim()
+    };
+    loadPatientList(1);
+  });
+  
+  $("#keyword").keypress(function(e) {
+	    if (e.key === "Enter") $("#searchBtn").click();
+  });
 
-		    updateUI();
-		  });
+  $("#startDate, #endDate, #doctorSelect").change(validateDates);
 
-		  function updateUI() {
-		    pager.querySelectorAll('.page-item').forEach(li => li.classList.remove('active'));
-		    pager.querySelectorAll('[data-page]').forEach(btn => {
-		      if (Number(btn.getAttribute('data-page')) === current) {
-		        btn.parentElement.classList.add('active');
-		      }
-		    });
-		    setDisabled('[data-action="first"],[data-action="prev"]', current === minPage);
-		    setDisabled('[data-action="next"],[data-action="last"]', current === maxPage);
-		  }
+  $("#sendSmsSelectBtn").click(function () {
+	  const ids = [];
+	  $("#patientTableBody .row-check:checked").each(function () {
+	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
+	  });
+	  if (ids.length === 0) {
+	    showAlert("선택된 환자가 없습니다.");
+	    return;
+	  }
 
-		  function setDisabled(selector, isDisabled) {
-		    pager.querySelectorAll(selector).forEach(btn => {
-		      btn.parentElement.classList.toggle('disabled', isDisabled);
-		      btn.setAttribute('tabindex', isDisabled ? '-1' : '0');
-		      btn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
-		    });
-		  }
-		})();
+	  $.ajax({
+	    url: "controller?cmd=getCommonRecipient",
+	    type: "POST",
+	    data: { patientNo: ids },
+	    traditional: true,   // 배열 전송
+	    dataType: "json",
+	    success: function (list) {
+	      const $tbody = $("#recipientTableBody").empty();
+
+	      if (!Array.isArray(list) || list.length === 0) {
+	        $("#recipientCount").text("수신자 : 0명");
+	        return;
+	      }
+
+	      list.forEach(r => {
+	        $tbody.append(`
+	          <tr>
+	            <td style="border:none; background: transparent;">${r.patientName || ""}</td>
+	            <td style="border:none; background: transparent;">${r.phone || ""}</td>
+	          </tr>
+	        `);
+	      });
+
+	      $("#recipientCount").text(`수신자 : ${list.length}명`);
+	    },
+	    error: function () {
+	      showAlert("전송 중 오류가 발생했습니다.");
+	    }
+	  });
+	});
+
+
+  function loadDoctorList(startDate, endDate) {
+	  var prevValue = $("#doctorSelect").val();
+	  $.ajax({
+	    url: "controller",
+	    type: "GET",
+	    data: { cmd: "getDoctorListByDateAction", startDate: startDate, endDate: endDate },
+	    dataType: "json",
+	    success: function(list) {
+	      var $doctorSelect = $("#doctorSelect");
+	      $doctorSelect.empty().append('<option value="">담당 의사 선택</option>');
+	      $.each(list, function(i, d) {
+	        var code = d.doctorCode ? d.doctorCode : "";
+	        var opt = '<option value="' + code + '">' +
+	                   d.employeeName + ' (' + d.department + ', ' + code + ')' +
+	                   '</option>';
+	        $doctorSelect.append(opt);
+	      });
+	      if ($doctorSelect.find("option[value='" + prevValue + "']").length > 0)
+	        $doctorSelect.val(prevValue);
+	      else $doctorSelect.val("");
+	      $doctorSelect.prop("disabled", false);
+	    },
+	    error: function() {
+	      showAlert("의사 목록을 불러오는 중 오류가 발생했습니다.");
+	    }
+	  });
+	}
+  
+  
+  
+  loadDoctorList($("#startDate").val() || "", $("#endDate").val() || "");
+  loadPatientList(1);
+
 	  
 
 

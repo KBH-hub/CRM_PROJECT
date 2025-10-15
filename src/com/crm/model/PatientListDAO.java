@@ -16,6 +16,7 @@ public class PatientListDAO {
         conn.close();
         return list;
     }
+    
 	
 	// ✅ 전체 건수 조회
     public int getTotalCount(Map<String, Object> params) {

@@ -3,12 +3,10 @@ package com.crm.action.patient;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.crm.action.Action;
 import com.crm.model.ManageDoctorVO;
 import com.crm.model.PatientListDAO;
-import com.google.gson.Gson;
 
 public class GetDoctorListByDateAction implements Action {
 
@@ -23,5 +21,6 @@ public class GetDoctorListByDateAction implements Action {
         req.setAttribute("result", result);
 
         return "/WEB-INF/json/getDoctorListByDate.jsp";
+
     }
 }

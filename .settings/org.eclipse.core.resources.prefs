@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/com/crm/model/PatientListDAO.java=UTF-8
 encoding//src/test/com/crm/model/ManageDoctorDAOTest.java=EUC-KR
 encoding//src/test/com/crm/model/PatientListDAOTest.java=EUC-KR
 encoding//src/test/com/crm/model/SmsDAOTest.java=EUC-KR

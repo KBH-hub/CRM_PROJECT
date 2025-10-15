@@ -1,6 +1,7 @@
 package com.crm.action;
 
 import com.crm.action.patient.GetDoctorListByDateAction;
+import com.crm.action.smsService.GetCommonRecipientAction;
 import com.crm.action.smsService.GetTemplateAction;
 import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
@@ -33,6 +34,8 @@ public class ActionFactory {
 		case "getDoctorListByDateAction":
 		    a = new GetDoctorListByDateAction();
 		    break;
+		case "getCommonRecipient":
+			a = new GetCommonRecipientAction();
 		}
 		return a;// 4
 	}

@@ -23,6 +23,10 @@ public class ActionFactory {
 		case "sidebarAction":
 	        a = new SidebarAction();
 	        break;
+		case "loginUI":
+		case "mainUI":
+	    	a = new LoginUIAction();
+	    	break;
 	    default :
 	    	a = new LoginUIAction();
 		}

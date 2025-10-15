@@ -1,10 +1,10 @@
 package com.crm.action;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.crm.model.LoginDAO;
@@ -23,11 +23,14 @@ public class LoginAction implements Action {
 		if(authority != null){
 			HttpSession session = request.getSession(true);
 			session.setAttribute("employeeId", employeeId);
-			if("관리자".equals(authority)){
-				url = "reserveList.html";
-			}
-			else url = "doctorReserveList.html";
-		}
+			if ("관리자".equals(authority)) {
+                request.setAttribute("redirectUrl", "reserveList.html");
+            } else {
+                request.setAttribute("redirectUrl", "doctorReserveList.html");
+            }
+
+            url = "redirect.jsp"; // redirect.jsp에서 JS 리다이렉트 처리
+        }
 		return url;
 	}
 

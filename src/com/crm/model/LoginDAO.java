@@ -20,7 +20,7 @@ public class LoginDAO {
             logMap.put("employeeId", employeeId);
             logMap.put("loginIp", loginIp);
 
-            // 로그 insert 성공 시 1 실패시 0
+         // 로그 insert 성공 시 1 실패시 0
             int inserted = session.insert("loginMapper.insertLoginLog", logMap);
             if (inserted==0) System.out.println("로그 기록 실패");
             session.commit();

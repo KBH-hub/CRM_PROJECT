@@ -46,7 +46,7 @@ public class GetPatientListAction implements Action {
         
         req.setAttribute("result", result);
 
-        return "/WEB-INF/json/getPatientList.jsp";
+        return "/WEB-INF/json/result.jsp";
     }
 
     private int parseInt(String val, int def) {

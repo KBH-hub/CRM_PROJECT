@@ -231,10 +231,21 @@ $(document).ready(function() {
         data: { cmd: "deletePatientAction", patientNoList: patientNo },
         dataType: "json",
         success: function(data) {
+<<<<<<< HEAD
          modal.hide();
          showAlert("환자 정보가 삭제되었습니다.", function() {
            window.location.href = "controller?cmd=patientListUI";
          });
+=======
+          modal.hide();
+          if (data) {
+            showAlert("환자 정보가 삭제되었습니다.", function() {
+              window.location.href = "controller?cmd=patientListUI";
+            });
+          } else {
+            showAlert("삭제에 실패했습니다.");
+          }
+>>>>>>> 6aa58d6acc211a3865441634b4d6b65adb89f4ee
         },
         error: function() {
           modal.hide();

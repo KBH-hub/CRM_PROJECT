@@ -16,9 +16,9 @@ public class GetTemplateAction implements Action {
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		List<ReserveSmsVO> list = new SmsDAO().getTemplate(request.getParameter("templateName"));
-		request.setAttribute("list", list);
+		request.setAttribute("result", list);
 		
-		return "/WEB-INF/json/reserveSMSList.jsp";
+		return "/WEB-INF/json/result.jsp";
 	}
 		
 //		// ✅ 수동으로 JSON 문자열 생성

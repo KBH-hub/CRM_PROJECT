@@ -22,9 +22,9 @@ public class ReserveListModalAction implements Action {
 		String hour = request.getParameter("hour");
 		
 		List<ReserveVO> reserveList = new ReserveListDAO().getReserveList(month, weekStart, weekEnd, day, hour);
-		request.setAttribute("reserveList", reserveList);
+		request.setAttribute("result", reserveList);
 				
-		return "/WEB-INF/json/getReserveList.jsp";
+		return "/WEB-INF/json/result.jsp";
 	}
 
 }

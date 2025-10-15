@@ -26,7 +26,7 @@ public class GetMedicalRecordAction implements Action {
         List<MedicalRecordVO> result = dao.getMedicalRecord(patientNo);
 
         req.setAttribute("result", result);
-        return "/WEB-INF/json/getMedicalRecord.jsp";
+        return "/WEB-INF/json/result.jsp";
 	}
 
 }

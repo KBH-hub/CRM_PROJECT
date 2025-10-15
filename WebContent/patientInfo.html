@@ -164,8 +164,19 @@ $(document).ready(function() {
     });
   }
 
-  $("#sendSmsBtn").click(function() { window.location.href = "smsService.html?tab=common"; });
-  $("#reserveBtn").click(function() { window.location.href = "reserveList.html?tab=reserve"; });
+  ////////////////메시지 보내기 구현 중간 코드
+  $("#reserveBtn").click(function() {
+	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
+	  });
+  ////////////////
+  ////////////////메시지 보내기 구현 중간 코드
+  $("#sendSmsBtn").click(function() {
+    var ids = [];
+    ids.push($("#patientNo").val());
+    const patientNo = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
+    window.location.href = "smsService.html?tab=common&" + patientNo;
+  });
+  /////////////////
 
   $("#editBtn").click(function() {
     $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {

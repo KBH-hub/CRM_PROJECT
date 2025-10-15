@@ -68,7 +68,7 @@ public class ReserveListDAOTest {
 	}
 	
 	/** 예약 캘린더 (월/주/일)별 예약 건수 조회*/
-	//@Test
+//	@Test
 	public void countReserveMonthTest() {
 		List<ReserveVO> list = dao.countReserveMonth("2025-09");
         assertTrue(list.size() > 0);

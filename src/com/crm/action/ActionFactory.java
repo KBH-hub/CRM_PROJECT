@@ -20,6 +20,20 @@ public class ActionFactory {
 //			break;
 //		default:
 //			a = new LoginUIAction();
+		
+		case "reserveCalUI": // 예약관리를 눌렀을 때
+			a = new ReserveCalUIAction();
+			break;
+		case "countReserveMonth":
+			a = new CountReserveMonthAction();
+			break;
+		case "countReserveWeekByTime":
+			a = new CountReserveWeekByTimeAction();
+			break;
+			
+			
+//		default:
+//			a = new LoginUIAction();
 		}
 		return a;// 4
 	}

@@ -152,6 +152,8 @@ public class ReserveListDAO {
 		map.put("employeeId", employeeId);
 		map.put("month", month);
 		
+		
+		
 		List<ReserveVO> list = session.selectList("reserveMapper.countMyReserve", map);
 		session.close();
 		return list;

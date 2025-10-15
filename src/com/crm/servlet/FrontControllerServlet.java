@@ -24,9 +24,10 @@ public class FrontControllerServlet extends HttpServlet {
 		}*/
 		request.setCharacterEncoding("utf-8");
 		String cmd = request.getParameter("cmd");
-		if (cmd == null || cmd.trim().length() == 0)
+		if (cmd == null || cmd.trim().length() == 0){
 			cmd = "mainUI";
-
+		}
+		
 		// 일을 할 Action을 찾아온다
 				//5								//2
 		Action action = ActionFactory.getAction(cmd);

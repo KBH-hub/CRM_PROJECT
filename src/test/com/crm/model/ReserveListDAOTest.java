@@ -23,7 +23,7 @@ public class ReserveListDAOTest {
 		dao = new ReserveListDAO();
 	}
 	/** 예약 모달 (월/주/일/시간) 별 리스트 조회*/
-	//@Test
+	@Test
 	public void getReserveListMonthTest() {
         List<ReserveVO> list = dao.getReserveList("2025-09", null, null, null, null);
         assertTrue(list.size()>0);
@@ -34,7 +34,7 @@ public class ReserveListDAOTest {
         }
 	}
 	
-	//@Test
+	@Test
 	public void getReserveListWeekTest() {
 		List<ReserveVO> list = dao.getReserveList("2025-09", "15", "21", null, null);
 		assertTrue(list.size()>0);
@@ -45,7 +45,7 @@ public class ReserveListDAOTest {
         }
 	}
 	
-	//@Test
+	@Test
 	public void getReserveListDayTest() {
 		List<ReserveVO> list = dao.getReserveList("2025-09", "15", "21", "17", null);
 		assertTrue(list.size()>0);
@@ -56,7 +56,7 @@ public class ReserveListDAOTest {
         }
 	}
 	
-	//@Test
+	@Test
 	public void getReserveListTimeTest() {
 		List<ReserveVO> list = dao.getReserveList("2025-09", "15", "21", "17", "13");
 		assertTrue(list.size()>0);
@@ -68,7 +68,7 @@ public class ReserveListDAOTest {
 	}
 	
 	/** 예약 캘린더 (월/주/일)별 예약 건수 조회*/
-	//@Test
+	@Test
 	public void countReserveMonthTest() {
 		List<ReserveVO> list = dao.countReserveMonth("2025-09");
         assertTrue(list.size() > 0);
@@ -79,7 +79,7 @@ public class ReserveListDAOTest {
         }
 	}
 	
-	//@Test
+	@Test
     public void countReserveWeekByTimeTest() {
         List<ReserveVO> list = dao.countReserveWeekByTime("2025-09-15", "2025-09-21");
         assertTrue(list.size() > 0);
@@ -90,7 +90,7 @@ public class ReserveListDAOTest {
         }
     }
 
-    //@Test
+    @Test
     public void countReserveWeekByDayTest() {
         List<ReserveVO> list = dao.countReserveWeekByDay("2025-09-15", "2025-09-21");
         assertTrue(list.size() > 0);
@@ -101,7 +101,7 @@ public class ReserveListDAOTest {
         }
     }
     
-    //@Test
+    @Test
     public void getReserveDayTest() {
         List<ReserveVO> list = dao.getReserveDay("2025-09-17");
         assertTrue(list.size() > 0);
@@ -115,7 +115,7 @@ public class ReserveListDAOTest {
     }
     
     /**예약 상세*/
-    //@Test
+    @Test
     public void getReserveDetailTest() {
         int reserveNo = 21;
         ReserveVO vo = dao.getReserveDetail(reserveNo);
@@ -130,7 +130,7 @@ public class ReserveListDAOTest {
     }
     
     /**예약 등록*/
-    //@Test
+    @Test
     public void getPatientNameTest() {
         List<ReserveVO> list = dao.getPatientName("이승희");
         assertTrue(list.size() > 0);
@@ -140,7 +140,7 @@ public class ReserveListDAOTest {
         }
     }
 
-    //@Test
+    @Test
     public void getPossibleDoctor() {
         List<ReserveVO> list = dao.getPossibleDoctor("2025-10-13", "2025-10-13 13:30");
         assertTrue(list.size() > 0);
@@ -150,7 +150,7 @@ public class ReserveListDAOTest {
         }
     }
 
-    //@Test
+    @Test
     public void addReserveTest() {
         ReserveVO vo = new ReserveVO();
         vo.setDoctorScheduleNo(86);        
@@ -163,7 +163,7 @@ public class ReserveListDAOTest {
         assertTrue(res > 0);
     }
     
-    //@Test
+    @Test
     public void addReserveFailTest() {
     	ReserveVO vo = new ReserveVO();
     	vo.setDoctorScheduleNo(86);        
@@ -177,7 +177,7 @@ public class ReserveListDAOTest {
     }
 
     /**예약 수정*/
-    //@Test
+    @Test
     public void editReserveTest() {
         ReserveVO vo = new ReserveVO();
         vo.setReserveNo(26);    
@@ -191,7 +191,7 @@ public class ReserveListDAOTest {
     }
 
     /**예약 삭제*/
-   // @Test
+    @Test
     public void deleteReserveTest() {
     	List<Integer> list = Arrays.asList(10001, 10003, 10005);
         int res = dao.deleteReserve(list);
@@ -199,7 +199,7 @@ public class ReserveListDAOTest {
     }
     
     /**금일 총 예약 건수*/
-    //@Test
+    @Test
     public void getDailyReserveCount() {
     	List<ReserveVO> list = dao.countDailyAllReserve();
     	assertTrue(list.size() > 0);
@@ -210,7 +210,7 @@ public class ReserveListDAOTest {
     }
     
     /**금일 본인 예약 건수*/
-    //@Test
+    @Test
     public void getDoctorOwnDailyReserveCount() {
     	List<ReserveVO> list = dao.countDailyMyReserve("kimus01");
     	assertTrue(list.size() > 0);
@@ -221,7 +221,7 @@ public class ReserveListDAOTest {
     }
     
 	/**월간 본인 예약 건수(캘린더)*/
-    //@Test
+    @Test
     public void countMyReserveMonthTest() {
     	List<ReserveVO> list = dao.countMyReserveMonth("kimus01","2025-09");
     	assertTrue(list.size() > 0);
@@ -232,7 +232,7 @@ public class ReserveListDAOTest {
     }
     
 	/**주간1 - 본인 예약 건수(캘린더)*/
-    //@Test
+    @Test
     public void countMyReserveWeekTest() {
     	List<ReserveVO> list = dao.getMyReserveList(
     			"kimus01", "2025-09", "2025-09-15", "2025-09-21", null, null
@@ -248,7 +248,7 @@ public class ReserveListDAOTest {
     }
     
     /**주간2 - 일별 본인 예약 건수(캘린더)*/
-    //@Test
+    @Test
     public void countMyReserveWeekByDayTest() {
     	List<ReserveVO> list = dao.countMyReserveWeek(
     			"kimus01", "2025-09", "2025-09-15", "2025-09-21"
@@ -261,7 +261,7 @@ public class ReserveListDAOTest {
     }
     
     /**일간 본인 예약 건수(캘린더)*/
-    //@Test
+    @Test
     public void getMyReserveList() {
     	List<ReserveVO> list = dao.getMyReserveList(
     			"kimus01", "2025-09", "2025-09-15", "2025-09-21", "2025-09-16", "15"
@@ -277,7 +277,7 @@ public class ReserveListDAOTest {
     }
     
 	/** 예약 모달 (월/주/일/시간) 별 본인 리스트 조회*/
-    //@Test
+    @Test
     public void getMyReserveListMonthTest() {
     	List<ReserveVO> list = dao.getMyReserveList(
     			"kimus01", "2025-09", null, null, null, null 
@@ -291,7 +291,7 @@ public class ReserveListDAOTest {
     				);
     	}
     }
-    //@Test
+    @Test
     public void getMyReserveListWeekTest() {
     	List<ReserveVO> list = dao.getMyReserveList(
     			"kimus01", "2025-09", "2025-09-15", "2025-09-21", null, null
@@ -305,7 +305,7 @@ public class ReserveListDAOTest {
     				);
     	}
     }
-    //@Test
+    @Test
     public void getMyReserveListDayTest() {
     	List<ReserveVO> list = dao.getMyReserveList(
     			"kimus01", "2025-09", "2025-09-15", "2025-09-21", "2025-09-16", null 
@@ -319,7 +319,7 @@ public class ReserveListDAOTest {
     				);
     	}
     }
-    //@Test
+    @Test
     public void getMyReserveListTimeTest() {
         List<ReserveVO> list = dao.getMyReserveList(
             "kimus01", "2025-09", "2025-09-15", "2025-09-21", "2025-09-16", "15" 

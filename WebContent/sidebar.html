@@ -12,17 +12,17 @@
       <div class="small">2023/10/26 00:00:30</div>
       <div class="small text-muted mt-2">최종 접속 IP</div>
       <div class="small">255.255.0.0</div>
+	  <div class="mt-4 text-center">
+	    <button class="btn btn-danger w-50">로그아웃</button>
+	  </div>
     </div>
   </div>
 
   <nav class="nav flex-column gap-1 mb-auto" id="sidebar-nav">
-    <a href="reserveList.html" class="nav-link text-dark" data-route="reserve">예약 관리</a>
+    <a href="controller?cmd=reserveListUI" class="nav-link text-dark" data-route="reserve">예약 관리</a>
     <a href="manageDoctorSchedule.html"   class="nav-link text-dark" data-route="manageDoctorSchedule">주간 근무 관리</a>
-    <a href="patientList.html" class="nav-link text-dark" data-route="patientList">환자 관리</a>
+    <a href="controller?cmd=patientListUI" class="nav-link text-dark" data-route="patientList">환자 관리</a>
     <a href="smsService.html"  class="nav-link text-dark" data-route="smsService">메시지 서비스</a>
   </nav>
 
-  <div class="mt-4 text-center">
-    <button class="btn btn-danger w-100">로그아웃</button>
-  </div>
 </aside>

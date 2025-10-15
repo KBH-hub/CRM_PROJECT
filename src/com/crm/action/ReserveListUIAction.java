@@ -6,7 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public interface Action {
-	String execute(HttpServletRequest request) throws ServletException, IOException;
+public class ReserveListUIAction implements Action {
+
+	@Override
+	public String execute(HttpServletRequest req) throws ServletException, IOException {
+		return "reserveList.html";
+	}
 
 }

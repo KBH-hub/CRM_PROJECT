@@ -3,162 +3,309 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>환자 정보 등록</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <style>
-	.table-fixed {
-	  table-layout: fixed;
-	  width: 100%;
-	}
-	th, td {
-	  word-wrap: break-word;  /* 내용이 길어도 줄바꿈 */
-	}
-  </style>
+  <title>환자 정보</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body class="bg-body-tertiary">
 <div class="container-fluid">
   <div class="row">
-
-    <!-- 여기서 사이드바를 주입 -->
     <div id="sidebar-slot" class="col-2 p-0"></div>
 
-    <!-- 메인 -->
     <main class="col-10 p-4">
-  <div class="container-fluid bg-white border rounded shadow-sm p-4">
-      <!-- 환자 기본 정보 -->
-      <table class="table table-bordered align-middle mb-4">
-        <tbody>
-          <tr>
-            <th class="table-secondary text-center">등록번호</th>
-            <td><input type="text" class="form-control" value="6080" readonly></td>
-            <th class="table-secondary text-center">이름</th>
-            <td><input type="text" class="form-control" value="홍길동"></td>
-            <th class="table-secondary text-center">전화번호</th>
-            <td><input type="tel" class="form-control" value="010-1111-2222"></td>
-          </tr>
-          <tr>
-            <th class="table-secondary text-center">주소</th>
-            <td colspan="3"><input type="text" class="form-control" value="서울특별시 금천구"></td>
-            <th class="table-secondary text-center">등록일</th>
-            <td><input type="date" class="form-control" value="2025-07-22"></td>
-          </tr>
-          <tr>
-            <th class="table-secondary text-center">생년월일</th>
-            <td><input type="text" class="form-control" value="990101"></td>
-            <th class="table-secondary text-center">성별</th>
-            <td>
-              <select class="form-select">
-                <option selected>남</option>
-                <option>여</option>
-              </select>
-            </td>
-            <th class="table-secondary text-center">내원경로</th>
-            <td><input type="text" class="form-control" value="지인 추천"></td>
-          </tr>
-          <tr>
-            <th class="table-secondary text-center">진료과</th>
-            <td><input type="text" class="form-control" value="정형외과" readonly></td>
-            <th class="table-secondary text-center">담당의사</th>
-            <td><input type="text" class="form-control" value="김의사" readonly></td>
-            <th class="table-secondary text-center">입원여부</th>
-            <td><input type="text" class="form-control" value="외래" readonly></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="container-fluid bg-white border rounded shadow-sm p-4">
+      
+      <h4 class="text-center fw-bold mb-4 text-primary">환자 정보</h4>
 
-      <!-- 진료 기록 -->
-      <h4 class="text-center text-white bg-secondary py-2 rounded">진료 기록</h4>
-      <div class="row mt-3">
-        <!-- 왼쪽: 진료 날짜 목록 -->
-        <div class="col-3">
-          <ul class="list-group">
-            <li class="list-group-item active">
-              2025-09-26<br><small>김의사 / 정형외과</small>
-            </li>
-            <li class="list-group-item">
-              2025-08-15<br><small>박의사 / 내과</small>
-            </li>
-            <li class="list-group-item">
-              2025-07-01<br><small>김의사 / 정형외과</small>
-            </li>
-          </ul>
-        </div>
+        <table class="table table-bordered align-middle mb-4">
+          <tbody>
+            <tr>
+              <th class="table-secondary text-center">등록번호</th>
+              <td><input id="patientNo" type="text" class="form-control" disabled></td>
+              <th class="table-secondary text-center">이름</th>
+              <td><input id="patientName" type="text" class="form-control" disabled></td>
+              <th class="table-secondary text-center">전화번호</th>
+              <td><input id="phone" type="tel" class="form-control" disabled></td>
+            </tr>
+            <tr>
+              <th class="table-secondary text-center">주소</th>
+              <td colspan="3"><input id="address" type="text" class="form-control" disabled></td>
+              <th class="table-secondary text-center">등록일</th>
+              <td><input id="inDate" type="date" class="form-control" disabled></td>
+            </tr>
+            <tr>
+              <th class="table-secondary text-center">생년월일</th>
+              <td><input id="birth" type="text" class="form-control" disabled></td>
+              <th class="table-secondary text-center">성별</th>
+              <td>
+                <select id="gender" class="form-select" disabled>
+                  <option value="">선택</option>
+                  <option>남</option>
+                  <option>여</option>
+                </select>
+              </td>
+              <th class="table-secondary text-center">내원경로</th>
+              <td><input id="path" type="text" class="form-control" disabled></td>
+            </tr>
+            <tr>
+              <th class="table-secondary text-center">진료과</th>
+              <td><input id="department" type="text" class="form-control" disabled></td>
+              <th class="table-secondary text-center">담당의사</th>
+              <td><input id="employeeName" type="text" class="form-control" disabled></td>
+              <th class="table-secondary text-center">입원여부</th>
+              <td><input id="status" type="text" class="form-control" disabled></td>
+            </tr>
+          </tbody>
+        </table>
 
-        <!-- 오른쪽: 진료 상세 -->
-        <div class="col-9">
-          <div class="border rounded p-3 bg-light">
-            <table class="table table-bordered table-fixed mb-3">
-              <tr>
-                <th class="table-secondary text-center">진단명</th>
-                <td>골절</td>
-                <th class="table-secondary text-center">진료일</th>
-                <td>2025-09-26</td>
-                <th class="table-secondary text-center">초진여부</th>
-                <td>재진</td>
-              </tr>
-              <tr>
-                <th class="table-secondary text-center">담당의사</th>
-                <td>김의사</td>
-                <th class="table-secondary text-center">진료과</th>
-                <td>정형외과</td>
-                <th class="table-secondary text-center">보험 종류</th>
-                <td>건강보험</td>
-              </tr>
-            </table>
-
-            <div>
-              <p class="mb-0"><strong class="text-primary">내용 :</strong><br>골절로 인한 내원</p>
+        <h4 class="text-center text-white bg-secondary py-2 rounded">진료 기록</h4>
+        <div class="row mt-3">
+          <div class="col-3">
+            <ul class="list-group" id="medicalList">
+              <li class="list-group-item text-center text-muted">진료 기록이 없습니다.</li>
+            </ul>
+          </div>
+          <div class="col-9">
+            <div class="border rounded p-3 bg-light" id="medicalDetail">
+              <p class="text-muted text-center">진료 항목을 선택하세요.</p>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 등록 버튼 -->
-      <div class="text-end mt-4">
-        <button type="submit" class="btn btn-primary px-4" id="reserveBtn">예약하기</button>
-        <button class="btn btn-primary px-4" id="sendSmsBtn">메시지 보내기</button>
-        <button type="submit" class="btn btn-primary px-4">정보 수정</button>
-        <button type="submit" class="btn btn-danger px-4">정보 삭제</button>
+        <div class="text-end mt-4" id="buttonArea">
+          <button class="btn btn-primary px-4" id="reserveBtn">예약하기</button>
+          <button class="btn btn-primary px-4" id="sendSmsBtn">메시지 보내기</button>
+          <button class="btn btn-primary px-4" id="editBtn">정보 수정</button>
+          <button class="btn btn-danger px-4" id="deleteBtn">정보 삭제</button>
+          <button class="btn btn-success px-4 d-none" id="saveBtn">저장</button>
+        </div>
+
+        <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center border border-danger">
+              <div class="modal-body">
+                <p class="fs-5 fw-bold text-danger mb-4">정말로 이 환자 정보를 삭제하시겠습니까?</p>
+                <div class="d-flex justify-content-center gap-3">
+                  <button type="button" class="btn btn-danger" id="confirmDeleteBtn">확인</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center border border-primary">
+              <div class="modal-body">
+                <p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+                <div class="d-flex justify-content-center">
+                  <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+    </main>
   </div>
-  </main>
-		</div>
-	</div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
-	  async function loadSidebar(activeKey) {
-	    const slot = document.getElementById('sidebar-slot');
-	    const resp = await fetch('./sidebar.html'); // 경로는 프로젝트 구조에 맞게
-	    const html = await resp.text();
-	    slot.innerHTML = html;
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function loadSidebar(activeKey) {
+	  $.ajax({
+	    url: "./sidebar.html",
+	    dataType: "html",
+	    success: function (html) {
+	      $("#sidebar-slot").html(html);
 
-	    // 활성 메뉴 표시 (data-route 값을 사용)
-	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
-	    if (current) {
-	      // 전부 초기화
-	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
-	        a.classList.remove('active','bg-primary','text-white');
-	        a.classList.add('text-dark');
-	      });
-	      // 현재만 활성
-	      current.classList.add('active','bg-primary','text-white');
-	      current.classList.remove('text-dark');
+	      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
+	      $links.removeClass("active bg-primary text-white").addClass("text-dark");
+
+	      var $current = $links.filter("[data-route='" + activeKey + "']");
+	      $current.addClass("active bg-primary text-white").removeClass("text-dark");
+	    },
+	    error: function () {
+	      console.error("사이드바 로드 실패");
 	    }
-	  }
-	  // 이 페이지의 활성 키만 바꿔주면 됨
-	  loadSidebar('patientList');
-	  
-	  document.getElementById("sendSmsBtn").addEventListener("click", () => {
-		  window.location.href = "smsService.html?tab=common";
-		});
-	  document.getElementById("reserveBtn").addEventListener("click", () => {
-		  window.location.href = "reserveList.html?tab=reserve";
-		});
-  </script>
+	  });
+	}
+	loadSidebar("patientList");
+
+function showAlert(message, onClose) {
+  $("#alertMessage").text(message);
+  var modal = new bootstrap.Modal(document.getElementById("alertModal"));
+  $("#alertModal").on("hidden.bs.modal", function handler() {
+    if (typeof onClose === "function") onClose();
+    $("#alertModal").off("hidden.bs.modal", handler);
+  });
+  modal.show();
+}
+
+$(document).ready(function() {
+  var params = new URLSearchParams(window.location.search);
+  var patientNo = params.get("patientNo");
+
+  if (patientNo) {
+    $.ajax({
+      url: "controller",
+      type: "GET",
+      data: { cmd: "getPatientDetailAction", patientNo: patientNo },
+      dataType: "json",
+      success: function(data) {
+        renderPatientInfo(data.patient);
+        renderRecordTable(data.records);
+      },
+      error: function() {
+        showAlert("환자 정보를 불러오는 중 오류가 발생했습니다.");
+      }
+    });
+  }
+
+  ////////////////메시지 보내기 구현 중간 코드
+  $("#reserveBtn").click(function() {
+	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
+	  });
+  ////////////////
+  ////////////////메시지 보내기 구현 중간 코드
+  $("#sendSmsBtn").click(function() {
+    var ids = [];
+    ids.push($("#patientNo").val());
+    const patientNo = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
+    window.location.href = "smsService.html?tab=common&" + patientNo;
+  });
+  /////////////////
+
+  $("#editBtn").click(function() {
+    $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {
+      $(id).prop("disabled", false);
+    });
+    $("#editBtn, #reserveBtn, #sendSmsBtn, #deleteBtn").addClass("d-none");
+    $("#saveBtn").removeClass("d-none");
+  });
+
+  $("#saveBtn").click(function() {
+    var patientNo = $("#patientNo").val();
+    var name = $("#patientName").val().trim();
+    var phone = $("#phone").val().trim();
+
+    if (!name || !phone) {
+      showAlert("이름과 전화번호는 필수입니다.");
+      return;
+    }
+
+    $.ajax({
+      url: "controller",
+      type: "POST",
+      data: {
+        cmd: "editPatientAction",
+        patientNo: patientNo,
+        patientName: name,
+        phone: phone,
+        address: $("#address").val().trim(),
+        birth: $("#birth").val().trim(),
+        gender: $("#gender").val(),
+        path: $("#path").val().trim()
+      },
+      success: function() {
+        showAlert("환자 정보가 수정되었습니다.", function() { location.reload(); });
+      },
+      error: function() {
+        showAlert("저장 중 오류가 발생했습니다.");
+      }
+    });
+  });
+
+  $("#deleteBtn").click(function() {
+    var modal = new bootstrap.Modal(document.getElementById("deleteConfirmModal"));
+    modal.show();
+
+    $("#confirmDeleteBtn").off("click").on("click", function() {
+      var patientNo = $("#patientNo").val();
+
+      $.ajax({
+        url: "controller",
+        type: "POST",
+        data: { cmd: "deletePatientAction", patientNoList: patientNo },
+        dataType: "json",
+        success: function(data) {
+          modal.hide();
+          if (data.success) {
+            showAlert("환자 정보가 삭제되었습니다.", function() {
+              window.location.href = "controller?cmd=patientListUI";
+            });
+          } else {
+            showAlert("삭제에 실패했습니다.");
+          }
+        },
+        error: function() {
+          modal.hide();
+          showAlert("삭제 중 오류가 발생했습니다.");
+        }
+      });
+    });
+  });
+});
+
+function renderPatientInfo(vo) {
+  if (!vo) return;
+  $("#patientNo").val(vo.patientNo || "");
+  $("#patientName").val(vo.patientName || "");
+  $("#phone").val(vo.phone || "");
+  $("#address").val(vo.address || "");
+  $("#inDate").val(vo.inDate || "");
+  $("#birth").val(vo.birth || "");
+  $("#gender").val(vo.gender || "");
+  $("#path").val(vo.path || "");
+  $("#department").val(vo.department || "");
+  $("#employeeName").val(vo.employeeName || "");
+  $("#status").val(vo.status || "");
+}
+
+function renderRecordTable(list) {
+  var ul = $("#medicalList");
+  ul.empty();
+
+  if (!list || list.length === 0) {
+    ul.html('<li class="list-group-item text-center text-muted py-3">진료 기록이 없습니다.</li>');
+    return;
+  }
+
+  $.each(list, function(i, r) {
+    var li = $('<li class="list-group-item"></li>');
+    if (i === 0) li.addClass("active");
+    li.data(r);
+    li.html((r.medicalDate || "-") + "<br><small>" + (r.employeeName || "-") + " / " + (r.department || "-") + "</small>");
+    ul.append(li);
+  });
+
+  $("#medicalList").on("click", ".list-group-item", function() {
+    $("#medicalList .list-group-item").removeClass("active");
+    $(this).addClass("active");
+    var r = $(this).data();
+    $("#medicalDetail").html(`
+      <div class="border rounded p-3 bg-light">
+        <table class="table table-bordered table-fixed mb-3">
+          <tr>
+            <th class="table-secondary text-center">진단명</th><td>${r.diagnosis || "-"}</td>
+            <th class="table-secondary text-center">진료일</th><td>${r.medicalDate || "-"}</td>
+            <th class="table-secondary text-center">초진여부</th><td>${r.firstCome || "-"}</td>
+          </tr>
+          <tr>
+            <th class="table-secondary text-center">담당의사</th><td>${r.employeeName || "-"}</td>
+            <th class="table-secondary text-center">진료과</th><td>${r.department || "-"}</td>
+            <th class="table-secondary text-center">보험 종류</th><td>${r.insurance || "-"}</td>
+          </tr>
+        </table>
+        <p><strong class="text-primary">내용 :</strong><br>${r.content || "-"}</p>
+      </div>
+    `);
+  });
+  var $first = $("#medicalList .list-group-item").first();
+  if ($first.length) $first.trigger("click");
+}
+</script>
 </body>
 </html>

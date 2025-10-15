@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 
 public class PatientListDAO {
 	
+	// ✅ AJAX 호출용 Map 버전
     public List<PatientVO> getPatientList(Map<String, Object> map) {
         SqlSession conn = DBCP.getSqlSessionFactory().openSession();
         List<PatientVO> list = conn.selectList("patientMapper.getPatientList", map);
@@ -16,6 +17,8 @@ public class PatientListDAO {
         return list;
     }
     
+	
+	// ✅ 전체 건수 조회
     public int getTotalCount(Map<String, Object> params) {
         SqlSession session = DBCP.getSqlSessionFactory().openSession();
         int count = session.selectOne("patientMapper.getTotalCount", params);
@@ -51,18 +54,20 @@ public class PatientListDAO {
 	
 	public int addPatient(String patientName, String phone){
 		int result = 0;
+		int patientNo = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
 		map.put("patientName", patientName);
 		map.put("phone", phone);
 		result = conn.insert("patientMapper.addPatient", map);
 		if (result > 0){
+			patientNo = conn.selectOne("patientMapper.getCurrentPatientNo");
 			conn.commit();
 		} else {
 			conn.rollback();
 		}
 		conn.close();
-		return result;
+		return patientNo;
 	}
 	
 	public int deletePatient(int patientNo){

@@ -25,7 +25,7 @@ public class ReserveListModalAction implements Action {
 		List<ReserveVO> reserveList = new ReserveListDAO().getReserveList(month, weekStart, weekEnd, day, hour);
 		request.setAttribute("reserveList", reserveList);
 				
-		return "getReserveListModal.jsp";
+		return "getReserveList.jsp";
 	}
 
 }

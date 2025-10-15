@@ -115,8 +115,8 @@
 								<button type="button" class="btn btn-outline-secondary"
 									id="reserveSmsRecord">보낸 메시지함</button>
 								<div class="d-flex gap-2">
-									<button id="btnReset" type="button"
-										class="btn btn-warning btn-sm">초기화</button>
+									<button type="button"
+										class="btn btn-warning btn-sm btnReset">초기화</button>
 									<button type="button" class="btn btn-success btn-sm">전송</button>
 								</div>
 							</div>
@@ -145,7 +145,7 @@
 						<textarea id=contentBox class="form-control w-75 mx-auto mb-3"
 							rows="10" placeholder="메시지 내용을 입력하세요."></textarea>
 						<button type="button" class="btn btn-secondary btn-sm"
-							data-bs-toggle="modal" data-bs-target="#patientListModal">명단
+							data-bs-toggle="modal" data-bs-target="#patientListModal" id="commonSmsAddBtn">명단
 							추가</button>
 						<div class="mt-3 w-75 mx-auto border rounded overflow-auto"
 							style="height: 300px;">
@@ -163,7 +163,7 @@
 						</div>
 						<p class="text-end w-75 mx-auto mt-2 text-muted" id="recipientCount">수신자 : 0명</p>
 						
-						<button type="button" class="btn btn-warning btn-sm">초기화</button>
+						<button type="button" class="btn btn-warning btn-sm btnReset">초기화</button>
 						<button type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
 							id="commonSmsRecord">보낸 메세지함</button>
@@ -419,9 +419,12 @@
      }
 	
     //초기화 버튼
-	$("#btnReset").on("click", function() {
+	$(".btnReset").on("click", function() {
 	  $("#templateContentBox").val("");
 	  $("#templateNameBox").val("");
+	  $("#contentBox").val("");
+	  $("#recipientTableBody").empty();
+	  $("#commonSmsAddBtn").prop("disabled", false);
 	$("#templateList .active-template").removeClass("active-template");
 	});
     // JSON 배열 → <ul> 렌더링
@@ -893,9 +896,44 @@ function validateDates() {
 	document.getElementById("commonSmsRecord").addEventListener("click", () => {
 		  window.location.href = "smsRecord.html?tab=common";
 		});
+	
 	const params = new URLSearchParams(window.location.search);
 	if (params.get("tab") === "common") {
 	  commonBtn.click(); // 일반 메시지 탭 자동 활성화
+	  const ids = [];
+	  params.forEach((value, key) => {
+	    if (key === "patientNo") ids.push(value);
+	  });
+	  $("#commonSmsAddBtn").prop("disabled", true);
+	  $.ajax({
+		    url: "controller?cmd=getCommonRecipient",
+		    type: "POST",
+		    data: { patientNo: ids },
+		    traditional: true,   // 배열 전송
+		    dataType: "json",
+		    success: function (list) {
+		      const $tbody = $("#recipientTableBody").empty();
+	
+		      if (!Array.isArray(list) || list.length === 0) {
+		        $("#recipientCount").text("수신자 : 0명");
+		        return;
+		      }
+	
+		      list.forEach(r => {
+		        $tbody.append(`
+		          <tr>
+		            <td style="border:none; background: transparent;">${r.patientName || ""}</td>
+		            <td style="border:none; background: transparent;">${r.phone || ""}</td>
+		          </tr>
+		        `);
+		      });
+	
+		      $("#recipientCount").text(`수신자 : ${list.length}명`);
+		    },
+		    error: function () {
+		      showAlert("전송 중 오류가 발생했습니다.");
+		    }
+	  });
 	}
 	
 	

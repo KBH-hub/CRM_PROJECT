@@ -30,16 +30,16 @@ patientAdd
 
 ---
 
-### 🔹 Commit Message 규칙
+### 🔹 Commit Message 규칙 - 영문
 
 ```
-[타입]: [메시지]_[날짜]
+[Type]: [Message]_[Date]
 ```
 
 **예시**
 
 ```
-feat: 로그인 기능 추가_1013
-fix: 예약 등록 오류 수정_1014
-style: 환자 상세 페이지 UI 개선_1015
+feat: Added login_1013
+fix: Fixed appointment registration error_1014
+style: Improved patient details page UI_1015
 ```

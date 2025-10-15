@@ -164,12 +164,12 @@ $(document).ready(function() {
     });
   }
 
-  ////////////////메시지 보내기 구현 중간 코드
+  ////////////////reserve button code
   $("#reserveBtn").click(function() {
 	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
 	  });
   ////////////////
-  ////////////////메시지 보내기 구현 중간 코드
+  ////////////////message send button code
   $("#sendSmsBtn").click(function() {
     var ids = [];
     ids.push($("#patientNo").val());

@@ -9,16 +9,27 @@ import org.apache.ibatis.session.SqlSession;
 
 public class PatientListDAO {
 	
-	public List<PatientVO> getPatientList(String startDate, String endDate, String doctorCode, String patientName, String birth){
-		List<PatientVO> list = null;
+    public List<PatientVO> getPatientList(Map<String, Object> map) {
+        SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+        List<PatientVO> list = conn.selectList("patientMapper.getPatientList", map);
+        conn.close();
+        return list;
+    }
+    
+    public int getTotalCount(Map<String, Object> params) {
+        SqlSession session = DBCP.getSqlSessionFactory().openSession();
+        int count = session.selectOne("patientMapper.getTotalCount", params);
+        session.close();
+        return count;
+    }
+    
+    public List<ManageDoctorVO> getDoctorName(String startDate, String endDate){
+		List<ManageDoctorVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
 		map.put("startDate", startDate);
 		map.put("endDate", endDate);
-		map.put("doctorCode", doctorCode);
-		map.put("patientName", patientName);
-		map.put("birth", birth);
-		list = conn.selectList("patientMapper.getPatientList", map);
+		list = conn.selectList("patientMapper.getDoctorName", map);
 		conn.close();
 		return list;
 	}

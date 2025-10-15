@@ -1,5 +1,6 @@
 package com.crm.action;
 
+import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetTemplateAction;
 import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
@@ -26,13 +27,13 @@ public class ActionFactory {
 		case "reserveListModal":
 			a = new ReserveListModalAction();
 			break;
-		case "patientListUI":
+		case "patientListModal":
 			a = new PatientListModalAction();
 			break;
+		case "getDoctorListByDateAction":
+		    a = new GetDoctorListByDateAction();
+		    break;
 		}
-
-		
-		
 		return a;// 4
 	}
 

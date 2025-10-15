@@ -29,7 +29,7 @@ public class AddPatientAction implements Action {
         }
         
         req.setAttribute("result", map);
-		return "addPatient.jsp";
+		return "/WEB-INF/json/addPatient.jsp";
 	}
 
 }

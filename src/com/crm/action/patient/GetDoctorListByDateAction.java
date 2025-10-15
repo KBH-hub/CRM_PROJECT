@@ -22,6 +22,6 @@ public class GetDoctorListByDateAction implements Action {
 
         req.setAttribute("result", result);
 
-        return "getDoctorListByDate.jsp";
+        return "/WEB-INF/json/getDoctorListByDate.jsp";
     }
 }

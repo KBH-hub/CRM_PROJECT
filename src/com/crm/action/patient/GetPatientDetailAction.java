@@ -33,6 +33,6 @@ public class GetPatientDetailAction implements Action {
         result.put("records", records);
 
         req.setAttribute("result", result);
-        return "getPatientDetail.jsp";
+        return "/WEB-INF/json/getPatientDetail.jsp";
     }
 }

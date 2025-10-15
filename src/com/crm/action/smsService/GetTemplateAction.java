@@ -18,7 +18,7 @@ public class GetTemplateAction implements Action {
 		List<ReserveSmsVO> list = new SmsDAO().getTemplate(request.getParameter("templateName"));
 		request.setAttribute("list", list);
 		
-		return "reserveSMSList.jsp";
+		return "/WEB-INF/json/reserveSMSList.jsp";
 	}
 		
 //		// ✅ 수동으로 JSON 문자열 생성

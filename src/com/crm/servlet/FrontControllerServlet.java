@@ -16,9 +16,8 @@ public class FrontControllerServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		String cmd = request.getParameter("cmd");
-		if (cmd == null || cmd.trim().length() == 0)
+		if (cmd == null || cmd.trim().length() == 0){
 			cmd = "mainUI";
-
 		Action action = ActionFactory.getAction(cmd);
 		
 		request.setAttribute("response", response);

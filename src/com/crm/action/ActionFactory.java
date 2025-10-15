@@ -78,6 +78,21 @@ public class ActionFactory {
 		case "sendCommonSMS":
 			a = new sendCommonSMSAction();
 			break;
+			
+		case "reserveCalUI": 
+			a = new ReserveCalUIAction();
+			break;
+		case "countReserveMonth":
+			a = new CountReserveMonthAction();
+			break;
+		case "countReserveWeekByTime":
+			a = new CountReserveWeekByTimeAction();
+			break;
+			
+		case "getReserveDay":
+			a = new getReserveDayAction();
+			break;
+			
 		case "loginUI":
 		case "mainUI":
 			a = new LoginUIAction();

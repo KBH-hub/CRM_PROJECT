@@ -50,6 +50,71 @@ table, th, td { border-collapse: collapse; }
 
 /* 선택 강조 */
 .table-hover tbody tr.table-active td { background-color: #e7f1ff !important; }
+
+/* Day 뷰 컨테이너 */
+.day-view-grid {
+    border: 1px solid #dee2e6; /* 테이블 테두리처럼 보이게 */
+    border-radius: 0.375rem; /* Bootstrap 기본 라운드 코너 */
+    overflow: hidden; /* 내부 요소가 넘치지 않도록 */
+    background-color: #fff; /* 배경색 */
+}
+
+/* 시간 축 */
+.time-axis {
+    flex-shrink: 0; /* 크기가 줄어들지 않도록 */
+    background-color: #f8f9fa; /* 배경색 */
+    padding-top: 2px; /* 위쪽 여백 */
+}
+
+.time-label {
+    height: 60px; /* 각 시간 블록의 높이 (스크린샷 기준) */
+    line-height: 60px; /* 텍스트 수직 중앙 정렬 */
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #495057;
+    border-bottom: 1px solid #dee2e6; /* 시간 레이블 아래 구분선 */
+}
+.time-label:last-child {
+    border-bottom: none; /* 마지막 시간 레이블은 아래 구분선 제거 */
+}
+
+/* 예약 내용 영역 */
+.reservation-content {
+    background-color: #fff; /* 배경색 */
+    padding-left: 5px; /* 왼쪽 여백 */
+    padding-right: 5px; /* 오른쪽 여백 */
+}
+
+.hour-slot {
+    height: 60px; /* time-label과 동일하게 설정 */
+    display: flex; /* 예약 블록들을 가로로 배치 */
+    flex-wrap: wrap; /* 공간이 부족하면 다음 줄로 */
+    align-content: flex-start; /* 예약 블록들이 위에서부터 채워지도록 */
+    border-bottom: 1px solid #dee2e6; /* 각 시간 슬롯 아래 구분선 */
+}
+.hour-slot:last-child {
+    border-bottom: none !important; /* 마지막 시간 슬롯은 아래 구분선 제거 */
+}
+
+.reservation-block {
+    cursor: pointer; /* 클릭 가능한 요소처럼 보이게 */
+    font-size: 0.75rem; /* 예약 블록 텍스트 크기 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    overflow: hidden; /* 넘치는 텍스트 숨김 */
+    text-overflow: ellipsis; /* 넘치는 텍스트 ... 처리 */
+    max-width: 100%; /* 부모 너비를 넘지 않도록 */
+    height: fit-content; /* 내용에 맞춰 높이 조절 */
+    /* 스크린샷의 색상들을 반영하여 여러 스타일 클래스 추가 가능 */
+    /* 예: text-bg-primary, text-bg-success, text-bg-warning 등 */
+    /* 지금은 text-bg-primary로 통일합니다. */
+}
+/* 스크린샷처럼 여러 색상을 사용하고 싶다면, 백엔드에서 예약마다 색상 관련 필드를 추가하거나,
+   진료과 등에 따라 동적으로 클래스를 부여하는 로직이 필요합니다. */
+.reservation-block.bg-success { background-color: #198754 !important; }
+.reservation-block.bg-info { background-color: #0dcaf0 !important; }
+.reservation-block.bg-warning { background-color: #ffc107 !important; }
+/* 등등... */
+
 </style>
 </head>
 
@@ -526,8 +591,8 @@ async function fetchAndRenderCalendarData() {
         const sunday = addDays(monday, 6); // 'monday' 변수 사용
         params = `&startDate=${fmt(monday)}&endDate=${fmt(sunday)}`; // 'monday' 변수 사용
     } else if (viewMode === 'day') {
-        apiUrl = 'controller?cmd=countReserveDay';
-        params = `&date=${fmt(viewDate)}`; // 여기도 백틱 사용이 일관성을 위해 좋음
+        apiUrl = 'controller?cmd=getReserveDay';
+        params = `&targetDate=${fmt(viewDate)}`; // 여기도 백틱 사용이 일관성을 위해 좋음
     }
     
     
@@ -678,8 +743,8 @@ function renderWeek(){
             //       (하지만 서버 쿼리가 HH24:MI까지 그룹화한다면, 보통 한 키에 한 건의 데이터만 올 것입니다.)
         });
     }
-    console.log("DEBUG (Client): hourlyCountsMap (주간):", hourlyCountsMap);
-    // 설명: 개발자 도구 콘솔에 구성된 'hourlyCountsMap'을 출력하여 디버깅에 도움을 줍니다.
+    
+
 
     // 5. 캘린더에 표시할 시간대 (오전 7시부터 오후 7시까지) 정의
     const hours = [...Array(13)].map((_, i) => i + 7); 
@@ -762,6 +827,103 @@ function renderWeek(){
     // 10. 생성된 HTML을 캘린더 컨테이너에 삽입
     container.innerHTML = html; 
     // 설명: 최종적으로 생성된 모든 HTML 문자열을 'container' (캘린더 내용이 표시될 div)의 내부에 삽입하여 화면에 렌더링합니다.
+}
+
+function renderDay(){
+    const currentDay = viewDate;
+    ymSpan.textContent = fmt(currentDay); // 상단에 "2025-09-16" 표시
+
+    // 요일 제목 표시 (예: "화요일")
+    const dayName = currentDay.toLocaleDateString('ko-KR', { weekday: 'long' });
+
+    // ⭐ 1. 서버에서 받아온 상세 예약 데이터를 Map 형태로 변환 ⭐
+    //    키: "YYYY-MM-DD_HH" (예: "2025-09-16_08"), 값: 해당 시간대의 예약 객체 배열
+    const hourlyReservationsMap = new Map();
+    if (Array.isArray(fetchedDailyReservationCounts)) { // 변수명은 이대로 사용하되, 데이터 내용이 변경되었다고 가정
+        fetchedDailyReservationCounts.forEach(item => {
+            const dayKey = item.reserveDay;
+            // 예약 시간 "HH:MI"에서 시(HH) 부분만 추출
+            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
+            const mapKey = `${dayKey}_${hour}`;
+
+            // 해당 시간대의 예약 배열을 가져오거나 새로 생성
+            const reservations = hourlyReservationsMap.get(mapKey) || [];
+            // 현재 예약 아이템을 배열에 추가
+            reservations.push(item);
+            hourlyReservationsMap.set(mapKey, reservations);
+        });
+    }
+
+    // 2. 캘린더에 표시할 시간대 (오전 7시부터 오후 7시까지) 정의
+    const hours = [...Array(13)].map((_, i) => i + 7); // 7시부터 19시 (스크린샷 기준)
+
+    // 3. HTML 구조 시작: 시간 축과 예약 내용을 담을 컨테이너
+    let html = `
+        <div class="d-flex flex-column align-items-center mb-3">
+            <h3 class="fw-bold">${dayName}</h3>
+        </div>
+        <div class="day-view-grid d-flex">
+            <div class="time-axis" style="width: 80px; text-align: right; padding-right: 10px;">
+    `;
+    hours.forEach(h => {
+        html += `<div class="time-label" style="height: 60px; line-height: 60px;">${String(h).padStart(2, '0')}:00</div>`;
+    });
+    html += `
+            </div>
+            <div class="reservation-content flex-grow-1 border-start">
+    `;
+
+ // 4. 각 시간대별 예약 현황 렌더링
+    hours.forEach(h => {
+        const dayKey = fmt(currentDay);
+        const hourKey = String(h).padStart(2, '0');
+        const fullKey = `${dayKey}_${hourKey}`;
+        
+        // 해당 시간대의 예약 목록을 가져옵니다.
+        const reservationsInHour = hourlyReservationsMap.get(fullKey) || [];
+
+        html += `
+            <div class="hour-slot">
+        `;
+        
+        // 해당 시간대에 속하는 예약들을 렌더링
+        reservationsInHour.forEach(res => {
+            // ⭐ 이 부분이 수정되었습니다. 색상 클래스를 무채색으로 고정합니다. ⭐
+            const bgColorClass = 'text-bg-secondary'; // 모든 진료과에 대해 무채색(회색)으로 통일
+
+            // ⭐ 표시 형식과 툴팁 내용은 기존과 동일하게 유지 ⭐
+            const displayTime = res.reserveTime ? res.reserveTime.substring(0, 5) : '';
+            const blockText = `${res.patientName} 님  ${displayTime}  ${res.department}  ${res.employeeName} 예약`;
+            const tooltipText = `${res.patientName} 님 (${displayTime})  ${res.department}  ${res.employeeName} 예약`;
+
+            html += `
+                <div class="reservation-block badge ${bgColorClass} m-1"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     title="${tooltipText}"
+                     data-reservation-id="${res.reservationId || ''}">
+                    ${blockText}
+                </div>
+            `;
+        });
+
+        html += `
+            </div>
+        `;
+    });
+
+    // 5. HTML 구조 마무리 (여기서 `reservation-content`와 `day-view-grid`를 닫습니다)
+    html += `
+            </div> </div> `;
+
+    container.innerHTML = html;
+
+    // 6. Bootstrap 툴팁 초기화 (렌더링 후 호출 필요)
+    // 이 코드는 툴팁이 제대로 작동하도록 'renderDay()' 함수 호출 후에 실행되어야 합니다.
+    // fetchAndRenderCalendarData() 호출 후 render()에서 이 코드를 호출하는 것이 좋습니다.
+    // var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    // var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    //   return new bootstrap.Tooltip(tooltipTriggerEl)
+    // })
 }
 
 // ✅ 이벤트 핸들러 변경: render() 대신 fetchAndRenderCalendarData() 호출

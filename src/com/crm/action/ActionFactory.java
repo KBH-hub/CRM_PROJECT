@@ -31,6 +31,10 @@ public class ActionFactory {
 			a = new CountReserveWeekByTimeAction();
 			break;
 			
+		case "getReserveDay":
+			a = new getReserveDayAction();
+			break;
+			
 			
 //		default:
 //			a = new LoginUIAction();

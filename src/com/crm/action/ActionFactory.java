@@ -22,6 +22,12 @@ import com.crm.action.smsService.ReserveListModalAction;
 import com.crm.action.smsService.ReserveSmsUIAction;
 import com.crm.action.smsService.SmsUIAction;
 import com.crm.action.smsService.sendCommonSMSAction;
+import com.crm.action.login.DoctorMainUIAction;
+import com.crm.action.login.LoginAction;
+import com.crm.action.login.LoginUIAction;
+import com.crm.action.login.LogoutAction;
+import com.crm.action.login.ManagerMainUIAction;
+import com.crm.action.login.SidebarAction;
 
 public class ActionFactory {
 	private ActionFactory() {

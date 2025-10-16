@@ -1,4 +1,4 @@
-package com.crm.action;
+package com.crm.action.login;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.crm.action.Action;
 import com.crm.model.LoginDAO;
 import com.google.gson.Gson;
 
@@ -30,7 +31,7 @@ public class SidebarAction implements Action {
         }
         
         // FrontController에게 이 데이터를 "sidebar-data.jsp"로 넘겨달라고 요청합니다.
-        return "result.jsp"; //
+        return "/WEB-INF/json/result.jsp"; //
         
     }
 }

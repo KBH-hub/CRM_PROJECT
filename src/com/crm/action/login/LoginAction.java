@@ -1,4 +1,4 @@
-package com.crm.action;
+package com.crm.action.login;
 
 import java.io.IOException;
 import java.util.Map;
@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.crm.action.Action;
 import com.crm.model.LoginDAO;
 
 public class LoginAction implements Action {
@@ -29,7 +30,7 @@ public class LoginAction implements Action {
                 request.setAttribute("redirectUrl", "doctorReserveList.html");
             }
 
-            url = "redirect.jsp"; // redirect.jsp에서 JS 리다이렉트 처리
+            url = "/WEB-INF/json/redirect.jsp"; // redirect.jsp占쎈�占쎄� JS �귐���占쎌��占쎌��占쎈�� 筌ｌ����
         }
 		return url;
 	}

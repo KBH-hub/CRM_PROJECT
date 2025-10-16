@@ -4,212 +4,158 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>보낸 메시지함</title>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<!-- ✅ Bootstrap 5.3.0 -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-.fade-section {
-	opacity: 0;
-	transition: opacity 0.4s ease-in-out;
-	display: none;
-}
+.fade-section { opacity:0; transition:opacity 0.4s ease-in-out; display:none; }
+.fade-section.show { display:block; opacity:1; }
 
-.fade-section.show {
-	display: block;
-	opacity: 1;
-}
+.commonSms tbody tr:hover { background-color:#f6f6f6; cursor:pointer; }
 
-.commonSms tbody tr:hover {
-	background-color: #f6f6f6;
-	cursor: pointer;
-}
-
+/* 공용 페이저 하나만 스타일링 */
 #pager .page-item.active .page-link {
-	background: #212529;
-	color: #fff;
-	border-color: #212529;
-	border-radius: .6rem;
+  background:#212529; color:#fff; border-color:#212529; border-radius:.6rem;
 }
-
 #pager .page-item.disabled .page-link {
-	color: #bbb;
-	pointer-events: none;
-	background: transparent;
-	border-color: transparent;
+  color:#bbb; pointer-events:none; background:transparent; border-color:transparent;
 }
-
-#pager .page-link {
-	border: none;
-	background: transparent;
-	color: #4a4a4a;
-}
+#pager .page-link { border:none; background:transparent; color:#4a4a4a; }
 </style>
 </head>
 <body class="bg-body-tertiary">
-	<div class="container-fluid">
-		<div class="row">
+<div class="container-fluid">
+  <div class="row">
 
-			<!-- 여기서 사이드바를 주입 -->
-			<div id="sidebar-slot" class="col-2 p-0"></div>
+    <!-- 사이드바 -->
+    <div id="sidebar-slot" class="col-2 p-0"></div>
 
-			<!-- ✅ 메인 콘텐츠 -->
-			<main class="col-10 p-4">
+    <!-- 메인 -->
+    <main class="col-10 p-4">
+      <div class="container py-4">
+        <h2 class="text-center mb-4">보낸 메시지함</h2>
 
-			<div class="container py-4">
-				<h2 class="text-center mb-4">보낸 메시지함</h2>
+        <!-- 탭 -->
+        <ul class="nav nav-tabs justify-content-center mb-3" id="messageTabs">
+          <li class="nav-item"><button id="reserveBtn" class="nav-link active">예약 메시지</button></li>
+          <li class="nav-item"><button id="commonBtn" class="nav-link">일반 메시지</button></li>
+        </ul>
 
-				<!-- ✅ 상단 탭 -->
-				<ul class="nav nav-tabs justify-content-center mb-3"
-					id="messageTabs">
-					<li class="nav-item">
-						<button id="reserveBtn" class="nav-link active">예약 메시지</button>
-					</li>
-					<li class="nav-item">
-						<button id="commonBtn" class="nav-link">일반 메시지</button>
-					</li>
-				</ul>
+        <!-- 예약 -->
+        <div class="reserveSms fade-section show text-center">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>일련번호</th>
+                  <th>수신인</th>
+                  <th>전화번호</th>
+                  <th>발신인</th>
+                  <th>일시</th>
+                  <th>템플릿명</th>
+                </tr>
+              </thead>
+              <tbody id="reserveSmsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
 
-				<!-- ✅ 예약 메시지 구역 -->
-				<div class="reserveSms fade-section show text-center">
-					<div class="table-responsive">
-						<table class="table table-bordered align-middle text-center">
-							<thead class="table-light">
-								<tr>
-									<th>일련번호</th>
-									<th>수신인</th>
-									<th>전화번호</th>
-									<th>발신인</th>
-									<th>일시</th>
-									<th>템플릿명</th>
-								</tr>
-							</thead>
-							<tbody id="reserveSmsTableBody">
-							</tbody>
-						</table>
-					</div>
-					<nav aria-label="페이지 이동" class="d-flex justify-content-center my-3">
-						<ul id="pager"
-							class="pagination pagination-sm align-items-center gap-2"></ul>
-					</nav>
-				</div>
+        <!-- 일반 -->
+        <div class="commonSms fade-section">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>일련번호</th>
+                  <th>수신인</th>
+                  <th>발신인</th>
+                  <th>전화번호</th>
+                  <th>일시</th>
+                  <th>내용</th>
+                </tr>
+              </thead>
+              <tbody id="commonSmsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
 
+        <!-- 🔸 공용 페이저: 섹션 밖 공통 위치에 하나만 -->
+        <nav aria-label="페이지 이동" class="d-flex justify-content-center my-3">
+          <ul id="pager" class="pagination pagination-sm align-items-center gap-2"></ul>
+        </nav>
 
-				<!-- ✅ 일반 메시지 구역 (Table 형태) -->
-				<div class="commonSms fade-section">
+      </div>
 
-					<div class="table-responsive">
-						<table class="table table-bordered align-middle text-center">
-							<thead class="table-light">
-								<tr>
-									<th>일련번호</th>
-									<th>수신인</th>
-									<th>발신인</th>
-									<th>전화번호</th>
-									<th>일시</th>
-									<th>내용</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+      <!-- 상세 모달 -->
+      <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content border border-primary rounded-3">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold w-100 text-center">보낸 메시지 상세보기</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row mb-2">
+                <div class="col-2 text-end fw-bold">수신인</div>
+                <div class="col-4" id="modalReceiver">-</div>
+                <div class="col-2 text-end fw-bold">발신인</div>
+                <div class="col-4" id="modalSender">-</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-2 text-end fw-bold">전화번호</div>
+                <div class="col-4" id="modalPhone">-</div>
+                <div class="col-2 text-end fw-bold">일시</div>
+                <div class="col-4" id="modalDate">-</div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-2 text-end fw-bold">보낸내용</div>
+                <div class="col-10"><div class="bg-light p-2 rounded" id="modalContent">(내용 없음)</div></div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-center border-0 pb-3 pt-0">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
 
-			<!-- ✅ 메시지 상세 모달 -->
-			<div class="modal fade" id="messageModal" tabindex="-1"
-				aria-hidden="true">
-				<div
-					class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-					<div class="modal-content border border-primary rounded-3">
+<script>
+  // 사이드바 로드
+  async function loadSidebar(activeKey) {
+    const slot = document.getElementById('sidebar-slot');
+    const resp = await fetch('./sidebar.html');
+    slot.innerHTML = await resp.text();
+    const current = slot.querySelector(`[data-route="${activeKey}"]`);
+    if (current) {
+      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
+        a.classList.remove('active','bg-primary','text-white');
+        a.classList.add('text-dark');
+      });
+      current.classList.add('active','bg-primary','text-white');
+      current.classList.remove('text-dark');
+    }
+  }
+  loadSidebar('smsService');
+</script>
 
-						<!-- 헤더 -->
-						<div class="modal-header">
-							<h5 class="modal-title fw-bold w-100 text-center">보낸 메시지
-								상세보기</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="닫기"></button>
-						</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-						<!-- 바디 -->
-						<div class="modal-body">
-							<div class="row mb-2">
-								<div class="col-2 text-end fw-bold">수신인</div>
-								<div class="col-4" id="modalReceiver">-</div>
-								<div class="col-2 text-end fw-bold">발신인</div>
-								<div class="col-4" id="modalSender">-</div>
-							</div>
-
-							<div class="row mb-2">
-								<div class="col-2 text-end fw-bold">전화번호</div>
-								<div class="col-4" id="modalPhone">-</div>
-								<div class="col-2 text-end fw-bold">일시</div>
-								<div class="col-4" id="modalDate">-</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-2 text-end fw-bold">보낸내용</div>
-								<div class="col-10">
-									<div class="bg-light p-2 rounded" id="modalContent">(내용
-										없음)</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- 푸터 -->
-						<div
-							class="modal-footer justify-content-center border-0 pb-3 pt-0">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">확인</button>
-						</div>
-
-					</div>
-				</div>
-			</div>
-			</main>
-		</div>
-	</div>
-	<script>
-	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
-	  async function loadSidebar(activeKey) {
-	    const slot = document.getElementById('sidebar-slot');
-	    const resp = await fetch('./sidebar.html'); // 경로는 프로젝트 구조에 맞게
-	    const html = await resp.text();
-	    slot.innerHTML = html;
-
-	    // 활성 메뉴 표시 (data-route 값을 사용)
-	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
-	    if (current) {
-	      // 전부 초기화
-	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
-	        a.classList.remove('active','bg-primary','text-white');
-	        a.classList.add('text-dark');
-	      });
-	      // 현재만 활성
-	      current.classList.add('active','bg-primary','text-white');
-	      current.classList.remove('text-dark');
-	    }
-	  }
-
-	  // 이 페이지의 활성 키만 바꿔주면 됨
-	  loadSidebar('smsService');
-	  </script>
-	<!-- ✅ Bootstrap JS -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-	<!-- ✅ 탭 전환 및 모달 이벤트 -->
-	<script>
+<script>
+(() => {
   const reserveBtn = document.getElementById('reserveBtn');
   const commonBtn  = document.getElementById('commonBtn');
   const reserveSec = document.querySelector('.reserveSms');
   const commonSec  = document.querySelector('.commonSms');
 
-  // 탭 전환
+  // 탭 상태 & 페이지 상태(탭별)
+  let activeTab = 'reserve';
+  const pageSize = 10;
+  let reserveCurrent = 1, reserveTotal = 1;
+  let commonCurrent  = 1, commonTotal  = 1;
+
   function showSection(showEl, hideEl, activeBtn, inactiveBtn) {
     hideEl.classList.remove('show');
     activeBtn.classList.add('active');
@@ -221,161 +167,207 @@
     }, 200);
   }
 
+  // 로딩 한 줄 먼저 보여주기
+  function renderLoading(tbodySelector, colspan = 10) {
+    $(tbodySelector).html(
+      `<tr><td colspan="${colspan}" class="text-center text-muted py-3">불러오는 중...</td></tr>`
+    );
+  }
+
+  // 공용 페이저 렌더 (활성 탭 기준으로 동작)
+  function renderPager(currentPage, totalPages) {
+    const $pager = $("#pager");
+    $pager.empty();
+    if (!totalPages || totalPages <= 1) return;
+
+    function addBtn(label, action, disabled, active) {
+      const li = `<li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
+                    <button class="page-link" data-action="${action}">${label}</button></li>`;
+      $pager.append(li);
+    }
+
+    addBtn("«", "first", currentPage === 1);
+    addBtn("‹", "prev",  currentPage === 1);
+    for (let i = 1; i <= totalPages; i++) addBtn(i, "", false, i === currentPage);
+    addBtn("›", "next",  currentPage === totalPages);
+    addBtn("»", "last",  currentPage === totalPages);
+
+    $pager.find(".page-link").off("click").on("click", function() {
+      const act  = $(this).data("action");
+      const text = $(this).text();
+
+      const getState = () => activeTab === 'reserve'
+        ? {cur: reserveCurrent, tot: reserveTotal, go: loadReserveSms}
+        : {cur: commonCurrent,  tot: commonTotal,  go: loadCommonSms};
+
+      const {cur, tot, go} = getState();
+
+      if ($.isNumeric(text)) go(Number(text));
+      else if (act === "first") go(1);
+      else if (act === "prev"  && cur > 1) go(cur - 1);
+      else if (act === "next"  && cur < tot) go(cur + 1);
+      else if (act === "last") go(tot);
+    });
+  }
+
+  // 예약 로드
+  function loadReserveSms(page = 1){
+    const params = { cmd: "getReserveSms", page, pageSize };
+    // 먼저 로딩 표시(사용자 체감 ↑)
+    renderLoading('#reserveSmsTableBody', 10);
+
+    $.ajax({
+      url: "controller",
+      type: "GET",
+      data: params,
+      dataType: "json",
+      success: function(data) {
+        const list = data.list || [];
+        const totalCount = data.totalCount ?? 0;
+
+        reserveTotal  = Math.max(1, Math.ceil(totalCount / pageSize));
+        reserveCurrent = Math.min(Math.max(1, page), reserveTotal);
+
+        renderReserveTable(list);
+        if (activeTab === 'reserve') renderPager(reserveCurrent, reserveTotal);
+      },
+      error: function(xhr, status, err) {
+        console.error("getReserveSms error:", status, err, xhr?.responseText);
+        alert("보낸 메시지(예약) 목록을 불러오는 중 오류가 발생했습니다.");
+        renderReserveTable([]);
+        if (activeTab === 'reserve') renderPager(1, 1);
+      }
+    });
+  }
+
+  // 일반 로드
+  function loadCommonSms(page = 1){
+    const params = { cmd: "getCommonSms", page, pageSize };
+    renderLoading('#commonSmsTableBody', 10);
+
+    $.ajax({
+      url: "controller",
+      type: "GET",
+      data: params,
+      dataType: "json",
+      success: function(data) {
+        const list = data.list || [];
+        const totalCount = data.totalCount ?? 0;
+
+        commonTotal  = Math.max(1, Math.ceil(totalCount / pageSize));
+        commonCurrent = Math.min(Math.max(1, page), commonTotal);
+
+        renderCommonTable(list);
+        if (activeTab === 'common') renderPager(commonCurrent, commonTotal);
+      },
+      error: function(xhr, status, err) {
+        console.error("getCommonSms error:", status, err, xhr?.responseText);
+        alert("보낸 메시지(일반) 목록을 불러오는 중 오류가 발생했습니다.");
+        renderCommonTable([]);
+        if (activeTab === 'common') renderPager(1, 1);
+      }
+    });
+  }
+
+  // 예약 테이블 렌더
+  function renderReserveTable(list) {
+    const $tbody = $("#reserveSmsTableBody");
+    $tbody.empty();
+    if (!list || list.length === 0) {
+      $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 메시지 기록이 없습니다.</td></tr>");
+      return;
+    }
+    $.each(list, function(i, r) {
+      const tr = `
+        <tr class="message-row"
+            data-receiver="${r.patientName ?? ''}"
+            data-sender="${r.employeeName ?? ''}"
+            data-phone="${r.phone ?? ''}"
+            data-datetime="${r.datetime ?? ''}"
+            data-content="${r.templateName ?? ''}">
+          <td>${r.reserveSmsNo  ?? '-'}</td>
+          <td>${r.patientName   ?? '-'}</td>
+          <td>${r.phone         ?? '-'}</td>
+          <td>${r.employeeName  ?? '-'}</td>
+          <td>${r.datetime      ?? '-'}</td>
+          <td>${r.templateName  ?? '-'}</td>
+        </tr>`;
+      $tbody.append(tr);
+    });
+  }
+
+  // 일반 테이블 렌더(열 순서: 수신인→발신인→전화번호)
+  function renderCommonTable(list) {
+    const $tbody = $("#commonSmsTableBody");
+    $tbody.empty();
+    if (!list || list.length === 0) {
+      $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 메시지 기록이 없습니다.</td></tr>");
+      return;
+    }
+    $.each(list, function(i, c) {
+      const tr = `
+        <tr class="message-row"
+            data-receiver="${c.patientName ?? ''}"
+            data-sender="${c.employeeName ?? ''}"
+            data-phone="${c.phone ?? ''}"
+            data-datetime="${c.datetime ?? ''}"
+            data-content="${c.content ?? ''}">
+          <td>${c.commonSmsNo  ?? '-'}</td>
+          <td>${c.patientName  ?? '-'}</td>
+          <td>${c.employeeName ?? '-'}</td>
+          <td>${c.phone        ?? '-'}</td>
+          <td>${c.datetime     ?? '-'}</td>
+          <td>${c.content      ?? '-'}</td>
+        </tr>`;
+      $tbody.append(tr);
+    });
+  }
+
+  // 행 클릭 → 모달 (이벤트 위임)
+  $(document).on('click', '.message-row', function() {
+    $('#modalReceiver').text(this.dataset.receiver || '-');
+    $('#modalSender').text(this.dataset.sender || '-');
+    $('#modalPhone').text(this.dataset.phone || '-');
+    $('#modalDate').text(this.dataset.datetime || '-');
+    $('#modalContent').text(this.dataset.content || '(내용 없음)');
+    new bootstrap.Modal('#messageModal').show();
+  });
+
+  // 탭 클릭
   reserveBtn.addEventListener('click', () => {
     showSection(reserveSec, commonSec, reserveBtn, commonBtn);
+    activeTab = 'reserve';
+    if (reserveCurrent === 1 && $('#reserveSmsTableBody').children().length === 0) {
+      renderLoading('#reserveSmsTableBody', 10);
+    }
+    loadReserveSms(1);
   });
   commonBtn.addEventListener('click', () => {
     showSection(commonSec, reserveSec, commonBtn, reserveBtn);
+    activeTab = 'common';
+    if (commonCurrent === 1 && $('#commonSmsTableBody').children().length === 0) {
+      renderLoading('#commonSmsTableBody', 10);
+    }
+    loadCommonSms(1);
   });
 
-  // ✅ 테이블 행 클릭 시 모달 열기
-  document.querySelectorAll('.message-row').forEach(row => {
-    row.addEventListener('click', () => {
-      const cells = row.querySelectorAll('td');
-      document.getElementById('modalReceiver').textContent = cells[0].textContent;
-      document.getElementById('modalSender').textContent = cells[1].textContent;
-      document.getElementById('modalPhone').textContent   = cells[2].textContent;
-      document.getElementById('modalDate').textContent    = cells[3].textContent;
-      document.getElementById('modalContent').textContent = cells[4].textContent;
+  // 초기 진입(쿼리스트링)
+  const qp = new URLSearchParams(location.search);
+  if (qp.get("tab") === "common") {
+    // 초기 화면을 common으로
+    reserveSec.classList.remove('show'); reserveSec.style.display = 'none';
+    commonSec.style.display = 'block';   commonSec.classList.add('show');
+    reserveBtn.classList.remove('active'); commonBtn.classList.add('active');
+    activeTab = 'common';
+    renderLoading('#commonSmsTableBody', 10);
+    loadCommonSms(1);
+  } else {
+    activeTab = 'reserve';
+    renderLoading('#reserveSmsTableBody', 10);
+    loadReserveSms(1);
+  }
 
-      const modal = new bootstrap.Modal(document.getElementById('messageModal'));
-      modal.show();
-    });
-  });
- 
-
-	  function updateUI() {
-	    pager.querySelectorAll('.page-item').forEach(li => li.classList.remove('active'));
-	    pager.querySelectorAll('[data-page]').forEach(btn => {
-	      if (Number(btn.getAttribute('data-page')) === current) {
-	        btn.parentElement.classList.add('active');
-	      }
-	    });
-	    setDisabled('[data-action="first"],[data-action="prev"]', current === minPage);
-	    setDisabled('[data-action="next"],[data-action="last"]', current === maxPage);
-	  }
-
-	  function setDisabled(selector, isDisabled) {
-	    pager.querySelectorAll(selector).forEach(btn => {
-	      btn.parentElement.classList.toggle('disabled', isDisabled);
-	      btn.setAttribute('tabindex', isDisabled ? '-1' : '0');
-	      btn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
-	    });
-	  }
-	  
-	  const params = new URLSearchParams(window.location.search);
-		if (params.get("tab") === "common") {
-		  commonBtn.click(); // 일반 메시지 탭 자동 활성화
-		}
-	</script>
-	
-	<script>
-  //=======getReserveSms==========
- (() => {
-	  // 페이지 상태
-	  let pageSize = 10;
-	  let currentPage = 1;
-	  let totalPages = 1;
-
-	  // 예약 SMS 로드
-	  function loadReserveSms(page = 1){
-	    const params = $.extend({}, {
-	      cmd: "getReserveSms",
-	      page: page,
-	      pageSize: pageSize
-	    });
-	    $.ajax({
-	      url: "controller",      // FrontController 서블릿 매핑 맞는지 확인
-	      type: "GET",
-	      data: params,
-	      dataType: "json",
-	      success: function(data) {
-	        const list = data.list || [];
-	        const totalCount = data.totalCount || 0;
-
-	        if (totalCount === 0) {
-	          totalPages = 0;
-	          currentPage = 1;
-	          renderTable([]);
-	          renderPager(0);
-	          return;
-	        }
-	        totalPages = Math.ceil(totalCount / pageSize);
-	        currentPage = page;
-	        renderTable(list);
-	        renderPager(totalCount);
-	      },
-	      error: function(xhr, status, err) {
-	        console.error("getReserveSms error:", status, err, xhr?.responseText);
-	        showAlert("보낸 메시지 목록을 불러오는 중 오류가 발생했습니다.");
-	        renderTable([]);
-	        renderPager(0);
-	      }
-	    });
-	  }
-
-	  // 테이블 렌더
-	  function renderTable(list) {
-	    const $tbody = $("#reserveSmsTableBody");
-	    $tbody.empty();
-	    if (!list || list.length === 0) {
-	      $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 메시지 기록이 없습니다.</td></tr>");
-	      return;
-	    }
-	    $.each(list, function(i, r) {
-	      const tr = `
-	        <tr class="message-row">
-	          <td>${r.reserveSmsNo  ?? '-'}</td>
-	          <td>${r.patientName   ?? '-'}</td>
-	          <td>${r.phone         ?? '-'}</td>
-	          <td>${r.employeeName  ?? '-'}</td>
-	          <td>${r.datetime      ?? '-'}</td>
-	          <td>${r.templateName  ?? '-'}</td>
-	        </tr>`;
-	      $tbody.append(tr);
-	    });
-	  }
-
-	  // 페이지네이션 렌더
-	  function renderPager(totalCount) {
-	    const $pager = $("#pager");
-	    $pager.empty();
-	    if (totalCount === 0 || totalPages <= 1) return;
-
-	    function addBtn(label, action, disabled, active) {
-	      const li = `<li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
-	                    <button class="page-link" data-action="${action}">${label}</button></li>`;
-	      $pager.append(li);
-	    }
-
-	    addBtn("«", "first", currentPage === 1);
-	    addBtn("‹", "prev",  currentPage === 1);
-	    for (let i = 1; i <= totalPages; i++) addBtn(i, "", false, i === currentPage);
-	    addBtn("›", "next",  currentPage === totalPages);
-	    addBtn("»", "last",  currentPage === totalPages);
-
-	    $pager.find(".page-link").off("click").on("click", function() {
-	      const act  = $(this).data("action");
-	      const text = $(this).text();
-	      if ($.isNumeric(text))        loadReserveSms(Number(text));
-	      else if (act === "first")     loadReserveSms(1);
-	      else if (act === "prev" && currentPage > 1)       loadReserveSms(currentPage - 1);
-	      else if (act === "next" && currentPage < totalPages) loadReserveSms(currentPage + 1);
-	      else if (act === "last")      loadReserveSms(totalPages);
-	    });
-	  }
-
-
-	  // 쿼리스트링 탭 제어
-	  const params = new URLSearchParams(window.location.search);
-	  if (params.get("tab") === "common") {
-	    commonBtn.click();
-	  }
-
-	  // ✅ 최초 1페이지 로드
-	  loadReserveSms(1);
-	})();
+})();
 </script>
-
 </body>
 </html>

@@ -73,7 +73,7 @@ public class SmsDAO {
 	public List<CommonSmsVO> getCommonSms(Map<String, Object> map){
 		List<CommonSmsVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getSMSCount", map);
+		list = conn.selectList("smsMapper.getCommonSms", map);
 		conn.close();
 		return list;
 	}

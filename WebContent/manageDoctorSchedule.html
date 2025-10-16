@@ -98,7 +98,7 @@
     <table class="table table-bordered align-middle text-center">
       <thead>
         <tr class="date-header">
-          <th rowspan="2"></th>
+          <th rowspan="2"><input type="checkbox"></th>
           <th rowspan="2">이름</th>
           <th rowspan="2">진료과</th>
           <th colspan="2">9/15 월</th>
@@ -298,28 +298,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	  editBtn.addEventListener("click", () => {
 	    const allRows = document.querySelectorAll("table tbody tr");
-	    const lastRow = allRows[allRows.length - 1]; // 마지막 행 (+버튼)
-	    const firstColCells = document.querySelectorAll("table tbody tr td:first-child"); // 1열 (체크박스)
-	    const firstHeader = document.querySelector("table thead tr th:first-child"); // 헤더의 첫 열
-	    const deleteBtn = document.querySelector(".btn-primary"); // 선택 지우기
-	    const doctorListBtn = document.querySelectorAll(".btn-primary")[1]; // 의사 명단 버튼
+	    const lastRow = allRows[allRows.length - 1];
+	    const firstColCells = document.querySelectorAll("table tbody tr td:first-child");
+	    const firstHeader = document.querySelector("table thead tr th:first-child");
+	    const deleteBtn = document.querySelector(".btn-primary");
+	    const doctorListBtn = document.querySelectorAll(".btn-primary")[1];
 
 	    editing = !editing;
 
 	    if (editing) {
-	      // === 편집 모드 ON ===
 	      editBtn.textContent = "저장하기";
 
-	      // 버튼 숨기기
 	      if (deleteBtn) deleteBtn.style.display = "none";
 	      if (doctorListBtn) doctorListBtn.style.display = "none";
 
-	      // 맨 아래 행, 맨 왼쪽 열 숨기기
 	      if (lastRow) lastRow.style.display = "none";
 	      firstColCells.forEach(td => td.style.display = "none");
 	      if (firstHeader) firstHeader.style.display = "none";
 
-	      // 셀 클릭 활성화 (단, 이름/진료과 제외)
 	      document.querySelectorAll("table tbody tr").forEach(row => {
 	        row.querySelectorAll("td").forEach((cell, index) => {
 	          // index 0: 체크박스, 1: 이름, 2: 진료과
@@ -334,19 +330,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	      });
 
 	    } else {
-	      // === 편집 모드 OFF ===
 	      editBtn.textContent = "편집하기";
-
-	      // 숨긴 버튼 복구
 	      if (deleteBtn) deleteBtn.style.display = "";
 	      if (doctorListBtn) doctorListBtn.style.display = "";
-
-	      // 숨긴 행/열 복구
 	      if (lastRow) lastRow.style.display = "";
 	      firstColCells.forEach(td => td.style.display = "");
 	      if (firstHeader) firstHeader.style.display = "";
-
-	      // 클릭 이벤트 제거
 	      document.querySelectorAll("table tbody tr td").forEach(cell => {
 	        cell.style.cursor = "default";
 	        cell.removeEventListener("click", toggleCircle);

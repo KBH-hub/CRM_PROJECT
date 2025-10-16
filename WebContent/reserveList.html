@@ -6,7 +6,8 @@
 
 <!-- ✅ Bootstrap 5.3.0 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <style>
 table, th, td { border-collapse: collapse; }
 
@@ -49,6 +50,71 @@ table, th, td { border-collapse: collapse; }
 
 /* 선택 강조 */
 .table-hover tbody tr.table-active td { background-color: #e7f1ff !important; }
+
+/* Day 뷰 컨테이너 */
+.day-view-grid {
+    border: 1px solid #dee2e6; /* 테이블 테두리처럼 보이게 */
+    border-radius: 0.375rem; /* Bootstrap 기본 라운드 코너 */
+    overflow: hidden; /* 내부 요소가 넘치지 않도록 */
+    background-color: #fff; /* 배경색 */
+}
+
+/* 시간 축 */
+.time-axis {
+    flex-shrink: 0; /* 크기가 줄어들지 않도록 */
+    background-color: #f8f9fa; /* 배경색 */
+    padding-top: 2px; /* 위쪽 여백 */
+}
+
+.time-label {
+    height: 60px; /* 각 시간 블록의 높이 (스크린샷 기준) */
+    line-height: 60px; /* 텍스트 수직 중앙 정렬 */
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #495057;
+    border-bottom: 1px solid #dee2e6; /* 시간 레이블 아래 구분선 */
+}
+.time-label:last-child {
+    border-bottom: none; /* 마지막 시간 레이블은 아래 구분선 제거 */
+}
+
+/* 예약 내용 영역 */
+.reservation-content {
+    background-color: #fff; /* 배경색 */
+    padding-left: 5px; /* 왼쪽 여백 */
+    padding-right: 5px; /* 오른쪽 여백 */
+}
+
+.hour-slot {
+    height: 60px; /* time-label과 동일하게 설정 */
+    display: flex; /* 예약 블록들을 가로로 배치 */
+    flex-wrap: wrap; /* 공간이 부족하면 다음 줄로 */
+    align-content: flex-start; /* 예약 블록들이 위에서부터 채워지도록 */
+    border-bottom: 1px solid #dee2e6; /* 각 시간 슬롯 아래 구분선 */
+}
+.hour-slot:last-child {
+    border-bottom: none !important; /* 마지막 시간 슬롯은 아래 구분선 제거 */
+}
+
+.reservation-block {
+    cursor: pointer; /* 클릭 가능한 요소처럼 보이게 */
+    font-size: 0.75rem; /* 예약 블록 텍스트 크기 */
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    overflow: hidden; /* 넘치는 텍스트 숨김 */
+    text-overflow: ellipsis; /* 넘치는 텍스트 ... 처리 */
+    max-width: 100%; /* 부모 너비를 넘지 않도록 */
+    height: fit-content; /* 내용에 맞춰 높이 조절 */
+    /* 스크린샷의 색상들을 반영하여 여러 스타일 클래스 추가 가능 */
+    /* 예: text-bg-primary, text-bg-success, text-bg-warning 등 */
+    /* 지금은 text-bg-primary로 통일합니다. */
+}
+/* 스크린샷처럼 여러 색상을 사용하고 싶다면, 백엔드에서 예약마다 색상 관련 필드를 추가하거나,
+   진료과 등에 따라 동적으로 클래스를 부여하는 로직이 필요합니다. */
+.reservation-block.bg-success { background-color: #198754 !important; }
+.reservation-block.bg-info { background-color: #0dcaf0 !important; }
+.reservation-block.bg-warning { background-color: #ffc107 !important; }
+/* 등등... */
+
 </style>
 </head>
 
@@ -281,7 +347,7 @@ table, th, td { border-collapse: collapse; }
 					          class="btn btn-link p-0 detail-btn"
 					          data-bs-toggle="modal"
 					          data-bs-target="#reservationDetailModal">
-					    <img src="detail.png" alt="상세보기" width="24" height="24">
+					    <img src="img/detail.png" alt="상세보기" width="24" height="24">
 					  </button>
 				  </td>
 
@@ -298,7 +364,7 @@ table, th, td { border-collapse: collapse; }
 					          class="btn btn-link p-0 detail-btn"
 					          data-bs-toggle="modal"
 					          data-bs-target="#reservationDetailModal">
-					    <img src="detail.png" alt="상세보기" width="24" height="24">
+					    <img src="img/detail.png" alt="상세보기" width="24" height="24">
 					  </button>
 				  </td>
                 </tr>
@@ -314,7 +380,7 @@ table, th, td { border-collapse: collapse; }
 					          class="btn btn-link p-0 detail-btn"
 					          data-bs-toggle="modal"
 					          data-bs-target="#reservationDetailModal">
-					    <img src="detail.png" alt="상세보기" width="24" height="24">
+					    <img src="img/detail.png" alt="상세보기" width="24" height="24">
 					  </button>
 				  </td>
                 </tr>
@@ -330,7 +396,7 @@ table, th, td { border-collapse: collapse; }
 					          class="btn btn-link p-0 detail-btn"
 					          data-bs-toggle="modal"
 					          data-bs-target="#reservationDetailModal">
-					    <img src="detail.png" alt="상세보기" width="24" height="24">
+					    <img src="img/detail.png" alt="상세보기" width="24" height="24">
 					  </button>
 				  </td>
                 </tr>
@@ -346,7 +412,7 @@ table, th, td { border-collapse: collapse; }
 					          class="btn btn-link p-0 detail-btn"
 					          data-bs-toggle="modal"
 					          data-bs-target="#reservationDetailModal">
-					    <img src="detail.png" alt="상세보기" width="24" height="24">
+					    <img src="img/detail.png" alt="상세보기" width="24" height="24">
 					  </button>
 				  </td>
                 </tr>
@@ -362,7 +428,7 @@ table, th, td { border-collapse: collapse; }
 					          class="btn btn-link p-0 detail-btn"
 					          data-bs-toggle="modal"
 					          data-bs-target="#reservationDetailModal">
-					    <img src="detail.png" alt="상세보기" width="24" height="24">
+					    <img src="img/detail.png" alt="상세보기" width="24" height="24">
 					  </button>
 				  </td>
                 </tr>
@@ -483,250 +549,541 @@ loadSidebar("reserve");
 // ---------- 공용 유틸 ----------
 const container = document.getElementById('container');
 const ymSpan = document.getElementById('ym');
-const reservationEvents = {
-  "2025-09-16": [
-    { start: "09:00", end: "09:30", title: "고은님 9:00" },
-    { start: "14:00", end: "14:30", title: "이수현 14:00" }
-  ],
-  "2025-09-15": [
-    { start: "10:00", end: "11:00", title: "심박 검사" }
-  ]
-};
+//const reservationEvents = {
+//  "2025-09-16": [
+//    { start: "09:00", end: "09:30", title: "고은님 9:00" },
+//    { start: "14:00", end: "14:30", title: "이수현 14:00" }
+//  ],
+//  "2025-09-15": [
+//    { start: "10:00", end: "11:00", title: "심박 검사" }
+ // ]
+//};
+// 서버에서 받아온 일별 총 예약 건수 데이터를 저장할 변수
+// [{DAY_OF_MONTH: "01", TOTAL_COUNT: 5}, {DAY_OF_MONTH: "02", TOTAL_COUNT: 3}, ...]
+let fetchedDailyReservationCounts = []; 
+
 let viewMode='month', viewDate=new Date(); viewDate.setDate(1);
 const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const addDays=(d,n)=>{const t=new Date(d);t.setDate(t.getDate()+n);return t;};
+
+//아래는 week 날짜 계산하는 것
 const startOfWeekMonday=d=>{const t=new Date(d);const day=t.getDay();const diff=(day===0?-6:1-day);t.setDate(t.getDate()+diff);return t;};
 
-// ---------- 캘린더 렌더 ----------
-function render(){
-  if(viewMode==='month') renderMonth();
-  else if(viewMode==='week') renderWeek();
-  else renderDay();
-}
-function renderMonth(){
-  const y=viewDate.getFullYear(), m=viewDate.getMonth();
-  ymSpan.textContent=`${y}년 ${m+1}월`;
-  let first=new Date(y,m,1).getDay(); if(first===0) first=7;
-  const days=new Date(y,m+1,0).getDate();
-  const wd=['월','화','수','목','금','토','일'];
-  let html='<table class="table table-bordered text-center align-middle month-view"><thead><tr>';
-  wd.forEach(d=>html+=`<th>${d}</th>`); html+='</tr></thead><tbody>';
-  let day=1,started=false;
-  for(let r=0;r<6&&day<=days;r++){
-    html+='<tr>';
-    for(let c=1;c<=7;c++){
-      if(!started&&c<first) html+='<td></td>';
-      else if(day>days) html+='<td></td>';
-      else{
-        const key=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-        const cnt=(reservationEvents[key]||[]).length;
-        html+=`<td><strong>${day}</strong><small>총 예약 ${cnt}건</small></td>`;
-        day++; started=true;
-      }
+
+async function fetchAndRenderCalendarData() {
+    const year = viewDate.getFullYear();
+    const month = (viewDate.getMonth() + 1).toString().padStart(2, '0');
+    const monthStr = `${year}-${month}`; 
+
+    
+    let apiUrl = ''; 
+    let params = ''; 
+    
+    
+    
+    if (viewMode === 'month'){
+        apiUrl = 'controller?cmd=countReserveMonth';
+        params = `&month=${monthStr}`; 
+    } else if (viewMode === 'week') { 
+        apiUrl = 'controller?cmd=countReserveWeekByTime';
+        const monday = startOfWeekMonday(viewDate);
+        const sunday = addDays(monday, 6); 
+        params = `&startDate=${fmt(monday)}&endDate=${fmt(sunday)}`; 
+    } else if (viewMode === 'day') {
+        apiUrl = 'controller?cmd=getReserveDay';
+        params = `&targetDate=${fmt(viewDate)}`; 
     }
-    html+='</tr>';
-  }
-  html+='</tbody></table>';
-  container.innerHTML=html;
+    
+    
+    
+    try {
+        
+        const response = await fetch(`${apiUrl}${params}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+       
+        const data = await response.json(); 
+       
+
+       
+        fetchedDailyReservationCounts = data; 
+        
+       
+        render();
+
+    } catch (error) {
+        console.error('캘린더 데이터를 가져오는 중 오류 발생:', error);
+        alert('예약 데이터를 불러오지 못했습니다. 다시 시도해 주세요.');
+     
+        container.innerHTML = '<p class="text-danger">예약 데이터를 불러오는 데 실패했습니다.</p>';
+    }
 }
+
+
+//---------- 캘린더 렌더 ----------
+function render(){
+  if(viewMode==='month') renderMonth();
+  else if(viewMode==='week') renderWeek();
+  else renderDay();
+}
+
+function renderMonth(){
+  const y=viewDate.getFullYear(), m=viewDate.getMonth();
+  ymSpan.textContent=`${y}년 ${m+1}월`; 
+  
+
+  const dailyCountsMap = new Map();
+  if (Array.isArray(fetchedDailyReservationCounts)) {
+      fetchedDailyReservationCounts.forEach(item => {
+        
+          dailyCountsMap.set(parseInt(item.reserveDay.split('-')[2]), item.reserveCount); 
+      });
+  }
+
+  let first=new Date(y,m,1).getDay(); 
+  if(first===0) first=7; 
+  const days=new Date(y,m+1,0).getDate();
+  const wd=['일','월','화','수','목','금','토']; 
+  let html='<table class="table table-bordered text-center align-middle month-view"><thead><tr>';
+  wd.forEach(d=>html+=`<th>${d}</th>`); 
+  html+='</tr></thead><tbody>';
+
+  let day=1;
+  let started = false;
+
+  for(let r=0;r<6&&day<=days;r++){ 
+    html+='<tr>';
+    for(let c=0;c<7;c++){ 
+        
+        if(!started && c < new Date(y,m,1).getDay()) { 
+          html+='<td></td>';
+        } else if (day > days) { 
+          html+='<td></td>';
+        } else {
+            const totalCount = dailyCountsMap.get(day) || 0; // 해당 일자의 예약 건수, 없으면 0
+            const isToday = (new Date().getFullYear() === y && new Date().getMonth() === m && new Date().getDate() === day);
+            const tdClass = (c === 0 || c === 6) ? 'weekend' : ''; // 일요일(0) 또는 토요일(6)은 주말
+            
+            html+=`<td class="${tdClass} ${isToday ? 'today' : ''}"><strong>${day}</strong><small>총 예약 ${totalCount}건</small></td>`;
+            day++; 
+            started=true;
+        }
+    }
+    html+='</tr>';
+  }
+  html+='</tbody></table>';
+  container.innerHTML=html;
+}
+
 function renderWeek(){
-  const mon=startOfWeekMonday(viewDate);
-  const weekDays=[...Array(7)].map((_,i)=>addDays(mon,i));
-  ymSpan.textContent=`${fmt(weekDays[0])} ~ ${fmt(weekDays[6])}`;
-  const hours=[...Array(13)].map((_,i)=>i+7);
-  let html='<table class="table table-bordered text-center align-middle week-view"><thead><tr><th>시간</th>';
-  weekDays.forEach(d=>html+=`<th>${d.toLocaleDateString('ko-KR',{weekday:'short'})} (${d.getMonth()+1}/${d.getDate()})</th>`);
-  html+='</tr></thead><tbody>';
-  hours.forEach(h=>{
-    html+=`<tr><td>${String(h).padStart(2,'0')}:00</td>`;
-    weekDays.forEach(d=>{
-      const key=fmt(d),evs=reservationEvents[key]||[];
-      const cnt=evs.filter(e=>e.start.startsWith(String(h).padStart(2,'0'))).length;
-      html+=`<td>${cnt?`<span class="text-danger fw-bold">예약 ${cnt}건</span>`:''}</td>`;
+    
+    const mon = startOfWeekMonday(viewDate); 
+    
+    
+    const weekDays = [...Array(7)].map((_, i) => addDays(mon, i)); 
+    
+  
+    ymSpan.textContent = `${fmt(weekDays[0])} ~ ${fmt(weekDays[6])}`;
+   
+    
+    
+    const hourlyCountsMap = new Map();
+   
+    if (Array.isArray(fetchedDailyReservationCounts)) {
+        // 설명: 'fetchedDailyReservationCounts'는 서버에서 가져온 예약 데이터 배열입니다.
+        //       이것이 실제로 배열인지 확인하여 오류를 방지합니다. (예: JSON 파싱 실패 등)
+
+        fetchedDailyReservationCounts.forEach(item => {
+            // 설명: 서버에서 받아온 각 예약 데이터 'item'에 대해 반복합니다.
+            //       'item' 객체는 일반적으로 { reserveDay: "YYYY-MM-DD", reserveTime: "HH24:MI", reserveCount: N } 형태일 것입니다.
+
+            const dayKey = item.reserveDay;       // "YYYY-MM-DD" (DB에서 넘어온 값 그대로)
+            // 설명: 'item'에서 'reserveDay' 필드(예: "2025-09-15")를 추출합니다.
+
+            // item.reserveTime은 "HH24:MI" 형식이므로, 시간(HH24) 부분만 추출
+            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00'; 
+            // 설명: 'item.reserveTime' 필드(예: "09:00", "14:30")에서 앞의 두 글자(HH24, 예: "09", "14")만 추출합니다.
+            //       'item.reserveTime'이 null이거나 undefined일 경우 '00'으로 기본값을 설정하여 오류를 방지합니다.
+
+            const count = item.reserveCount;
+            // 설명: 'item'에서 'reserveCount' 필드(해당 시간대의 예약 건수)를 추출합니다.
+
+            const mapKey = `${dayKey}_${hour}`; // 예: "2025-09-15_09"
+            // 설명: 'dayKey'와 'hour'를 조합하여 Map의 키를 생성합니다. (예: "2025-09-15_09")
+            
+            // 같은 날짜/시간의 예약 건수를 합산 (쿼리가 이미 HH24:MI까지 그룹화했으므로 중복되지 않을 가능성이 높음)
+            hourlyCountsMap.set(mapKey, (hourlyCountsMap.get(mapKey) || 0) + count);
+            // 설명: 'hourlyCountsMap'에 'mapKey'를 키로, 'count'를 값으로 저장합니다.
+            //       'hourlyCountsMap.get(mapKey) || 0'는 이미 해당 키에 값이 있으면 그 값을 가져오고, 없으면 0을 가져옵니다.
+            //       이렇게 하면 같은 키에 대해 여러 건의 예약이 있을 경우 합산할 수 있습니다.
+            //       (하지만 서버 쿼리가 HH24:MI까지 그룹화한다면, 보통 한 키에 한 건의 데이터만 올 것입니다.)
+        });
+    }
+    
+
+
+    // 5. 캘린더에 표시할 시간대 (오전 7시부터 오후 7시까지) 정의
+    const hours = [...Array(13)].map((_, i) => i + 7); 
+    // 설명: 7시부터 19시까지 총 13개의 시간을 나타내는 배열을 만듭니다.
+    //       예: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+    // 6. HTML 테이블의 시작 및 시간 헤더 생성
+    let html = '<table class="table table-bordered text-center align-middle week-view"><thead><tr><th>시간</th>';
+    // 설명: 주간 뷰 테이블의 시작 태그와 "시간" 헤더 셀을 생성합니다.
+    
+    // 7. 요일 헤더 (월요일부터 일요일까지) 생성
+    weekDays.forEach(d => {
+        // 설명: 'weekDays' 배열에 있는 각 날짜(Date 객체) 'd'에 대해 반복합니다.
+        const headerDate = (d.getMonth() + 1) + '/' + d.getDate();
+        // 설명: 'd'의 월과 일을 "M/D" 형식으로 만듭니다. (예: "9/15")
+        const dayName = d.toLocaleDateString('ko-KR', { weekday: 'short' });
+        // 설명: 'd'의 요일을 짧은 한글 형식으로 만듭니다. (예: "월", "화")
+        // 오늘 날짜인 경우 헤더를 빨간색으로 표시
+        const headerClass = fmt(d) === fmt(new Date()) ? 'text-danger fw-bold' : '';
+        // 설명: 현재 날짜 'd'가 진짜 오늘 날짜와 같다면 'text-danger fw-bold' 클래스를 추가하여 빨간색 굵은 글씨로 표시합니다.
+        html += `<th class="${headerClass}">${dayName} (${headerDate})</th>`;
+        // 설명: 요일 헤더 셀을 HTML에 추가합니다. 예: "<th class="">월 (9/15)</th>"
     });
-    html+='</tr>';
-  });
-  html+='<tr><td class="fw-bold bg-light">총 예약</td>';
-  weekDays.forEach(d=>{
-    const key=fmt(d),t=(reservationEvents[key]||[]).length;
-    html+=`<td class="bg-light fw-bold">총 예약 ${t}건</td>`;
-  });
-  html+='</tr></tbody></table>';
-  container.innerHTML=html;
+    html += '</tr></thead><tbody>';
+    // 설명: 헤더 행을 닫고 테이블 본문 시작 태그를 추가합니다.
+
+    // 8. 각 시간대별 예약 현황 행 렌더링
+    hours.forEach(h => {
+        // 설명: 'hours' 배열에 있는 각 시간(숫자 h, 예: 7, 8, ...)에 대해 반복합니다.
+        html += `<tr><td>${String(h).padStart(2, '0')}:00</td>`; 
+        // 설명: 시간 행의 첫 번째 셀 (시간 표시)을 생성합니다. (예: "07:00")
+        weekDays.forEach(d => {
+            // 설명: 해당 시간 'h'에 대해 'weekDays' 배열의 각 날짜 'd'에 대해 반복합니다.
+            //       즉, 월요일 7시, 화요일 7시, ... 일요일 7시 순으로 셀을 채워나갑니다.
+
+            const dayKey = fmt(d); // "YYYY-MM-DD"
+            // 설명: 현재 날짜 'd'를 "YYYY-MM-DD" 문자열로 포맷팅합니다.
+            const hourKey = String(h).padStart(2, '0'); // "HH24" (예: "07", "08")
+            // 설명: 현재 시간 'h'를 두 자리 문자열(예: "07")로 포맷팅합니다.
+            const fullKey = `${dayKey}_${hourKey}`; // Map에서 조회할 키 (예: "2025-09-15_09")
+            // 설명: 'hourlyCountsMap'에서 예약 건수를 조회할 키를 만듭니다.
+            
+            const count = hourlyCountsMap.get(fullKey) || 0; 
+            // 설명: 'hourlyCountsMap'에서 'fullKey'에 해당하는 예약 건수를 가져옵니다. 없으면 0입니다.
+            
+            html += `<td>${count > 0 ? `<span class="text-danger fw-bold">예약 ${count}건</span>` : ''}</td>`;
+            // 설명: 예약 건수 'count'가 0보다 크면 "예약 N건"이라는 텍스트를 빨간색 굵은 글씨로 표시하고,
+            //       0이거나 없으면 빈 문자열을 넣어 셀을 비워둡니다.
+            //       이 셀을 HTML에 추가합니다.
+        });
+        html += '</tr>';
+        // 설명: 시간 행을 닫습니다.
+    });
+    
+    // 9. "총 예약" 행 렌더링
+    html += '<tr><td class="fw-bold bg-light">총 예약</td>';
+    // 설명: 테이블 본문의 마지막 행으로 "총 예약" 레이블 셀을 추가합니다.
+    weekDays.forEach(d => {
+        // 설명: 'weekDays' 배열에 있는 각 날짜 'd'에 대해 반복합니다.
+        const dayKey = fmt(d); // "YYYY-MM-DD"
+        // 설명: 현재 날짜 'd'를 "YYYY-MM-DD" 문자열로 포맷팅합니다.
+        let totalDayCount = 0;
+        // 설명: 현재 요일의 총 예약 건수를 저장할 변수를 초기화합니다.
+        // 해당 요일의 모든 시간대 예약 건수를 합산
+        hours.forEach(h => {
+            // 설명: 해당 요일 'd'의 모든 시간 'h'에 대해 반복합니다.
+            const hourKey = String(h).padStart(2, '0');
+            // 설명: 현재 시간 'h'를 두 자리 문자열로 포맷팅합니다.
+            const fullKey = `${dayKey}_${hourKey}`;
+            // 설명: 'hourlyCountsMap'에서 조회할 키를 만듭니다.
+            totalDayCount += (hourlyCountsMap.get(fullKey) || 0);
+            // 설명: 해당 요일의 각 시간대 예약 건수를 'totalDayCount'에 합산합니다.
+        });
+        html += `<td class="bg-light fw-bold">총 예약 ${totalDayCount}건</td>`;
+        // 설명: 해당 요일의 총 예약 건수를 표시하는 셀을 HTML에 추가합니다.
+    });
+    html += '</tr></tbody></table>';
+    // 설명: "총 예약" 행을 닫고 테이블 본문과 테이블 태그를 닫습니다.
+
+    // 10. 생성된 HTML을 캘린더 컨테이너에 삽입
+    container.innerHTML = html; 
+    // 설명: 최종적으로 생성된 모든 HTML 문자열을 'container' (캘린더 내용이 표시될 div)의 내부에 삽입하여 화면에 렌더링합니다.
 }
+
 function renderDay(){
-  const key=fmt(viewDate);
-  ymSpan.textContent=key;
-  const hours=[...Array(13)].map((_,i)=>i+7);
-  let html='<table class="table table-bordered text-center align-middle day-view"><thead><tr><th>시간</th><th>예약</th></tr></thead><tbody>';
-  hours.forEach(h=>{
-    const evs=(reservationEvents[key]||[]).filter(e=>e.start.startsWith(String(h).padStart(2,'0')));
-    html+=`<tr><td>${String(h).padStart(2,'0')}:00</td><td>${evs.map(e=>`${e.start}-${e.end} ${e.title}`).join('<br>')}</td></tr>`;
-  });
-  html+='</tbody></table>';
-  container.innerHTML=html;
+    const currentDay = viewDate;
+    ymSpan.textContent = fmt(currentDay); // 상단에 "2025-09-16" 표시
+
+    // 요일 제목 표시 (예: "화요일")
+    const dayName = currentDay.toLocaleDateString('ko-KR', { weekday: 'long' });
+
+    // ⭐ 1. 서버에서 받아온 상세 예약 데이터를 Map 형태로 변환 ⭐
+    //    키: "YYYY-MM-DD_HH" (예: "2025-09-16_08"), 값: 해당 시간대의 예약 객체 배열
+    const hourlyReservationsMap = new Map();
+    if (Array.isArray(fetchedDailyReservationCounts)) { // 변수명은 이대로 사용하되, 데이터 내용이 변경되었다고 가정
+        fetchedDailyReservationCounts.forEach(item => {
+            const dayKey = item.reserveDay;
+            // 예약 시간 "HH:MI"에서 시(HH) 부분만 추출
+            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
+            const mapKey = `${dayKey}_${hour}`;
+
+            // 해당 시간대의 예약 배열을 가져오거나 새로 생성
+            const reservations = hourlyReservationsMap.get(mapKey) || [];
+            // 현재 예약 아이템을 배열에 추가
+            reservations.push(item);
+            hourlyReservationsMap.set(mapKey, reservations);
+        });
+    }
+
+    // 2. 캘린더에 표시할 시간대 (오전 7시부터 오후 7시까지) 정의
+    const hours = [...Array(13)].map((_, i) => i + 7); // 7시부터 19시 (스크린샷 기준)
+
+    // 3. HTML 구조 시작: 시간 축과 예약 내용을 담을 컨테이너
+    let html = `
+        <div class="d-flex flex-column align-items-center mb-3">
+            <h3 class="fw-bold">${dayName}</h3>
+        </div>
+        <div class="day-view-grid d-flex">
+            <div class="time-axis" style="width: 80px; text-align: right; padding-right: 10px;">
+    `;
+    hours.forEach(h => {
+        html += `<div class="time-label" style="height: 60px; line-height: 60px;">${String(h).padStart(2, '0')}:00</div>`;
+    });
+    html += `
+            </div>
+            <div class="reservation-content flex-grow-1 border-start">
+    `;
+
+ // 4. 각 시간대별 예약 현황 렌더링
+    hours.forEach(h => {
+        const dayKey = fmt(currentDay);
+        const hourKey = String(h).padStart(2, '0');
+        const fullKey = `${dayKey}_${hourKey}`;
+        
+        // 해당 시간대의 예약 목록을 가져옵니다.
+        const reservationsInHour = hourlyReservationsMap.get(fullKey) || [];
+
+        html += `
+            <div class="hour-slot">
+        `;
+        
+        // 해당 시간대에 속하는 예약들을 렌더링
+        reservationsInHour.forEach(res => {
+            // ⭐ 이 부분이 수정되었습니다. 색상 클래스를 무채색으로 고정합니다. ⭐
+            const bgColorClass = 'text-bg-secondary'; // 모든 진료과에 대해 무채색(회색)으로 통일
+
+            // ⭐ 표시 형식과 툴팁 내용은 기존과 동일하게 유지 ⭐
+            const displayTime = res.reserveTime ? res.reserveTime.substring(0, 5) : '';
+            const blockText = `${res.patientName} 님  ${displayTime}  ${res.department}  ${res.employeeName} 예약`;
+            const tooltipText = `${res.patientName} 님 (${displayTime})  ${res.department}  ${res.employeeName} 예약`;
+
+            html += `
+                <div class="reservation-block badge ${bgColorClass} m-1"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     title="${tooltipText}"
+                     data-reservation-id="${res.reservationId || ''}">
+                    ${blockText}
+                </div>
+            `;
+        });
+
+        html += `
+            </div>
+        `;
+    });
+
+    // 5. HTML 구조 마무리 (여기서 `reservation-content`와 `day-view-grid`를 닫습니다)
+    html += `
+            </div> </div> `;
+
+    container.innerHTML = html;
+
+    // 6. Bootstrap 툴팁 초기화 (렌더링 후 호출 필요)
+    // 이 코드는 툴팁이 제대로 작동하도록 'renderDay()' 함수 호출 후에 실행되어야 합니다.
+    // fetchAndRenderCalendarData() 호출 후 render()에서 이 코드를 호출하는 것이 좋습니다.
+    // var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    // var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    //   return new bootstrap.Tooltip(tooltipTriggerEl)
+    // })
 }
-document.getElementById('viewSelect').addEventListener('change',e=>{viewMode=e.target.value;render();});
-document.getElementById('prev').onclick=()=>{if(viewMode==='month')viewDate.setMonth(viewDate.getMonth()-1);else if(viewMode==='week')viewDate.setDate(viewDate.getDate()-7);else viewDate.setDate(viewDate.getDate()-1);render();};
-document.getElementById('next').onclick=()=>{if(viewMode==='month')viewDate.setMonth(viewDate.getMonth()+1);else if(viewMode==='week')viewDate.setDate(viewDate.getDate()+7);else viewDate.setDate(viewDate.getDate()+1);render();};
-render();
+
+// ✅ 이벤트 핸들러 변경: render() 대신 fetchAndRenderCalendarData() 호출
+document.getElementById('viewSelect').addEventListener('change', e => { 
+    viewMode = e.target.value; 
+    fetchAndRenderCalendarData(); 
+});
+
+document.getElementById('prev').onclick = () => { 
+    if(viewMode === 'month') viewDate.setMonth(viewDate.getMonth() - 1);
+    else if(viewMode === 'week') viewDate.setDate(viewDate.getDate() - 7);
+    else viewDate.setDate(viewDate.getDate() - 1);
+    fetchAndRenderCalendarData(); // 데이터 다시 가져오기
+};
+
+document.getElementById('next').onclick = () => { 
+    if(viewMode === 'month') viewDate.setMonth(viewDate.getMonth() + 1);
+    else if(viewMode === 'week') viewDate.setDate(viewDate.getDate() + 7);
+    else viewDate.setDate(viewDate.getDate() + 1);
+    fetchAndRenderCalendarData(); // 데이터 다시 가져오기
+};
+
+// ✅ 페이지 로드 시 초기 캘린더 데이터를 가져옵니다.
+fetchAndRenderCalendarData();
 
 // ---------- 모달 스택 ----------
 const modalStack = [];
 
 function toggleModal(id, show = true) {
-  const el = document.getElementById(id);
-  const inst = bootstrap.Modal.getOrCreateInstance(el, { backdrop: 'static', keyboard: false });
-  show ? inst.show() : inst.hide();
+  const el = document.getElementById(id);
+  const inst = bootstrap.Modal.getOrCreateInstance(el, { backdrop: 'static', keyboard: false });
+  show ? inst.show() : inst.hide();
 }
 
 function modalBack(btn) {
-  const modalEl = btn.closest('.modal');
-  if (!modalEl) return;
-  toggleModal(modalEl.id, false);
-  const prev = modalStack.pop();
-  if (prev) toggleModal(prev, true);
+  const modalEl = btn.closest('.modal');
+  if (!modalEl) return;
+  toggleModal(modalEl.id, false);
+  const prev = modalStack.pop();
+  if (prev) toggleModal(prev, true);
 }
 
 document.querySelectorAll('.modal-back-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    modalBack(btn);
-  });
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    modalBack(btn);
+  });
 });
 
 // 모달에서 모달 띄울 때 스택 기록
 document.querySelectorAll('[data-bs-toggle="modal"]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const currentModal = btn.closest('.modal');
-    if (currentModal) {
-      modalStack.push(currentModal.id);
-      const inst = bootstrap.Modal.getInstance(currentModal);
-      if (inst) inst.hide();
-    }
-  });
+  btn.addEventListener('click', () => {
+    const currentModal = btn.closest('.modal');
+    if (currentModal) {
+      modalStack.push(currentModal.id);
+      const inst = bootstrap.Modal.getInstance(currentModal);
+      if (inst) inst.hide();
+    }
+  });
 });
 
 document.querySelectorAll('.modal').forEach(modalEl => {
-  modalEl.addEventListener('hidden.bs.modal', () => {
-    document.body.classList.remove('modal-open');
-  });
+  modalEl.addEventListener('hidden.bs.modal', () => {
+    document.body.classList.remove('modal-open');
+  });
 });
 
 // ---------- 환자 검색 ----------
 (function(){
-  let selected=null;
-  document.querySelectorAll("#patientSearchModal tbody tr").forEach(row=>{
-    row.addEventListener("click",()=>{
-      if(selected) selected.classList.remove("table-active");
-      row.classList.add("table-active");
-      selected=row;
-    });
-  });
-  document.getElementById("selectPatientBtn").addEventListener("click",()=>{
-    if(selected){
-      const tds=selected.querySelectorAll("td");
-      document.getElementById("patientName").value=tds[1].innerText;
-      document.getElementById("patientPhone").value=tds[2].innerText;
-      toggleModal("patientSearchModal",false);
-      toggleModal("reservationModal",true);
-    }
-  });
-  const search=()=>{
-    const kw=document.getElementById("patientSearchInput").value.trim();
-    document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>{
-      const name=r.querySelectorAll("td")[1].innerText.trim();
-      r.style.display=(kw==""||name === kw)?"":"none";
-    });
-  };
-  document.getElementById("searchBtn").addEventListener("click",search);
-  document.getElementById("patientSearchInput").addEventListener("keydown",e=>{
-    if(e.key==="Enter"){e.preventDefault();search();}
-  });
-  document.getElementById("clearSearchBtn").addEventListener("click",()=>{
-    document.getElementById("patientSearchInput").value="";
-    document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>r.style.display="");
-  });
+  let selected=null;
+  document.querySelectorAll("#patientSearchModal tbody tr").forEach(row=>{
+    row.addEventListener("click",()=>{
+      if(selected) selected.classList.remove("table-active");
+      row.classList.add("table-active");
+      selected=row;
+    });
+  });
+  document.getElementById("selectPatientBtn").addEventListener("click",()=>{
+    if(selected){
+      const tds=selected.querySelectorAll("td");
+      document.getElementById("patientName").value=tds[1].innerText;
+      document.getElementById("patientPhone").value=tds[2].innerText;
+      toggleModal("patientSearchModal",false);
+      toggleModal("reservationModal",true);
+    }
+  });
+  const search=()=>{
+    const kw=document.getElementById("patientSearchInput").value.trim();
+    document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>{
+      const name=r.querySelectorAll("td")[1].innerText.trim();
+      r.style.display=(kw==""||name === kw)?"":"none";
+    });
+  };
+  document.getElementById("searchBtn").addEventListener("click",search);
+  document.getElementById("patientSearchInput").addEventListener("keydown",e=>{
+    if(e.key==="Enter"){e.preventDefault();search();}
+  });
+  document.getElementById("clearSearchBtn").addEventListener("click",()=>{
+    document.getElementById("patientSearchInput").value="";
+    document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>r.style.display="");
+  });
 })();
 
 // ---------- 예약 목록 ----------
 (function(){
-  const selectAll=document.getElementById("selectAll");
-  const checks=document.querySelectorAll(".row-check");
-  if(selectAll){
-    selectAll.addEventListener("change",()=>checks.forEach(c=>c.checked=selectAll.checked));
-    checks.forEach(c=>c.addEventListener("change",()=>{
-      selectAll.checked=[...checks].every(chk=>chk.checked);
-    }));
-  }
-  document.getElementById('reservationTable').addEventListener('click',e=>{
-    const btn=e.target.closest('.detail-btn');
-    if(!btn) return;
-    const tr=btn.closest('tr');
-    const tds=tr.querySelectorAll('td');
-    document.getElementById('detailName').value=tds[1].innerText.trim();
-    document.getElementById('visitDate').value=tds[2].innerText.trim();
-    document.getElementById('visitTime').value=tds[3].innerText.trim();
-    const doc=tds[4].innerText.trim();
-    const dept=tds[5].innerText.trim();
-    const select=document.getElementById('doctorDept');
-    const idx=[...select.options].findIndex(o=>o.text.includes(dept)&&o.text.includes(doc));
-    select.selectedIndex=idx>=0?idx:0;
-  });
+  const selectAll=document.getElementById("selectAll");
+  const checks=document.querySelectorAll(".row-check");
+  if(selectAll){
+    selectAll.addEventListener("change",()=>checks.forEach(c=>c.checked=selectAll.checked));
+    checks.forEach(c=>c.addEventListener("change",()=>{
+      selectAll.checked=[...checks].every(chk=>chk.checked);
+    }));
+  }
+  document.getElementById('reservationTable').addEventListener('click',e=>{
+    const btn=e.target.closest('.detail-btn');
+    if(!btn) return;
+    const tr=btn.closest('tr');
+    const tds=tr.querySelectorAll('td');
+    document.getElementById('detailName').value=tds[1].innerText.trim();
+    document.getElementById('visitDate').value=tds[2].innerText.trim();
+    document.getElementById('visitTime').value=tds[3].innerText.trim();
+    const doc=tds[4].innerText.trim();
+    const dept=tds[5].innerText.trim();
+    const select=document.getElementById('doctorDept');
+    const idx=[...select.options].findIndex(o=>o.text.includes(dept)&&o.text.includes(doc));
+    select.selectedIndex=idx>=0?idx:0;
+  });
 })();
 
 // ---------- 예약 상세 ----------
 (function(){
-  const editBtn=document.getElementById("editBtn");
-  const saveBtn=document.getElementById("saveBtn");
-  const date=document.getElementById("visitDate");
-  const time=document.getElementById("visitTime");
-  const doctor=document.getElementById("doctorDept");
-  const reasonInput=document.getElementById("visitReasonInput");
-  const reasonArea=document.getElementById("visitReasonTextarea");
-  const confirmDeleteBtn=document.getElementById("confirmDeleteBtn");
+  const editBtn=document.getElementById("editBtn");
+  const saveBtn=document.getElementById("saveBtn");
+  const date=document.getElementById("visitDate");
+  const time=document.getElementById("visitTime");
+  const doctor=document.getElementById("doctorDept");
+  const reasonInput=document.getElementById("visitReasonInput");
+  const reasonArea=document.getElementById("visitReasonTextarea");
+  const confirmDeleteBtn=document.getElementById("confirmDeleteBtn");
 
-  editBtn.addEventListener("click",e=>{
-    e.preventDefault();
-    date.removeAttribute("readonly");
-    time.removeAttribute("readonly");
-    doctor.removeAttribute("disabled");
-    reasonInput.classList.add("d-none");
-    reasonArea.classList.remove("d-none");
-    reasonArea.value=reasonInput.value;
-    document.querySelector("#reservationDetailModal .modal-title").innerText="예약 수정";
-    editBtn.classList.add("d-none");
-    saveBtn.classList.remove("d-none");
-  });
+  editBtn.addEventListener("click",e=>{
+    e.preventDefault();
+    date.removeAttribute("readonly");
+    time.removeAttribute("readonly");
+    doctor.removeAttribute("disabled");
+    reasonInput.classList.add("d-none");
+    reasonArea.classList.remove("d-none");
+    reasonArea.value=reasonInput.value;
+    document.querySelector("#reservationDetailModal .modal-title").innerText="예약 수정";
+    editBtn.classList.add("d-none");
+    saveBtn.classList.remove("d-none");
+  });
 
-  saveBtn.addEventListener("click",e=>{
-    e.preventDefault();
-    date.setAttribute("readonly",true);
-    time.setAttribute("readonly",true);
-    doctor.setAttribute("disabled",true);
-    reasonInput.value=reasonArea.value;
-    reasonArea.classList.add("d-none");
-    reasonInput.classList.remove("d-none");
-    document.querySelector("#reservationDetailModal .modal-title").innerText="예약 상세";
-    saveBtn.classList.add("d-none");
-    editBtn.classList.remove("d-none");
-  });
+  saveBtn.addEventListener("click",e=>{
+    e.preventDefault();
+    date.setAttribute("readonly",true);
+    time.setAttribute("readonly",true);
+    doctor.setAttribute("disabled",true);
+    reasonInput.value=reasonArea.value;
+    reasonArea.classList.add("d-none");
+    reasonInput.classList.remove("d-none");
+    document.querySelector("#reservationDetailModal .modal-title").innerText="예약 상세";
+    saveBtn.classList.add("d-none");
+    editBtn.classList.remove("d-none");
+  });
 
-  confirmDeleteBtn.addEventListener("click", () => {
-	  const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
-	  deleteModal.hide();
-	  
-	  modalStack.length = 0;
+  confirmDeleteBtn.addEventListener("click", () => {
+	  const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
+	  deleteModal.hide();
+	  
+	  modalStack.length = 0;
 
-	  const managerModalEl = document.getElementById("managerReservationModal");
-	  const managerModal = new bootstrap.Modal(managerModalEl);
-	  managerModal.show();
+	  const managerModalEl = document.getElementById("managerReservationModal");
+	  const managerModal = new bootstrap.Modal(managerModalEl);
+	  managerModal.show();
 	});
 
 })();
 //---------- 문자 보내기 이동 ----------
 document.getElementById("sendSmsBtn").addEventListener("click", () => {
-  window.location.href = "smsService.html";
+  window.location.href = "smsService.html";
 });
 
 const params = new URLSearchParams(window.location.search);

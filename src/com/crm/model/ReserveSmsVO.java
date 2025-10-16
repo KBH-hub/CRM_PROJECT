@@ -10,13 +10,13 @@ public class ReserveSmsVO {
 	private String phone;
 	private String datetime;
 	private String templateName;
-	private String content;
+	private String templateContent;
 	
 	
 	public ReserveSmsVO(){};
 	
 	public ReserveSmsVO(int reserveSmsNo, String employeeId, String employeeName, int reserveNo, String patientName,
-			String phone, String datetime, String templateName, String content) {
+			String phone, String datetime, String templateName, String templateContent) {
 		setReserveSmsNo(reserveSmsNo);
 		setEmployeeId(employeeId);
 		setEmployeeName(employeeName);
@@ -25,7 +25,7 @@ public class ReserveSmsVO {
 		setPhone(phone);
 		setDatetime(datetime);
 		setTemplateName(templateName);
-		setContent(content);
+		setTemplateContent(templateContent);
 	}
 	
 	public int getReserveSmsNo() {
@@ -76,18 +76,18 @@ public class ReserveSmsVO {
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
 	}
-	public String getContent() {
-		return content;
+	public String getTemplateContent() {
+		return templateContent;
 	}
-	public void setContent(String content) {
-		this.content = content;
+	public void setTemplateContent(String templateContent) {
+		this.templateContent = templateContent;
 	}
 	
 	@Override
 	public String toString() {
 		return "ReserveSmsVO [reserveSmsNo=" + reserveSmsNo + ", employeeId=" + employeeId + ", employeeName="
 				+ employeeName + ", reserveNo=" + reserveNo + ", patientName=" + patientName + ", phone=" + phone
-				+ ", datetime=" + datetime + ", templateName=" + templateName + ", content=" + content + "]\n";
+				+ ", datetime=" + datetime + ", templateName=" + templateName + ", templateContent=" + templateContent + "]\n";
 	}
 	
 	

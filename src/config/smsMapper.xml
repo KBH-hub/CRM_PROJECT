@@ -23,7 +23,7 @@
 	    <result property="phone" column="phone" />
 	    <result property="datetime" column="datetime" />
 	    <result property="templateName" column="template_name" />       
-	    <result property="content" column="content" />
+	    <result property="templateContent" column="template_content" />
 	</resultMap>
 	
 	<select id="getReserveRecipient" parameterType="list" resultMap="ReserveSmsMap">
@@ -46,11 +46,22 @@
 	</select>
 	
 	<select id="getTemplate" resultMap="ReserveSmsMap">
-		select template_name, content
+		select template_name, template_content
 		from template
 		<if test="templateName != null and templateName != ''">
 			where template_name like '%' || #{templateName} || '%'
 		</if>
+		order by template_name desc
+	</select>
+	
+	<select id="getReserveSmsCount" parameterType="map" resultType="int">
+		select count(reserve_sms_no)
+		from reserve_sms	
+	</select>
+
+	<select id="getCommonSmsCount" parameterType="map" resultType="int">
+		select count(common_sms_no)
+		from common_sms	
 	</select>
 	
 	<select id="getReserveSms" resultMap="ReserveSmsMap">
@@ -104,6 +115,4 @@
 		join patient p on p.patient_no = cs.patient_no
 		where cs.common_sms_no = #{commonSmsNo}
 	</select>
-	
-
 </mapper>

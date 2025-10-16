@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>메시지 전송</title>
-
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -55,6 +56,16 @@
 	background: transparent;
 	color: #4a4a4a;
 }
+
+#templateList .list-group-item {
+	cursor: pointer;
+}
+
+.active-template {
+	background-color: #eaf4ff !important;
+	border-left: 4px solid #0d6efd;
+	font-weight: 600;
+}
 </style>
 </head>
 <body class="bg-body-tertiary">
@@ -88,54 +99,42 @@
 					<div class="row justify-content-center align-items-start mt-3">
 						<!-- 왼쪽 영역 -->
 						<div class="col-md-6 text-center">
-							<textarea class="form-control w-75 mx-auto mb-3" rows="10"
+							<textarea id="templateContentBox"
+								class="form-control w-75 mx-auto mb-3" rows="10"
 								placeholder="템플릿을 선택하세요." readonly></textarea>
 							<button type="button" class="btn btn-secondary btn-sm"
 								data-bs-toggle="modal" data-bs-target="#managerReservationModal">명단
 								추가</button>
-							<input type="text"
+							<input id="templateNameBox" type="text"
 								class="form-control d-inline-block w-50 ms-2 mt-2"
 								placeholder="템플릿명" disabled>
 							<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
 							<p>수신자 : 0명</p>
-							<div class="mb-4">
-								<button type="button" class="btn btn-warning btn-sm">초기화</button>
-								<button type="button" class="btn btn-success btn-sm">전송</button>
+							<div
+								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
+								<button type="button" class="btn btn-outline-secondary"
+									id="reserveSmsRecord">보낸 메시지함</button>
+								<div class="d-flex gap-2">
+									<button type="button"
+										class="btn btn-warning btn-sm btnReset">초기화</button>
+									<button type="button" class="btn btn-success btn-sm">전송</button>
+								</div>
 							</div>
 						</div>
 
 						<!-- ✅ 오른쪽 영역 -->
 						<div class="col-md-6">
 							<div class="d-flex justify-content-center mb-2">
-								<input type="search" class="form-control w-75"
+								<input id="templateName" type="text" class="form-control w-75"
 									placeholder="템플릿 검색">
-								<button type="submit" class="btn btn-primary ms-2">검색</button>
+								<button id="btnSearch" class="btn btn-primary ms-2">
+									검색 <span id="loading" class="spinner" aria-hidden="true"></span>
+								</button>
 							</div>
 
-							<ul class="list-group w-75 mx-auto text-start">
-								<li class="list-group-item d-flex justify-content-between"><span>광고
-										수신 동의</span><span>광고 수신을 동의하시겠습니까?</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>수납
-										안내</span><span>#(이름)님 #(가격) 나왔습니다.</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>예약</span><span>#(이름)님
-										안녕하세요. #(병원)...</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>접수
-										안내</span><span>#(이름)님 #(의사)과 의사 #(예...</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>재초진
-										알림</span><span>사랑합니다❤ #(이름)님 저희 ...</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>시술
-										예약</span><span>안녕하세요. #(이름)님. #(병원)...</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>결제
-										완료</span><span>#(이름)님 안녕하세요. #(병원)...</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>new_예약</span><span>[#(병원)
-										알림톡] #(이름) 고객...</span></li>
-								<li class="list-group-item d-flex justify-content-between"><span>접수
-										안내(2)</span><span>#(이름)님 #(의사)과 의사 #(예...</span></li>
+							<ul id="templateList" class="list-group w-75 mx-auto text-start">
 							</ul>
 
-							<div class="text-center mt-3">
-								<button type="button" class="btn btn-outline-secondary" id="reserveSmsRecord">보낸 메세지함</button>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -143,16 +142,31 @@
 				<!-- ✅ 일반 메시지 구역 -->
 				<div class="commonSms fade-section">
 					<div class="text-center">
-						<textarea class="form-control w-75 mx-auto mb-3" rows="10"
-							placeholder="메시지 보내실 내용을 입력하세요."></textarea>
+						<textarea id=contentBox class="form-control w-75 mx-auto mb-3"
+							rows="10" placeholder="메시지 내용을 입력하세요."></textarea>
 						<button type="button" class="btn btn-secondary btn-sm"
-							data-bs-toggle="modal" data-bs-target="#patientListModal">명단
+							data-bs-toggle="modal" data-bs-target="#patientListModal" id="commonSmsAddBtn">명단
 							추가</button>
-						<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
-						<p>수신자 : 0명</p>
+						<div class="mt-3 w-75 mx-auto border rounded overflow-auto"
+							style="height: 300px;">
+							<table class="table table-sm mb-0 text-center align-middle">
+								<thead>
+									<tr>
+										<th style="width: 40%; background: transparent;">이름</th>
+										<th style="width: 60%; background: transparent;">전화번호</th>
+									</tr>
+								</thead>
+								<tbody id="recipientTableBody" style="background: transparent;">
+									<!-- JS로 데이터가 들어올 자리 -->
+								</tbody>
+							</table>
+						</div>
+						<p class="text-end w-75 mx-auto mt-2 text-muted" id="recipientCount">수신자 : 0명</p>
+						
 						<button type="button" class="btn btn-warning btn-sm">초기화</button>
-						<button type="button" class="btn btn-success btn-sm">전송</button>
-						<button type="button" class="btn btn-outline-secondary btn-sm" id="commonSmsRecord">보낸 메세지함</button>
+						<button id = sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
+						<button type="button" class="btn btn-outline-secondary btn-sm"
+							id="commonSmsRecord">보낸 메세지함</button>
 					</div>
 				</div>
 			</div>
@@ -177,110 +191,72 @@
 
 						<div class="modal-body">
 							<div class="row mb-3">
-								<div class="col-md-3">
-									<label class="form-label">월</label> <select class="form-select">
-										<option>9월</option>
-									</select>
+								<div class="row g-3 mb-3 align-items-end">
+									<div class="col-md-3">
+										<label class="form-label">월</label> <input type="month"
+											id="filterMonth" class="form-control">
+									</div>
+									<div class="col-md-3">
+										<label class="form-label">주(월~일)</label> <select
+											id="filterWeek" class="form-select">
+											<option value="">주 선택</option>
+											<!-- JS가 9월 15일 - 9월 21일 형식 옵션 자동 생성 -->
+										</select> <input type="hidden" id="filterWeekStart"> <input
+											type="hidden" id="filterWeekEnd">
+									</div>
+									<!-- 일 -->
+									<div class="col-md-3">
+										<label class="form-label">일</label> <select id="filterDay"
+											class="form-select" disabled>
+											<option value="">주를 먼저 선택하세요</option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<label class="form-label">시간</label> <select id="filterHour"
+											class="form-select" disabled>
+											<option value="">전체</option>
+											<option value="07">07시</option>
+											<option value="08">08시</option>
+											<option value="09">09시</option>
+											<option value="10">10시</option>
+											<option value="11">11시</option>
+											<option value="12">12시</option>
+											<option value="13">13시</option>
+											<option value="14">14시</option>
+											<option value="15">15시</option>
+											<option value="16">16시</option>
+											<option value="17">17시</option>
+											<option value="18">18시</option>
+											<option value="19">19시</option>
+										</select>
+									</div>
 								</div>
-								<div class="col-md-3">
-									<label class="form-label">주</label> <select class="form-select">
-										<option>9월 15일 ~ 9월 21일</option>
-									</select>
-								</div>
-								<div class="col-md-3">
-									<label class="form-label">일</label> <select class="form-select">
-										<option>16일</option>
-									</select>
-								</div>
-								<div class="col-md-3">
-									<label class="form-label">시간</label> <select
-										class="form-select">
-										<option>전체</option>
-									</select>
+
+								<div class="table-responsive">
+									<table id="reserveTable"
+										class="table table-bordered text-center align-middle">
+										<thead class="table-light">
+											<tr>
+												<th scope="col"><input type="checkbox"
+													class="select-all"></th>
+												<th scope="col">이름</th>
+												<th scope="col">방문 예정 일</th>
+												<th scope="col">방문 예정 시간</th>
+												<th scope="col">담당의사</th>
+												<th scope="col">진료과</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td colspan="6" class="text-muted">검색 결과가 없습니다.</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 
-							<div class="table-responsive">
-								<table id="reservationTable"
-									class="table table-bordered text-center align-middle">
-									<thead class="table-light">
-										<tr>
-											<th scope="col"><input type="checkbox"
-												id="selectAll-reserve" class="select-all"></th>
-											<th scope="col">이름</th>
-											<th scope="col">방문 예정 일</th>
-											<th scope="col">방문 예정 시간</th>
-											<th scope="col">담당의사</th>
-											<th scope="col">진료과</th>
-											<th scope="col">상세</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><input class="row-check" type="checkbox"></td>
-											<td>이승희</td>
-											<td>2025-09-16</td>
-											<td>8:30</td>
-											<td>나신경</td>
-											<td>신경외과</td>
-											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
-													width="24" height="24"></a></td>
-										</tr>
-										<tr>
-											<td><input class="row-check" type="checkbox"></td>
-											<td>심채윤</td>
-											<td>2025-09-16</td>
-											<td>9:00</td>
-											<td>나신경</td>
-											<td>신경외과</td>
-											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
-													width="24" height="24"></a></td>
-										</tr>
-										<tr>
-											<td><input class="row-check" type="checkbox"></td>
-											<td>황태준</td>
-											<td>2025-09-16</td>
-											<td>10:30</td>
-											<td>홍길동</td>
-											<td>신경외과</td>
-											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
-													width="24" height="24"></a></td>
-										</tr>
-										<tr>
-											<td><input class="row-check" type="checkbox"></td>
-											<td>이승희</td>
-											<td>2025-09-16</td>
-											<td>11:00</td>
-											<td>나신경</td>
-											<td>신경외과</td>
-											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
-													width="24" height="24"></a></td>
-										</tr>
-										<tr>
-											<td><input class="row-check" type="checkbox"></td>
-											<td>김찰수</td>
-											<td>2025-09-16</td>
-											<td>14:00</td>
-											<td>박임강</td>
-											<td>정형외과</td>
-											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
-													width="24" height="24"></a></td>
-										</tr>
-										<tr>
-											<td><input class="row-check" type="checkbox"></td>
-											<td>신명구</td>
-											<td>2025-09-16</td>
-											<td>15:00</td>
-											<td>김의사</td>
-											<td>정형외과</td>
-											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
-													width="24" height="24"></a></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+
 						</div>
-
 						<div class="modal-footer d-flex justify-content-between">
 							<div class="d-flex gap-2">
 								<button class="btn btn-primary">선택 환자 메시지 보내기</button>
@@ -288,171 +264,88 @@
 						</div>
 					</div>
 				</div>
-			</div>
 
+
+			</div>
 			<!-- ✅ 일반메시지-명단추가 모달 -->
 			<div class="modal fade" id="patientListModal" tabindex="-1"
 				aria-hidden="true">
 				<div
 					class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 					<div class="modal-content custom-modal-size">
-
 						<div
 							class="modal-header d-flex justify-content-between align-items-center">
 							<h5 class="modal-title fw-bold">환자 목록 (sms)</h5>
 							<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
 						</div>
-
 						<div class="modal-body">
+							<div class="card">
+								<div class="card-body">
+									<div
+										class="mb-4 d-flex flex-wrap justify-content-between align-items-center">
+										<div class="d-flex flex-wrap gap-2 align-items-center">
+											<input type="date" id="startDate" class="form-control w-auto">
+											<input type="date" id="endDate" class="form-control w-auto">
+											<select id="doctorSelect" class="form-select"
+												style="width: 250px;">
+											</select> <select id="searchType" class="form-select w-auto">
+												<option value="name">이름</option>
+												<option value="birth">생년월일</option>
+											</select> <input type="text" id="keyword" class="form-control w-auto"
+												placeholder="검색어 입력">
+											<button class="btn btn-primary" id="searchBtn">검색</button>
+										</div>
+									</div>
 
-							<!-- 검색 영역 -->
-							<div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-								<input type="date" class="form-control w-auto"
-									value="2025-09-01"> <span>~</span> <input type="date"
-									class="form-control w-auto" value="2025-09-30"> <select
-									class="form-select w-auto">
-									<option selected disabled hidden>담당의사</option>
-									<option>김의사 / 정형외과 / DO001</option>
-									<option>원강 / 정형외과 / DO003</option>
-									<option>나길동 / 신경외과 / DN004</option>
-									<option>사공길동 / 신경외과 / DN005</option>
-									<option>김철수 / 마취통증의학과 / DA001</option>
-								</select>
+									<div class="table-responsive">
+										<table class="table table-bordered align-middle text-center"
+											style="table-layout: fixed; width: 100%;">
+											<thead class="table-light">
+												<tr>
+													<th style="width: 4%;"><input type="checkbox"
+														class="select-all"></th>
+													<th style="width: 5%;">환자등록번호</th>
+													<th style="width: 10%;">이름</th>
+													<th style="width: 12%;">전화번호</th>
+													<th style="width: 10%;">최근내원일</th>
+													<th style="width: 10%;">담당의사</th>
+													<th style="width: 10%;">진료과</th>
+													<th style="width: 10%;">보험 종류</th>
+													<th style="width: 25%;">진단명</th>
+												</tr>
+											</thead>
+											<tbody id="patientTableBody"></tbody>
+										</table>
+									</div>
+									<nav aria-label="페이지 이동"
+										class="d-flex justify-content-center my-3">
+										<ul id="pager"
+											class="pagination pagination-sm align-items-center gap-2"></ul>
+									</nav>
+								</div>
 
-								<!-- 검색 조건 영역 -->
-								<div class="d-flex align-items-center">
-									<select class="form-select w-auto">
-										<option selected>생년월일</option>
-										<option>이름</option>
-									</select> <input type="text" class="form-control w-auto ms-2"
-										placeholder="검색어 입력">
-									<button class="btn btn-outline-primary ms-2">검색</button>
+								<div class="modal fade" id="alertModal" tabindex="-1"
+									aria-hidden="true">
+									<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-content text-center border border-primary">
+											<div class="modal-body">
+												<p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+												<div class="d-flex justify-content-center">
+													<button type="button" class="btn btn-primary px-4"
+														data-bs-dismiss="modal">확인</button>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 
-							<!-- 환자 목록 테이블 -->
-							<table class="table table-bordered align-middle">
-								<thead class="table-light">
-									<tr>
-										<th scope="col"><input type="checkbox"
-											id="selectAll-reserve" class="select-all"></th>
-										<th>환자등록번호</th>
-										<th>이름</th>
-										<th>전화번호</th>
-										<th>입원일</th>
-										<th>담당의</th>
-										<th>진료과</th>
-										<th>상태</th>
-										<th>진단명</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td><input type="checkbox" class="row-check" checked></td>
-										<td>06071</td>
-										<td>김상철</td>
-										<td>010-1211-6337</td>
-										<td>2025-09-20</td>
-										<td>김의사</td>
-										<td>정형외과</td>
-										<td>외래</td>
-										<td>피로골절</td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" class="row-check" checked></td>
-										<td>06072</td>
-										<td>김병만</td>
-										<td>010-4567-8901</td>
-										<td>2025-09-19</td>
-										<td>김의사</td>
-										<td>정형외과</td>
-										<td>외래</td>
-										<td>염좌</td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" class="row-check" checked></td>
-										<td>06073</td>
-										<td>김아리</td>
-										<td>010-5678-9012</td>
-										<td>2025-09-19</td>
-										<td>박원장</td>
-										<td>정형외과</td>
-										<td>입원 예정</td>
-										<td>중족골골절</td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" class="row-check"></td>
-										<td>06074</td>
-										<td>최상현</td>
-										<td>010-6789-0123</td>
-										<td>2025-09-19</td>
-										<td>원 장</td>
-										<td>정형외과</td>
-										<td>입원 예정</td>
-										<td>복합골절</td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" class="row-check"></td>
-										<td>06075</td>
-										<td>오인표</td>
-										<td>010-7890-1234</td>
-										<td>2025-09-19</td>
-										<td>홍길동</td>
-										<td>정형외과</td>
-										<td>입원 중</td>
-										<td>척추측만</td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" class="row-check"></td>
-										<td>06076</td>
-										<td>밥말리</td>
-										<td>010-8901-2345</td>
-										<td>2025-09-18</td>
-										<td>나신경</td>
-										<td>신경외과</td>
-										<td>입원 중</td>
-										<td>디스크파열</td>
-									</tr>
-								</tbody>
-							</table>
-
-							<!-- ✅ 페이지 이동 버튼 -->
-							<nav aria-label="페이지 이동"
-								class="d-flex justify-content-center my-3">
-								<ul id="pager"
-									class="pagination pagination-sm align-items-center gap-2">
-									<!-- 처음 / 이전 -->
-									<li class="page-item"><button class="page-link"
-											data-action="first" aria-label="처음">«</button></li>
-									<li class="page-item"><button class="page-link"
-											data-action="prev" aria-label="이전">‹</button></li>
-
-									<!-- 숫자들 -->
-									<li class="page-item"><button class="page-link"
-											data-page="1">1</button></li>
-									<li class="page-item"><button class="page-link"
-											data-page="2">2</button></li>
-									<li class="page-item"><button class="page-link"
-											data-page="3">3</button></li>
-									<li class="page-item"><button class="page-link"
-											data-page="4">4</button></li>
-									<li class="page-item"><button class="page-link"
-											data-page="5">5</button></li>
-									<li class="page-item"><button class="page-link"
-											data-page="6">6</button></li>
-
-									<!-- 다음 / 마지막 -->
-									<li class="page-item"><button class="page-link"
-											data-action="next" aria-label="다음">›</button></li>
-									<li class="page-item"><button class="page-link"
-											data-action="last" aria-label="마지막">»</button></li>
-								</ul>
-							</nav>
 						</div>
 
 						<div class="modal-footer d-flex justify-content-between">
 							<div>
-								<button class="btn btn-primary">선택 환자 메시지 보내기</button>
+								<button id="sendSmsSelectBtn" class="btn btn-primary"
+									data-bs-dismiss="modal">선택 환자 메시지 보내기</button>
 							</div>
 						</div>
 
@@ -460,11 +353,11 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	</main>
+		</main>
 	</div>
 	</div>
 	<script>
+	
 	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
 	  async function loadSidebar(activeKey) {
 	    const slot = document.getElementById('sidebar-slot');
@@ -494,8 +387,90 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-	<script>
-	<!-- ✅ 기본html 관련 js -->
+	<script type="text/javascript">
+	//template 리스트 불러오기
+	$(function(){
+		//페이지 로드 시, 전체 리스트 출력
+		loadTemplate();
+		
+		//검색 버튼
+		$("#btnSearch").on("click", loadTemplate);
+		
+		//엔터로 검색
+		$("#templateName").on("keydown", function(e){
+			if (e.key == "Enter") loadTemplate();
+		});
+	})
+	
+  	function loadTemplate() {
+      const name = $("#templateName").val().trim();
+
+      $.ajax({
+    	    url: "controller",
+    	    method: "GET",
+    	    dataType: "json",
+    	    data: { cmd: "getTemplate", templateName: name },
+    	    success: renderList,
+    	    error: function(xhr, status, err) {
+    	      console.error(err);
+    	      $("#templateList").html('<li class="list-group-item text-danger">불러오기 실패: ' + (xhr.responseText || status) + '</li>');
+    	    }
+    	  });
+     }
+	
+    //초기화 버튼
+	$(".btnReset").on("click", function() {
+	  $("#templateContentBox").val("");
+	  $("#templateNameBox").val("");
+	  $("#contentBox").val("");
+	  $("#recipientTableBody").empty();
+	  $("#commonSmsAddBtn").prop("disabled", false);
+	$("#templateList .active-template").removeClass("active-template");
+	});
+    // JSON 배열 → <ul> 렌더링
+    function renderList(list) {
+      const $ul = $("#templateList").empty();
+
+      if (!list || list.length === 0) {
+        $ul.html('<li class="list-group-item text-center text-muted">검색 결과가 없습니다.</li>');
+        return;
+      }
+
+      list.forEach(function(row) {
+        const name = row.templateName;
+        const content = row.templateContent;
+
+        const $li = $('<li class="list-group-item d-flex justify-content-between align-items-center">');
+        $li.append($('<span>').text(name));
+        $li.append($('<span>').text(content));
+        $ul.append($li);
+        
+        // 클릭 시 왼쪽 영역에 삽입
+        $li.on("click", function(){
+        	$("#templateNameBox").val(name);
+        	$("#templateContentBox").val(content);
+        	
+        	//하이라이트 효과
+        	$("#templateList .active-template").removeClass("active-template");
+        	$(this).addClass("active-template");
+        });
+        
+
+        // 상세보기 데이터 저장 + 클릭 핸들러
+       // $li.data("templateName", name);
+     //   $li.data("content", row.templateContent || '');
+
+
+      });
+
+    }
+    
+    
+    
+    //보낸 메시지함 클릭
+     $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=reserveSmsUI");
+    
+	// ✅ 기본html 관련 js 
 	  const reserveBtn = document.getElementById('reserveBtn');
 	  const commonBtn  = document.getElementById('commonBtn');
 	  const reserveSec = document.querySelector('.reserveSms');
@@ -520,8 +495,32 @@
 	    showSection(commonSec, reserveSec, commonBtn, reserveBtn);
 	  });
 
+	//======일반메시지 관련=======
+	$("#sendSMSbtn").on("click", function(){
+		 const content = $("#contentBox").val().trim();
+
+		  if (selectedRecipients.length === 0) {
+		    showAlert("수신자 명단이 비어 있습니다. 먼저 명단을 추가하세요.");
+		    return;
+		  }
+		  if (!content) {
+		    showAlert("메시지 내용을 입력하세요.");
+		    return;
+		  }
+		  
+		  const payload = {
+				    content: content,
+				    // 필요시 employeeId는 서버 세션에서 가져가도록 권장(프론트에서 보내지 않음)
+				    // 요청에 ids, 이름, 전화 모두 포함하고 싶다면 아래 배열들을 함께 보냄
+				    patientNo: selectedRecipients.map(r => r.patientNo),
+				    patientName: selectedRecipients.map(r => r.patientName),
+				    phone: selectedRecipients.map(r => r.phone)
+				  };
+
+	})
 	
-	<!-- ✅ 명단추가 모달 js-->
+	  
+	// ✅ 명단추가 모달 js
 	document.addEventListener('DOMContentLoaded', () => {
   // 각 모달(또는 원하는 컨테이너)마다 select-all 로직을 연결
   ['#managerReservationModal', '#patientListModal'].forEach(selector => {
@@ -556,69 +555,425 @@
     });
   });
 });
-	
+	// 예약목록 모달
+	// ===== 유틸 =====
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const ymd = d => { const t=new Date(d.getTime()); const Y=t.getFullYear(), M=String(t.getMonth()+1).padStart(2,'0'), D=String(t.getDate()).padStart(2,'0'); return `${Y}-${M}-${D}`; };
+const formatKo = d => `${d.getMonth()+1}월 ${d.getDate()}일`;
+const getMonday = d => { const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const dow=(x.getDay()+6)%7; x.setDate(x.getDate()-dow); x.setHours(0,0,0,0); return x; };
+
+// 월의 주(월~일) 목록 만들기
+function buildWeeksForMonth(year, month){
+  const first = new Date(year, month-1, 1);
+  const last  = new Date(year, month, 0);
+  let curMon  = getMonday(first);
+  const weeks = [];
+  while (curMon <= last){
+    const start = new Date(curMon), end = addDays(start, 6);
+    weeks.push({ start, end });
+    curMon = addDays(curMon, 7);
+  }
+  return weeks;
+}
+
+// 주 셀렉트 옵션 렌더 (선택은 하지 않음 → 사용자가 직접 고르게)
+function renderWeekOptions(year, month){
+  const $sel = $('#filterWeek').empty().append('<option value="">주 선택</option>');
+  buildWeeksForMonth(year, month).forEach(({start, end})=>{
+    const val = `${ymd(start)}|${ymd(end)}`;
+    const label = `${formatKo(start)} - ${formatKo(end)}`;
+    $sel.append(new Option(label, val));
+  });
+
+  // 주를 강제로 자동 선택하지 않음 → day는 계속 disabled 상태 유지
+  $('#filterWeekStart, #filterWeekEnd').val('');
+  $('#filterDay').prop('disabled', true).empty().append('<option value="">주를 먼저 선택하세요</option>');
+}
+
+// 선택된 주의 7일을 day 옵션으로 렌더
+function renderDayOptionsByWeek(){
+  const ws = $('#filterWeekStart').val(), we = $('#filterWeekEnd').val();
+  const $day = $('#filterDay').empty();
+  if (!ws || !we){
+    $day.prop('disabled', true).append('<option value="">주를 먼저 선택하세요</option>');
+    return;
+  }
+  $day.prop('disabled', false).append(new Option('전체', ''));
+  const start = new Date(ws);
+  for (let i=0;i<7;i++){
+    const d = addDays(start, i);
+    $day.append(new Option(formatKo(d), ymd(d)));
+  }
+  // 기본은 '전체'
+  $day.val('');
+}
+
+// ===== 이벤트 바인딩 =====
+
+// 모달 열릴 때: 오늘 월 세팅 + 주 목록 생성(자동선택 안 함) + 기본 조회(주 조건 없이 오늘/시간만으로 조회 필요시 조정)
+document.getElementById('managerReservationModal')
+  .addEventListener('shown.bs.modal', () => {
+    const today = new Date();
+    const yyyy  = today.getFullYear();
+    const mm    = String(today.getMonth()+1).padStart(2,'0');
+    $('#filterMonth').val(`${yyyy}-${mm}`);
+    $('#filterHour').val('').prop('disabled', true);
+    renderWeekOptions(yyyy, parseInt(mm,10));
+    // 필요하다면 여기서 오늘이 속한 주를 자동 선택하도록 바꿀 수도 있음(지금은 사용자 선택 강제)
+    loadReserveList(); // 주가 비어있으면 week/day 없이 조회 (백엔드에서 month/hour만 적용되도록 <choose>로 처리)
+  });
+
+// 월 변경 → 주 옵션 재생성 + day 비활성화 + 즉시 조회
+$('#filterMonth').on('change', function(){
+  const v = $(this).val();
+  $('#filterHour').val('').prop('disabled', true);
+  if (!v){
+    $('#filterWeek').empty().append('<option value="">주 선택</option>');
+    $('#filterWeekStart,#filterWeekEnd').val('');
+    $('#filterDay').prop('disabled', true).empty().append('<option value="">주를 먼저 선택하세요</option>');
+    loadReserveList();
+    return;
+  }
+  const [y, m] = v.split('-').map(Number);
+  renderWeekOptions(y, m);
+  loadReserveList();
+});
+
+// ✅ 주 선택 → hidden 세팅 + 7일 옵션 생성 + 즉시 조회
+$('#filterWeek').on('change', function(){
+  const val = $(this).val(); // "YYYY-MM-DD|YYYY-MM-DD" 또는 ""
+  $('#filterHour').val('').prop('disabled', true);
+  if (!val){
+    $('#filterWeekStart,#filterWeekEnd').val('');
+    $('#filterDay').prop('disabled', true).empty().append('<option value="">주를 먼저 선택하세요</option>');
+    loadReserveList();
+    return;
+  }
+  const [ws, we] = val.split('|');
+  $('#filterWeekStart').val(ws);
+  $('#filterWeekEnd').val(we);
+  renderDayOptionsByWeek();
+  loadReserveList();
+});
+
+// 일 선택 - 주 선택시 가능
+$('#filterDay').on('change', function(){
+  const hasDay = (($(this).val() || '') !== '');
+  if (hasDay) {
+    $('#filterHour').prop('disabled', false);
+  } else {
+    $('#filterHour').val('').prop('disabled', true);
+  }
+  loadReserveList();
+});
+
+// 시간 선택 → 즉시 조회
+$('#filterHour').on('change', loadReserveList);
+
+// ===== 예약목록 조회 AJAX =====
+function loadReserveList(){
+  const params = {
+    cmd: 'reserveListModal',
+    month:     $('#filterMonth').val()     || '',
+    weekStart: $('#filterWeekStart').val() || '',
+    weekEnd:   $('#filterWeekEnd').val()   || '',
+    day:       $('#filterDay').prop('disabled') ? '' : ($('#filterDay').val() || ''), // 주 미선택 시 day는 비움
+    hour:      $('#filterHour').val()      || ''
+  };
+  $.ajax({
+    url: 'controller',
+    method: 'GET',
+    dataType: 'json',
+    data: params,
+    success: renderReserveList,
+    error: () => $('#reserveTable tbody').html('<tr><td colspan="6" class="text-danger">불러오기 실패</td></tr>')
+  });
+}
+
+function renderReserveList(reserveList){
+  const $tbody = $('#reserveTable tbody').empty();
+  if (!reserveList || reserveList.length === 0){
+    $tbody.html('<tr><td colspan="6" class="text-muted">검색 결과가 없습니다.</td></tr>');
+    return;
+  }
+  reserveList.forEach(r=>{
+	    const $tr = $('<tr>');
+	    // 체크박스 열
+	    $tr.append('<td><input type="checkbox" class="row-check"></td>');
+	    // 데이터 열들
+	    $tr.append($('<td>').text(r.patientName  || ''));
+	    $tr.append($('<td>').text(r.reserveDay   || ''));
+	    $tr.append($('<td>').text(r.reserveTime  || ''));
+	    $tr.append($('<td>').text(r.employeeName || ''));
+	    $tr.append($('<td>').text(r.department   || ''));
+	    $tbody.append($tr);
+	  });
+}
+
+	// ========환자추가 모달=========
+function renderTable(list) {
+  var $tbody = $("#patientTableBody");
+  $tbody.empty();
+  if (!list || list.length === 0) {
+    $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 환자 정보가 없습니다.</td></tr>");
+    return;
+  }
+  $.each(list, function(i, p) {
+    var tr = `
+      <tr>
+        <td><input type="checkbox" class="row-check"></td>
+        <td>${p.patientNo || '-'}</td>
+        <td>${p.patientName || '-'}</td>
+        <td>${p.phone || '-'}</td>
+        <td>${p.medicalDate || '-'}</td>
+        <td>${p.employeeName || '-'}</td>
+        <td>${p.department || '-'}</td>
+        <td>${p.status || '-'}</td>
+        <td>${p.diagnosis || '-'}</td>
+      </tr>`;
+    $tbody.append(tr);
+  });
+}
+
+function renderPager(totalCount) {
+  var $pager = $("#pager");
+  $pager.empty();
+  if (totalCount === 0 || totalPages <= 1) return;
+  function addBtn(label, action, disabled, active) {
+    var li = `<li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
+                <button class="page-link" data-action="${action}">${label}</button></li>`;
+    $pager.append(li);
+  }
+  addBtn("«", "first", currentPage === 1);
+  addBtn("‹", "prev", currentPage === 1);
+  for (var i = 1; i <= totalPages; i++) addBtn(i, "", false, i === currentPage);
+  addBtn("›", "next", currentPage === totalPages);
+  addBtn("»", "last", currentPage === totalPages);
+  $pager.find(".page-link").click(function() {
+    var act = $(this).data("action");
+    var text = $(this).text();
+    if ($.isNumeric(text)) loadPatientList(Number(text));
+    else if (act === "first") loadPatientList(1);
+    else if (act === "prev" && currentPage > 1) loadPatientList(currentPage - 1);
+    else if (act === "next" && currentPage < totalPages) loadPatientList(currentPage + 1);
+    else if (act === "last") loadPatientList(totalPages);
+  });
+}
+
+var pageSize = 10;
+var currentPage = 1;
+var totalPages = 1;
+var currentFilter = {
+  startDate: "",
+  endDate: "",
+  doctorCode: "",
+  searchType: "",
+  keyword: ""
+};
+
+function loadPatientList(page) {
+  var params = $.extend({}, currentFilter, {
+    cmd: "patientListModal",
+    page: page,
+    pageSize: pageSize
+  });
+  $.ajax({
+    url: "controller",
+    type: "GET",
+    data: params,
+    dataType: "json",
+    success: function(data) {
+      var list = data.list || [];
+      var totalCount = data.totalCount || 0;
+      if (totalCount === 0) {
+        totalPages = 0;
+        currentPage = 1;
+        renderTable([]);
+        renderPager(0);
+        return;
+      }
+      totalPages = Math.ceil(totalCount / pageSize);
+      currentPage = page;
+      renderTable(list);
+      renderPager(totalCount);
+    },
+    error: function() {
+      showAlert("환자 목록을 불러오는 중 오류가 발생했습니다.");
+    }
+  });
+}
+
+function validateDates() {
+  var start = $("#startDate").val();
+  var end   = $("#endDate").val();
+  if (start && end && start > end) {
+    end = start;
+    $("#endDate").val(start);
+  }
+  if (start || end) loadDoctorList(start, end);
+  currentFilter = {
+    startDate: start || "",
+    endDate: end || "",
+    doctorCode: $("#doctorSelect").val() || "",
+    searchType: $("#searchType").val() || "",
+    keyword: $("#keyword").val().trim() || ""
+  };
+  loadPatientList(1);
+  return true;
+}
+
+  $("#searchBtn").click(function() {
+    currentFilter = {
+      startDate: $("#startDate").val(),
+      endDate: $("#endDate").val(),
+      doctorCode: $("#doctorSelect").val(),
+      searchType: $("#searchType").val(),
+      keyword: $("#keyword").val().trim()
+    };
+    loadPatientList(1);
+  });
+  
+  $("#keyword").keypress(function(e) {
+	    if (e.key === "Enter") $("#searchBtn").click();
+  });
+
+  $("#startDate, #endDate, #doctorSelect").change(validateDates);
+ 
+  //선택한 수신자들을 여기 보관
+  let selectedIds = [];
+  let selectedRecipients = [];
+  
+  $("#sendSmsSelectBtn").click(function () {
+	  const ids = [];
+	  $("#patientTableBody .row-check:checked").each(function () {
+	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
+	  });
+	  if (ids.length === 0) {
+	    showAlert("선택된 환자가 없습니다.");
+	    return;
+	  }
+
+	  $.ajax({
+	    url: "controller?cmd=getCommonRecipient",
+	    type: "POST",
+	    data: { patientNo: ids },
+	    traditional: true,   // 배열 전송
+	    dataType: "json",
+	    success: function (list) {
+	      const $tbody = $("#recipientTableBody").empty();
+
+	      if (!Array.isArray(list) || list.length === 0) {
+	        $("#recipientCount").text("수신자 : 0명");
+	        return;
+	      }
+	      
+	      // ✅ 전역 보관
+	      selectedIds = ids.slice(); // 복사 저장
+	      // 응답 VO에 patientNo가 없으면, ids 순서대로 매칭
+	      selectedRecipients = list.map(r => ({
+	        patientNo: r.patientNo || "",
+	        patientName: r.patientName || "",
+	        phone: r.phone || ""
+	      }));
+
+	      list.forEach(r => {
+	        $tbody.append(`
+	          <tr>
+	            <td style="border:none; background: transparent;">${r.patientName || ""}</td>
+	            <td style="border:none; background: transparent;">${r.phone || ""}</td>
+	          </tr>
+	        `);
+	      });
+
+	      $("#recipientCount").text(`수신자 : ${list.length}명`);
+	    },
+	    error: function () {
+	      showAlert("전송 중 오류가 발생했습니다.");
+	    }
+	  });
+	});
+
+
+  function loadDoctorList(startDate, endDate) {
+	  var prevValue = $("#doctorSelect").val();
+	  $.ajax({
+	    url: "controller",
+	    type: "GET",
+	    data: { cmd: "getDoctorListByDateAction", startDate: startDate, endDate: endDate },
+	    dataType: "json",
+	    success: function(list) {
+	      var $doctorSelect = $("#doctorSelect");
+	      $doctorSelect.empty().append('<option value="">담당 의사 선택</option>');
+	      $.each(list, function(i, d) {
+	        var code = d.doctorCode ? d.doctorCode : "";
+	        var opt = '<option value="' + code + '">' +
+	                   d.employeeName + ' (' + d.department + ', ' + code + ')' +
+	                   '</option>';
+	        $doctorSelect.append(opt);
+	      });
+	      if ($doctorSelect.find("option[value='" + prevValue + "']").length > 0)
+	        $doctorSelect.val(prevValue);
+	      else $doctorSelect.val("");
+	      $doctorSelect.prop("disabled", false);
+	    },
+	    error: function() {
+	      showAlert("의사 목록을 불러오는 중 오류가 발생했습니다.");
+	    }
+	  });
+	}
+  
+  
+  
+  loadDoctorList($("#startDate").val() || "", $("#endDate").val() || "");
+  loadPatientList(1);
+
 	  
-	  // ✅ 페이지 이동 js
-	(() => {
-		  const pager = document.getElementById('pager');
-		  const minPage = 1;
-		  const maxPage = 6;
-		  let current = 1; // ✅ 1페이지부터 시작
 
-		  updateUI();
 
-		  pager.addEventListener('click', (e) => {
-		    const btn = e.target.closest('.page-link');
-		    if (!btn) return;
-
-		    const page = btn.getAttribute('data-page');
-		    if (page) {
-		      current = Number(page);
-		      updateUI();
-		      return;
-		    }
-
-		    const action = btn.getAttribute('data-action');
-		    if (!action) return;
-
-		    if (action === 'first') current = minPage;
-		    if (action === 'prev')  current = Math.max(minPage, current - 1);
-		    if (action === 'next')  current = Math.min(maxPage, current + 1);
-		    if (action === 'last')  current = maxPage;
-
-		    updateUI();
-		  });
-
-		  function updateUI() {
-		    pager.querySelectorAll('.page-item').forEach(li => li.classList.remove('active'));
-		    pager.querySelectorAll('[data-page]').forEach(btn => {
-		      if (Number(btn.getAttribute('data-page')) === current) {
-		        btn.parentElement.classList.add('active');
-		      }
-		    });
-		    setDisabled('[data-action="first"],[data-action="prev"]', current === minPage);
-		    setDisabled('[data-action="next"],[data-action="last"]', current === maxPage);
-		  }
-
-		  function setDisabled(selector, isDisabled) {
-		    pager.querySelectorAll(selector).forEach(btn => {
-		      btn.parentElement.classList.toggle('disabled', isDisabled);
-		      btn.setAttribute('tabindex', isDisabled ? '-1' : '0');
-		      btn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
-		    });
-		  }
-		})();
-	  
-	document.getElementById("reserveSmsRecord").addEventListener("click", () => {
-		  window.location.href = "smsRecord.html";
-		});
 	document.getElementById("commonSmsRecord").addEventListener("click", () => {
 		  window.location.href = "smsRecord.html?tab=common";
 		});
+	
 	const params = new URLSearchParams(window.location.search);
 	if (params.get("tab") === "common") {
 	  commonBtn.click(); // 일반 메시지 탭 자동 활성화
+	  const ids = [];
+	  params.forEach((value, key) => {
+	    if (key === "patientNo") ids.push(value);
+	  });
+	  $("#commonSmsAddBtn").prop("disabled", true);
+	  $.ajax({
+		    url: "controller?cmd=getCommonRecipient",
+		    type: "POST",
+		    data: { patientNo: ids },
+		    traditional: true,   // 배열 전송
+		    dataType: "json",
+		    success: function (list) {
+		      const $tbody = $("#recipientTableBody").empty();
+	
+		      if (!Array.isArray(list) || list.length === 0) {
+		        $("#recipientCount").text("수신자 : 0명");
+		        return;
+		      }
+	
+		      list.forEach(r => {
+		        $tbody.append(`
+		          <tr>
+		            <td style="border:none; background: transparent;">${r.patientName || ""}</td>
+		            <td style="border:none; background: transparent;">${r.phone || ""}</td>
+		          </tr>
+		        `);
+		      });
+	
+		      $("#recipientCount").text(`수신자 : ${list.length}명`);
+		    },
+		    error: function () {
+		      showAlert("전송 중 오류가 발생했습니다.");
+		    }
+	  });
 	}
+	
+	
 </script>
 
 

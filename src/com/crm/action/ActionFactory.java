@@ -48,6 +48,7 @@ public class ActionFactory {
 			break;
 		case "doctorListUI":
 			a = new DoctorListUIAction();
+			break;
 		case "countMyReserveMonth":
 			a = new CountMyReserveMonthAction();
 			break;

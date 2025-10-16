@@ -54,17 +54,21 @@
 		order by template_name desc
 	</select>
 	
-	<select id="getReserveSmsCount" parameterType="map" resultType="int">
+	<select id="getReserveSmsCount" resultType="int">
 		select count(reserve_sms_no)
 		from reserve_sms	
 	</select>
 
-	<select id="getCommonSmsCount" parameterType="map" resultType="int">
+	<select id="getCommonSmsCount" resultType="int">
 		select count(common_sms_no)
 		from common_sms	
 	</select>
 	
 	<select id="getReserveSms" resultMap="ReserveSmsMap">
+			SELECT *
+		FROM (
+		  SELECT ROWNUM AS rn, A.*
+		  FROM (
 		select rs.reserve_sms_no, p.patient_name, e.employee_name, p.phone, TO_CHAR(rs.datetime,
 		'YYYY-MM-DD HH24:MI') as datetime, rs.template_name
 		from reserve_sms rs
@@ -72,6 +76,11 @@
 		join employee e on e.employee_id = rs.employee_id
 		join reserve r on r.reserve_no = rs.reserve_no
 		join patient p on p.patient_no = r.patient_no
+		order by rs.reserve_sms_no desc
+		) A
+		  WHERE ROWNUM &lt;= #{endRow, jdbcType=NUMERIC}
+		)
+		WHERE rn &gt;= #{startRow, jdbcType=NUMERIC}
 	</select>
 	
 	<insert id="addReserveSms" parameterType="map">
@@ -81,6 +90,10 @@
 	</insert>
 	
 	<select id="getCommonSms" resultMap="CommonSmsMap">
+				SELECT *
+		FROM (
+		  SELECT ROWNUM AS rn, A.*
+		  FROM (
 		select
 		cs.common_sms_no,
 		p.patient_name,
@@ -92,6 +105,11 @@
 		common_sms cs
 		join employee e on e.employee_id = cs.employee_id
 		join patient p on p.patient_no = cs.patient_no
+		order by cs.common_sms_no desc
+				) A
+		  WHERE ROWNUM &lt;= #{endRow, jdbcType=NUMERIC}
+		)
+		WHERE rn &gt;= #{startRow, jdbcType=NUMERIC}
 	</select>
 	
 	<insert id="addCommonSms" parameterType="map">

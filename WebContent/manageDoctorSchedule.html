@@ -4,31 +4,20 @@
 <meta charset="UTF-8">
 <title>의사 주간 근무표</title>
 
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-  rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-  body {
-    background-color: #f3f8fc;
-  }
-
-  h1 {
-    margin-bottom: 20px;
-  }
-
+  body { background-color: #f3f8fc; }
   .table th {
     background-color: #dce6f1;
     text-align: center;
     vertical-align: middle;
   }
-
   .table td {
     text-align: center;
     vertical-align: middle;
     height: 40px;
   }
-
   .circle {
     display: inline-block;
     width: 12px;
@@ -36,7 +25,6 @@
     border-radius: 50%;
     background-color: #7ca7d8;
   }
-
   .week-range {
     background-color: #b7cde6;
     padding: 8px 0;
@@ -46,13 +34,11 @@
     color: #000;
     width: 50%;
   }
-
-  /* 드롭다운 */
   .dropdown-menu {
-    min-width: 300px;
-    border: 1px solid #ccc;
-    padding: 8px;
-  }
+  width: 300px;
+  border: 1px solid #ccc;
+  padding: 3px;
+}
   .dropdown-item {
     display: flex;
     justify-content: space-between;
@@ -73,288 +59,410 @@
 </head>
 
 <body class="bg-body-tertiary">
-	<div class="container-fluid">
+<div class="container-fluid">
   <div class="row">
-
-    <!-- 여기서 사이드바를 주입 -->
     <div id="sidebar-slot" class="col-2 p-0"></div>
 
-    <!-- 메인 -->
     <main class="col-10 p-4">
-  <h2 class="mb-3 border-bottom pb-2">의사 주간 근무 표</h2>
-  <div class="container bg-white border rounded shadow-sm p-4">
-    <div class="mb-3 d-flex justify-content-start gap-2">
-      <button class="btn btn-primary btn-sm">선택 지우기</button>
-      <button class="btn btn-primary btn-sm" id="doctorListBtn">의사 명단</button>
-      <button class="btn btn-danger btn-sm">편집하기</button>
-    </div>
+      <h2 class="mb-3 border-bottom pb-2">의사 주간 근무 표</h2>
+      <div class="container bg-white border rounded shadow-sm p-4">
+        <div class="mb-3 d-flex justify-content-start gap-2">
+          <button class="btn btn-primary btn-sm">선택 지우기</button>
+          <button class="btn btn-primary btn-sm" id="doctorListBtn">의사 명단</button>
+          <button class="btn btn-danger btn-sm">편집하기</button>
+        </div>
 
-    <div class="d-flex justify-content-center align-items-center mb-3">
-      <button class="btn btn-outline-secondary btn-sm me-2">◀</button>
-      <div class="week-range">2025년 9월 15일 - 2025년 9월 21일</div>
-      <button class="btn btn-outline-secondary btn-sm ms-2">▶</button>
-    </div>
+        <div class="d-flex justify-content-center align-items-center mb-3">
+          <button class="btn btn-outline-secondary btn-sm me-2">◀</button>
+          <div class="week-range">2025년 9월 15일 - 2025년 9월 21일</div>
+          <button class="btn btn-outline-secondary btn-sm ms-2">▶</button>
+        </div>
 
-    <table class="table table-bordered align-middle text-center">
-      <thead>
-        <tr class="date-header">
-          <th rowspan="2"><input type="checkbox"></th>
-          <th rowspan="2">이름</th>
-          <th rowspan="2">진료과</th>
-          <th colspan="2">9/15 월</th>
-          <th colspan="2">9/16 화</th>
-          <th colspan="2">9/17 수</th>
-          <th colspan="2">9/18 목</th>
-          <th colspan="2">9/19 금</th>
-          <th colspan="2">9/20 토</th>
-          <th colspan="2">9/21 일</th>
-        </tr>
-        <tr class="table-light">
-          <th>오전</th><th>오후</th>
-          <th>오전</th><th>오후</th>
-          <th>오전</th><th>오후</th>
-          <th>오전</th><th>오후</th>
-          <th>오전</th><th>오후</th>
-          <th>오전</th><th>오후</th>
-          <th>오전</th><th>오후</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>김의사</td>
-          <td>정형외과</td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td></td>
-          <td></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>박원장</td>
-          <td>정형외과</td>
-          <td></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>원장</td>
-          <td>정형외과</td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>나신경</td>
-          <td>신경외과</td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td><td><span class="circle"></span></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>홍길동</td>
-          <td>신경외과</td>
-          <td></td><td></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td>
-          <td></td><td></td>
-          <td></td><td><span class="circle"></span></td>
-          <td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>사공외과</td>
-          <td>신경외과</td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>이명의</td>
-          <td>영상의학과</td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>김철수</td>
-          <td>마취통증의학과</td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td><span class="circle"></span></td><td><span class="circle"></span></td>
-          <td></td><td></td><td></td><td></td>
-        </tr>
-
-        <!-- 마지막 행 (+ 버튼 + dropdown) -->
-        <tr>
-          <td>
-            <div class="dropdown">
-              <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                +
-              </button>
-              <ul class="dropdown-menu">
-                <li class="dropdown-item">
-                  <span>김철수</span>
-                  <span>마취통증의학과</span>
-                  <span>DA001</span>
-                </li>
-                <li class="dropdown-item">
-                  <span>김이박</span>
-                  <span>정형외과</span>
-                  <span>D0004</span>
-                </li>
-                <li class="dropdown-item">
-                  <span>김이박</span>
-                  <span>신경외과</span>
-                  <span>DN001</span>
-                </li>
-              </ul>
-            </div>
-          </td>
-          <td colspan="17"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  </main>
+        <table class="table table-bordered align-middle text-center">
+          <thead>
+            <tr class="date-header">
+              <th rowspan="2"><input type="checkbox"></th>
+              <th rowspan="2">이름</th>
+              <th rowspan="2">진료과</th>
+              <th colspan="2">9/15 월</th>
+              <th colspan="2">9/16 화</th>
+              <th colspan="2">9/17 수</th>
+              <th colspan="2">9/18 목</th>
+              <th colspan="2">9/19 금</th>
+              <th colspan="2">9/20 토</th>
+              <th colspan="2">9/21 일</th>
+            </tr>
+            <tr class="table-light">
+              <th>오전</th><th>오후</th>
+              <th>오전</th><th>오후</th>
+              <th>오전</th><th>오후</th>
+              <th>오전</th><th>오후</th>
+              <th>오전</th><th>오후</th>
+              <th>오전</th><th>오후</th>
+              <th>오전</th><th>오후</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 동적 생성 영역 -->
+            <tr>
+              <td>
+                <div class="dropdown">
+                  <button class="btn btn-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">+</button>
+                  <ul class="dropdown-menu"></ul>
+                </div>
+              </td>
+              <td colspan="17"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered">
+		    <div class="modal-content text-center border border-primary">
+		      <div class="modal-body">
+		        <p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+		        <div class="d-flex justify-content-center">
+		          <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">확인</button>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
 		</div>
-	</div>
+      </div>
+    </main>
+  </div>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="sidebar.js"></script>
 
 <script>
 function loadSidebar(activeKey) {
-	  $.ajax({
-	    url: "./sidebar.html",
-	    dataType: "html",
-	    success: function (html) {
-	      $("#sidebar-slot").html(html);
-	      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
-	      $links.removeClass("active bg-primary text-white").addClass("text-dark");
-	      var $current = $links.filter("[data-route='" + activeKey + "']");
-	      $current.addClass("active bg-primary text-white").removeClass("text-dark");
-	      loadSidebarInfo();
-	    }
-	  });
-	}
-loadSidebar('manageDoctorSchedule');
-
-document.addEventListener("DOMContentLoaded", () => {
-  const tableBody = document.querySelector("table tbody");
-
-  document.querySelectorAll(".dropdown-item").forEach(item => {
-    item.addEventListener("click", () => {
-      const spans = item.querySelectorAll("span");
-      const name = spans[0].textContent.trim();
-      const dept = spans[1].textContent.trim();
-      const code = spans[2].textContent.trim();
-
-      const newRow = document.createElement("tr");
-      newRow.innerHTML = `
-        <td><input type="checkbox"></td>
-        <td>${name}</td>
-        <td>${dept}</td>
-        <td><span></span></td><td><span></span></td>
-        <td><span></span></td><td><span></span></td>
-        <td><span></span></td><td><span></span></td>
-        <td><span></span></td><td><span></span></td>
-        <td><span></span></td><td><span></span></td>
-        <td><span></span></td><td><span></span></td>
-        <td><span></span></td><td><span></span></td>
-      `;
-
-      const lastRow = tableBody.lastElementChild;
-      tableBody.insertBefore(newRow, lastRow);
-    });
+  $.ajax({
+    url: "./sidebar.html",
+    dataType: "html",
+    success: function (html) {
+      $("#sidebar-slot").html(html);
+      const $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
+      $links.removeClass("active bg-primary text-white").addClass("text-dark");
+      const $current = $links.filter("[data-route='" + activeKey + "']");
+      $current.addClass("active bg-primary text-white").removeClass("text-dark");
+      loadSidebarInfo();
+    }
   });
-});
-document.addEventListener("DOMContentLoaded", () => {
-	  const editBtn = document.querySelector(".btn-danger");
-	  let editing = false;
+}
+loadSidebar("manageDoctorSchedule");
 
-	  editBtn.addEventListener("click", () => {
-	    const allRows = document.querySelectorAll("table tbody tr");
-	    const lastRow = allRows[allRows.length - 1];
-	    const firstColCells = document.querySelectorAll("table tbody tr td:first-child");
-	    const firstHeader = document.querySelector("table thead tr th:first-child");
-	    const deleteBtn = document.querySelector(".btn-primary");
-	    const doctorListBtn = document.querySelectorAll(".btn-primary")[1];
+function showAlert(message, onClose) {
+  $("#alertMessage").text(message);
+  var modal = new bootstrap.Modal(document.getElementById("alertModal"));
+  $("#alertModal").on("hidden.bs.modal", function handler() {
+    if (typeof onClose === "function") onClose();
+    $("#alertModal").off("hidden.bs.modal", handler);
+  });
+  modal.show();
+}
 
-	    editing = !editing;
+function fmtDate(d) {
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().split("T")[0];
+}
 
-	    if (editing) {
-	      editBtn.textContent = "저장하기";
+function addDays(d, n) {
+  const t = new Date(d.getTime());
+  t.setDate(t.getDate() + n);
+  return new Date(t.getFullYear(), t.getMonth(), t.getDate());
+}
 
-	      if (deleteBtn) deleteBtn.style.display = "none";
-	      if (doctorListBtn) doctorListBtn.style.display = "none";
+function startOfWeekMonday(d) {
+  const t = new Date(d);
+  const day = t.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  t.setDate(t.getDate() + diff);
+  return new Date(t.getFullYear(), t.getMonth(), t.getDate());
+}
 
-	      if (lastRow) lastRow.style.display = "none";
-	      firstColCells.forEach(td => td.style.display = "none");
-	      if (firstHeader) firstHeader.style.display = "none";
+let currentDate = new Date();
 
-	      document.querySelectorAll("table tbody tr").forEach(row => {
-	        row.querySelectorAll("td").forEach((cell, index) => {
-	          // index 0: 체크박스, 1: 이름, 2: 진료과
-	          if (index > 2 && !cell.querySelector("button")) {
-	            cell.style.cursor = "pointer";
-	            cell.addEventListener("click", toggleCircle);
-	          } else {
-	            cell.style.cursor = "default"; // 이름/진료과 등은 클릭 불가
-	            cell.removeEventListener("click", toggleCircle);
-	          }
-	        });
+function renderDateHeader(monday) {
+  const daysKor = ["일", "월", "화", "수", "목", "금", "토"];
+  const headerRow = document.querySelector(".date-header");
+  while (headerRow.children.length > 3) headerRow.removeChild(headerRow.lastElementChild);
+
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(monday, i);
+    const th = document.createElement("th");
+    th.colSpan = 2;
+    th.textContent = `${d.getMonth() + 1}/${d.getDate()} ${daysKor[d.getDay()]}`;
+    headerRow.appendChild(th);
+  }
+}
+
+function loadDoctorSchedule() {
+  const monday = startOfWeekMonday(currentDate);
+  const sunday = addDays(monday, 6);
+  const startDate = fmtDate(monday);
+  const endDate = fmtDate(sunday);
+
+  $(".week-range").text(
+    `${monday.getFullYear()}년 ${monday.getMonth() + 1}월 ${monday.getDate()}일 - ` +
+    `${sunday.getMonth() + 1}월 ${sunday.getDate()}일`
+  );
+
+  renderDateHeader(monday);
+
+  $.ajax({
+    url: "controller",
+    type: "GET",
+    dataType: "json",
+    data: { cmd: "getDoctorSchedule", startDate: startDate, endDate: endDate },
+    success: function (list) {
+      renderDoctorTable(list, monday);
+      loadAvailableDoctors(startDate, endDate);
+    },
+    error: function () {
+      showAlert("의사 근무표 로드 중 오류가 발생했습니다.");
+    }
+  });
+}
+
+function renderDoctorTable(data, monday) {
+  const tbody = document.querySelector("table tbody");
+  const lastRow = tbody.lastElementChild.cloneNode(true);
+  tbody.innerHTML = "";
+
+  const days = Array.from({ length: 7 }, (_, i) => fmtDate(addDays(monday, i)));
+  const grouped = {};
+
+  $.each(data, function (_, item) {
+    const key = item.doctorCode + "_" + item.employeeName;
+    if (!grouped[key])
+      grouped[key] = {
+        name: item.employeeName,
+        dept: item.department,
+        code: item.doctorCode,
+        days: {}
+      };
+    grouped[key].days[item.workDate] = {
+      am: item.am,
+      pm: item.pm,
+      id: item.doctorScheduleNo
+    };
+  });
+
+  $.each(Object.values(grouped), function (_, val) {
+    let row = "<tr><td><input type='checkbox'></td>";
+    row += `<td>${val.name}</td><td>${val.dept}</td>`;
+
+    $.each(days, function (_, date) {
+      const cell = val.days[date] || {};
+      const id = cell.id || "";
+      const am = cell.am === "Y" ? "<span class='circle'></span>" : "";
+      const pm = cell.pm === "Y" ? "<span class='circle'></span>" : "";
+      row += `<td data-id='${id}' data-code='${val.code}' data-type='am'>${am}</td>`;
+      row += `<td data-id='${id}' data-code='${val.code}' data-type='pm'>${pm}</td>`;
+    });
+
+    row += "</tr>";
+    $(tbody).append(row);
+  });
+
+  tbody.appendChild(lastRow);
+}
+
+function loadAvailableDoctors(startDate, endDate) {
+  $.ajax({
+    url: "controller",
+    type: "GET",
+    dataType: "json",
+    data: { cmd: "getDoctorName", startDate: startDate, endDate: endDate },
+    success: function (list) {
+      const $dropdown = $(".dropdown-menu").empty();
+
+      if (list.length === 0) {
+        $dropdown.html(
+          "<li class='dropdown-item text-center text-muted' style='pointer-events:none;'>모든 의사가 이미 등록되었습니다.</li>"
+        );
+        return;
+      }
+
+      $.each(list, function (_, d) {
+        $dropdown.append(
+          `<li class='dropdown-item'>
+            <span>${d.employeeName}</span>
+            <span>${d.department}</span>
+            <span>${d.doctorCode}</span>
+           </li>`
+        );
+      });
+
+      bindDropdownEvents();
+    },
+    error: function () {
+      showAlert("의사 명단을 불러오는 중 오류가 발생했습니다.");
+    }
+  });
+}
+
+function bindDropdownEvents() {
+  const monday = startOfWeekMonday(currentDate);
+
+  $(".dropdown-item").off("click").on("click", function () {
+    const doctorCode = $(this).find("span").eq(2).text().trim();
+    const weekDates = Array.from({ length: 7 }, (_, i) => fmtDate(addDays(monday, i)));
+
+    const requests = weekDates.map(function (date) {
+      return $.ajax({
+        url: "controller",
+        data: { cmd: "addDoctorSchedule", doctorCode: doctorCode, workDate: date }
+      });
+    });
+
+    $.when.apply($, requests).done(loadDoctorSchedule);
+  });
+}
+
+function toggleAndSave(cell) {
+  const id = $(cell).data("id");
+  if (!id) return;
+
+  const hasCircle = $(cell).find(".circle").length > 0;
+  $(cell).html(hasCircle ? "" : "<span class='circle'></span>");
+
+  const $row = $(cell).closest("tr");
+  const am = $row.find(`td[data-id='${id}'][data-type='am'] .circle`).length ? "Y" : "N";
+  const pm = $row.find(`td[data-id='${id}'][data-type='pm'] .circle`).length ? "Y" : "N";
+
+  $.ajax({
+    url: "controller",
+    data: { cmd: "editDoctorSchedule", doctorScheduleNo: id, am: am, pm: pm }
+  });
+}
+
+$(document).ready(function () {
+  const editBtn = $(".btn-danger");
+  const deleteBtn = $(".btn-primary").eq(0);
+  const doctorListBtn = $(".btn-primary").eq(1);
+  const checkAll = $("thead input[type='checkbox']");
+  let editing = false;
+
+  editBtn.click(function () {
+	  const lastRow = $("table tbody tr:last-child")[0];
+	  const firstColCells = $("table tbody tr td:first-child");
+	  const firstHeader = $("table thead tr th:first-child");
+	  editing = !editing;
+
+	  if (editing) {
+	    editBtn.text("저장하기");
+	    deleteBtn.hide();
+	    doctorListBtn.hide();
+	    $(lastRow).hide();
+	    firstColCells.hide();
+	    firstHeader.hide();
+
+	    $("table tbody td[data-id]")
+	      .css("cursor", "pointer")
+	      .off("click")
+	      .on("click", function (e) {
+	        if ($(e.target).is(".circle")) return;
+	        toggleAndSave(this);
 	      });
+	  } else {
+	    showAlert("저장되었습니다.");
+	    editBtn.text("편집하기");
+	    deleteBtn.show();
+	    doctorListBtn.show();
+	    $(lastRow).show();
+	    firstColCells.show();
+	    firstHeader.show();
 
-	    } else {
-	      editBtn.textContent = "편집하기";
-	      if (deleteBtn) deleteBtn.style.display = "";
-	      if (doctorListBtn) doctorListBtn.style.display = "";
-	      if (lastRow) lastRow.style.display = "";
-	      firstColCells.forEach(td => td.style.display = "");
-	      if (firstHeader) firstHeader.style.display = "";
-	      document.querySelectorAll("table tbody tr td").forEach(cell => {
-	        cell.style.cursor = "default";
-	        cell.removeEventListener("click", toggleCircle);
-	      });
-	    }
-	  });
-
-	  function toggleCircle(e) {
-	    const cell = e.currentTarget;
-	    const hasCircle = cell.querySelector(".circle");
-	    cell.innerHTML = hasCircle ? "" : '<span class="circle"></span>';
+	    $("table tbody td[data-id]").off("click").css("cursor", "default");
+	    loadDoctorSchedule();
 	  }
 	});
-	document.getElementById("doctorListBtn").addEventListener("click", () => {
-	  window.location.href = "controller?cmd=doctorListUI";
-	});
 
 
+  checkAll.change(function () {
+    $("tbody input[type='checkbox']").prop("checked", this.checked);
+  });
+
+  deleteBtn.click(function () {
+    const checked = $("tbody input[type='checkbox']:checked");
+    if (checked.length === 0) {
+      showAlert("삭제할 의사를 선택하세요.");
+      return;
+    }
+
+    const count = checked.length;
+    $("#confirmDeleteModal").remove();
+
+    const modalHtml = `
+      <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content text-center border border-danger">
+            <div class="modal-body">
+              <p class="fs-5 fw-bold text-danger mb-4">
+                선택한 ${count}명의 의사 근무 일정을 삭제하시겠습니까?
+              </p>
+              <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">확인</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    $("body").append(modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
+    modal.show();
+
+    $(document)
+      .off("click", "#confirmDeleteBtn")
+      .on("click", "#confirmDeleteBtn", function () {
+        const requests = [];
+        checked.each(function () {
+          const doctorCode = $(this).closest("tr").find("td[data-code]").data("code");
+          if (!doctorCode) return true;
+          requests.push(
+            $.ajax({
+              url: "controller",
+              type: "GET",
+              data: { cmd: "deleteDoctorSchedule", doctorCode: doctorCode }
+            })
+          );
+        });
+
+        $.when.apply($, requests).done(function () {
+          modal.hide();
+          showAlert("선택한 의사 근무 일정이 삭제되었습니다.", function () {
+            checkAll.prop("checked", false);
+            loadDoctorSchedule();
+          });
+        });
+      });
+  });
+
+  $(".btn-outline-secondary.me-2").click(function () {
+    currentDate = addDays(currentDate, -7);
+    loadDoctorSchedule();
+  });
+
+  $(".btn-outline-secondary.ms-2").click(function () {
+    currentDate = addDays(currentDate, 7);
+    loadDoctorSchedule();
+  });
+
+  $("#doctorListBtn").click(function () {
+    window.location.href = "controller?cmd=doctorListUI";
+  });
+
+  loadDoctorSchedule();
+});
 </script>
-  
+
+
+
 </body>
 </html>

@@ -13,9 +13,9 @@ import com.crm.model.ManageDoctorVO;
 public class GetDoctorListAction implements Action{
 
 	@Override
-	public String execute(HttpServletRequest request) throws ServletException, IOException {
+	public String execute(HttpServletRequest req) throws ServletException, IOException {
 		List<ManageDoctorVO> list = new ManageDoctorDAO().getDoctorList();
-		request.setAttribute("result", list);
+		req.setAttribute("result", list);
 		
 		return "/WEB-INF/json/result.jsp";
 	}

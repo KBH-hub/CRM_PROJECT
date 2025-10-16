@@ -5,6 +5,7 @@ import com.crm.action.SMSService.GetCommonRecipientAction;
 import com.crm.action.SMSService.GetCommonSMSAction;
 import com.crm.action.SMSService.GetReserveRecipientAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
+import com.crm.action.doctorSchedule.EditDoctorScheduleAction;
 import com.crm.action.SMSService.GetReseveSMSAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
@@ -19,9 +20,13 @@ import com.crm.action.reserveList.CountReserveWeekByTimeAction;
 import com.crm.action.reserveList.ReserveCalUIAction;
 import com.crm.action.reserveList.ReserveListUIAction;
 import com.crm.action.reserveList.getReserveDayAction;
+import com.crm.action.doctorSchedule.AddDoctorScheduleAction;
+import com.crm.action.doctorSchedule.DeleteDoctorScheduleAction;
 import com.crm.action.doctorSchedule.DoctorListUIAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.doctorSchedule.GetDoctorListAction;
+import com.crm.action.doctorSchedule.GetDoctorNameAction;
+import com.crm.action.doctorSchedule.GetDoctorScheduleAction;
 import com.crm.action.SMSService.GetTemplateAction;
 import com.crm.action.SMSService.PatientListModalAction;
 import com.crm.action.SMSService.ReserveListModalAction;
@@ -44,6 +49,21 @@ public class ActionFactory {
 		Action a = null;
 
 		switch (cmd) {
+		case "deleteDoctorSchedule":
+		    a = new DeleteDoctorScheduleAction();
+		    break;
+		case "editDoctorSchedule":
+			a = new EditDoctorScheduleAction();
+			break;
+		case "addDoctorSchedule":
+		    a = new AddDoctorScheduleAction();
+		    break;
+		case "getDoctorName":
+			a = new GetDoctorNameAction();
+			break;
+		case "getDoctorSchedule":
+		    a = new GetDoctorScheduleAction();
+		    break;
 		case "getDoctorListAction":
 			a = new GetDoctorListAction();
 			break;

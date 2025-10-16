@@ -1,4 +1,4 @@
-package com.crm.action;
+package com.crm.action.reserveList;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.crm.action.Action;
 import com.crm.model.ReserveListDAO;
 import com.crm.model.ReserveVO;
 

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
 
-public class sendCommonSMSAction implements Action {
+public class SendCommonSMSAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {

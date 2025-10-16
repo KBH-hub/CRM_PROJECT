@@ -14,9 +14,9 @@ import com.crm.action.patient.PatientUIAction;
 import com.crm.action.smsService.GetTemplateAction;
 import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
+import com.crm.action.smsService.SendCommonSMSAction;
+import com.crm.action.smsService.SmsRecordUIAction;
 import com.crm.action.smsService.SmsUIAction;
-import com.crm.action.smsService.sendCommonSMSAction;
-import com.crm.action.smsService.smsRecordUIAction;
 
 public class ActionFactory {
 	private ActionFactory() {
@@ -61,7 +61,7 @@ public class ActionFactory {
 			a = new SmsUIAction();
 			break;
 		case "smsRecordUI":
-			a = new smsRecordUIAction();
+			a = new SmsRecordUIAction();
 			break;
 		case "getTemplate":
 			a = new GetTemplateAction();
@@ -76,7 +76,7 @@ public class ActionFactory {
 			a = new GetCommonRecipientAction();
 			break;
 		case "sendCommonSMS":
-			a = new sendCommonSMSAction();
+			a = new SendCommonSMSAction();
 			break;
 		case "loginUI":
 		case "mainUI":

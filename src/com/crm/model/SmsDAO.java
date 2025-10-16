@@ -31,24 +31,24 @@ public class SmsDAO {
 		return list;
 	}
 	
-	public List<ReserveSmsVO> getReserveSms(){
+	public List<ReserveSmsVO> getReserveSms(Map<String, Object> map){
 		List<ReserveSmsVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getReserveSms");
+		list = conn.selectList("smsMapper.getReserveSms", map);
 		conn.close();
 		return list;
 	}
 	
-    public int getReserveSmsCount(int reserveSmsNo) {
+    public int getReserveSmsCount() {
         SqlSession session = DBCP.getSqlSessionFactory().openSession();
-        int count = session.selectOne("smsMapper.getReserveSmsCount", reserveSmsNo);
+        int count = session.selectOne("smsMapper.getReserveSmsCount");
         session.close();
         return count;
     }
     
-    public int getCommonSmsCount(int commonSmsNo) {
+    public int getCommonSmsCount() {
         SqlSession session = DBCP.getSqlSessionFactory().openSession();
-        int count = session.selectOne("smsMapper.getCommonSmsCount", commonSmsNo);
+        int count = session.selectOne("smsMapper.getCommonSmsCount");
         session.close();
         return count;
     }
@@ -70,10 +70,10 @@ public class SmsDAO {
 		return result;
 	}
 	
-	public List<CommonSmsVO> getCommonSms(){
+	public List<CommonSmsVO> getCommonSms(Map<String, Object> map){
 		List<CommonSmsVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getSMSCount");
+		list = conn.selectList("smsMapper.getSMSCount", map);
 		conn.close();
 		return list;
 	}

@@ -2,6 +2,8 @@ package com.crm.action;
 
 import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetCommonRecipientAction;
+import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
+import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.smsService.GetReseveSmsAction;
 import com.crm.action.patient.AddPatientAction;
@@ -37,6 +39,12 @@ public class ActionFactory {
 		Action a = null;
 
 		switch (cmd) {
+		case "countMyReserveMonth":
+			a = new CountMyReserveMonthAction();
+			break;
+		case "countMyReserveWeek":
+			a = new CountMyReserveWeekAction();
+			break;
 		case "doctorScheduleUI":
 			a = new DoctorScheduleUIAction();
 			break;

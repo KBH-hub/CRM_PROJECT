@@ -2,6 +2,7 @@ package com.crm.action;
 
 import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetCommonRecipientAction;
+import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
 import com.crm.action.patient.DeletePatientAction;
@@ -26,6 +27,10 @@ public class ActionFactory {
 		Action a = null;
 
 		switch (cmd) {
+		case "doctorScheduleUI":
+			a = new DoctorScheduleUIAction();
+			break;
+			
 		case "deletePatientAction":
 			a = new DeletePatientAction();
 			break;

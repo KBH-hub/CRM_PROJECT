@@ -33,13 +33,13 @@ patientAdd
 ### 🔹 Commit Message 규칙 - 영문
 
 ```
-[Type]: [Message]_[Date]
+[Type]: [Message]
 ```
 
 **예시**
 
 ```
-feat: Added login_1013
-fix: Fixed appointment registration error_1014
-style: Improved patient details page UI_1015
+feat: Added login
+fix: Fixed appointment registration error
+style: Improved patient details page UI
 ```

@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.SMSService;
 
 import java.io.IOException;
 import java.util.List;
@@ -7,28 +7,28 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
-import com.crm.model.ReserveSmsVO;
-import com.crm.model.SmsDAO;
+import com.crm.model.ReserveSMSVO;
+import com.crm.model.SMSDAO;
 
 public class GetTemplateAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		List<ReserveSmsVO> list = new SmsDAO().getTemplate(request.getParameter("templateName"));
+		List<ReserveSMSVO> list = new SMSDAO().getTemplate(request.getParameter("templateName"));
 		request.setAttribute("result", list);
 		
 		return "/WEB-INF/json/result.jsp";
 	}
 		
-//		// ✅ 수동으로 JSON 문자열 생성
+//		// ?? ?????��? JSON 문�???? ????
 //        StringBuilder sb = new StringBuilder();
 //        sb.append("[");
 //
 //        for (int i = 0; i < list.size(); i++) {
-//            ReserveSmsVO vo = list.get(i);
+//            ReserveSMSVO vo = list.get(i);
 //
-//            // 따옴표나 줄바꿈 같은 특수문자 처리 (JSON 깨짐 방지)
+//            // ?��?��???? �?�?�? �??? ?��??문�?? �?�? (JSON 깨�? 방�?)
 //            String name = escape(vo.getTemplateName());
 //            String content = escape(vo.getTemplateContent());
 //
@@ -45,7 +45,7 @@ public class GetTemplateAction implements Action {
 //		return "getTemplate.jsp";
 //	}
 //	
-//	 // ⚙️ 문자열 이스케이프 처리 (큰따옴표, 줄바꿈 등)
+//	 // ??�? 문�???? ?��?��??��?? �?�? (?��?��?��??, �?�?�? ??)
 //    private String escape(String s) {
 //        if (s == null) return "";
 //        return s

@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.SMSService;
 
 import java.io.IOException;
 
@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
 
-public class SmsRecordUIAction implements Action {
+public class SMSRecordUIAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
-		return "smsRecord.html";
+		return "SMSRecord.html";
 	}
 
 }

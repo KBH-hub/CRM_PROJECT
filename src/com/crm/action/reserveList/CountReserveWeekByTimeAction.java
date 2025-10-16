@@ -1,4 +1,4 @@
-package com.crm.action;
+package com.crm.action.reserveList;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.crm.action.Action;
 import com.crm.model.ReserveListDAO;
 import com.crm.model.ReserveVO;
 
@@ -25,9 +26,9 @@ public class CountReserveWeekByTimeAction implements Action {
         String endDate = request.getParameter("endDate");
 		
         if (startDate == null || startDate.isEmpty() || endDate == null || endDate.isEmpty()) {
-            System.err.println("ERROR: startDate 또는 endDate 파라미터가 누락되었거나 비어있습니다.");
-            request.setAttribute("list", new ArrayList<ReserveVO>()); // 빈 JSON 배열 반환
-            return "reserveList.jsp";
+            System.err.println("ERROR: startDate �삉�뒗 endDate �뙆�씪誘명꽣媛� �늻�씫�릺�뿀嫄곕굹 鍮꾩뼱�엳�뒿�땲�떎.");
+            request.setAttribute("result", new ArrayList<ReserveVO>()); // 鍮� JSON 諛곗뿴 諛섑솚
+            return "/WEB-INF/json/result.jsp";
         }
 		
 
@@ -36,10 +37,10 @@ public class CountReserveWeekByTimeAction implements Action {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         
 		List<ReserveVO> weeklyReservationCounts = dao.countReserveWeekByTime(startDate, endDate);
-		request.setAttribute("list", weeklyReservationCounts);
+		request.setAttribute("result", weeklyReservationCounts);
         
     
-		return "reserveList.jsp";
+		return "/WEB-INF/json/result.jsp";
 	}
 
 }

@@ -2,7 +2,11 @@ package com.crm.action;
 
 import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetCommonRecipientAction;
+import com.crm.action.smsService.GetCommonSmsAction;
+import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
+import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
+import com.crm.action.smsService.GetReseveSmsAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
 import com.crm.action.patient.DeletePatientAction;
@@ -20,9 +24,17 @@ import com.crm.action.reserveList.getReserveDetailAction;
 import com.crm.action.smsService.GetTemplateAction;
 import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
-import com.crm.action.smsService.ReserveSmsUIAction;
+import com.crm.action.smsService.SmsRecordUIAction;
 import com.crm.action.smsService.SmsUIAction;
-import com.crm.action.smsService.sendCommonSMSAction;
+import com.crm.action.doctorSchedule.DoctorListUIAction;
+import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
+import com.crm.action.doctorSchedule.GetDoctorListAction;
+import com.crm.action.login.DoctorMainUIAction;
+import com.crm.action.login.LoginAction;
+import com.crm.action.login.LoginUIAction;
+import com.crm.action.login.LogoutAction;
+import com.crm.action.login.ManagerMainUIAction;
+import com.crm.action.login.SidebarAction;
 
 public class ActionFactory {
 	private ActionFactory() {
@@ -32,6 +44,18 @@ public class ActionFactory {
 		Action a = null;
 
 		switch (cmd) {
+		case "getDoctorListAction":
+			a = new GetDoctorListAction();
+			break;
+		case "doctorListUI":
+			a = new DoctorListUIAction();
+			break;
+		case "countMyReserveMonth":
+			a = new CountMyReserveMonthAction();
+			break;
+		case "countMyReserveWeek":
+			a = new CountMyReserveWeekAction();
+			break;
 		case "doctorScheduleUI":
 			a = new DoctorScheduleUIAction();
 			break;
@@ -70,8 +94,8 @@ public class ActionFactory {
 		case "smsUI":
 			a = new SmsUIAction();
 			break;
-		case "reserveSmsUI":
-			a = new ReserveSmsUIAction();
+		case "smsRecordUI":
+			a = new SmsRecordUIAction();
 			break;
 		case "getTemplate":
 			a = new GetTemplateAction();
@@ -82,13 +106,15 @@ public class ActionFactory {
 		case "patientListModal":
 			a = new PatientListModalAction();
 			break;
+		case "getReserveSms":
+			a = new GetReseveSmsAction();
+			break;
+		case "getCommonSms":
+			a = new GetCommonSmsAction();
+			break;
 		case "getCommonRecipient":
 			a = new GetCommonRecipientAction();
 			break;
-		case "sendCommonSMS":
-			a = new sendCommonSMSAction();
-			break;
-			
 		case "reserveCalUI": 
 			a = new ReserveCalUIAction();
 			break;
@@ -102,11 +128,24 @@ public class ActionFactory {
 		case "getReserveDay":
 			a = new getReserveDayAction();
 			break;
-			
 		case "getReserveDetail":
 			a = new getReserveDetailAction();
 			break;
-			
+		case "managerMainUIAction":
+			a = new ManagerMainUIAction();
+			break;
+		case "doctorMainUIAction":
+			a = new DoctorMainUIAction();
+			break;
+		case "loginAction":
+			a = new LoginAction();
+			break;
+		case "logoutAction":
+			a = new LogoutAction();
+			break;
+		case "sidebarAction":
+	        a = new SidebarAction();
+	        break;
 		case "loginUI":
 		case "mainUI":
 			a = new LoginUIAction();

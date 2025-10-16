@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
 
-public class ReserveSmsUIAction implements Action {
+public class SmsRecordUIAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {

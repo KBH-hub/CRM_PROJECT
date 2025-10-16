@@ -8,7 +8,8 @@
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet">
-
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <style>
     /* ✅ 테이블 전체 선 검정색 */
     table, th, td {
@@ -171,211 +172,411 @@
 
 
 <!-- ✅ Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="sidebar.js"></script>
 	</main>
 		</div>
 	</div>
 	<script>
 	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
-	  async function loadSidebar(activeKey) {
-	    const slot = document.getElementById('sidebar-slot');
-	    const resp = await fetch('./doctorSidebar.html'); // 경로는 프로젝트 구조에 맞게
-	    const html = await resp.text();
-	    slot.innerHTML = html;
+	  function loadSidebar(activeKey) {
+		  $.ajax({
+		    url: "./doctorSidebar.html",
+		    dataType: "html",
+		    success: function (html) {
+		      $("#sidebar-slot").html(html);
+		      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
+		      $links.removeClass("active bg-primary text-white").addClass("text-dark");
+		      var $current = $links.filter("[data-route='" + activeKey + "']");
+		      $current.addClass("active bg-primary text-white").removeClass("text-dark");
+		      loadSidebarInfo();
+		    }
+		  });
+		}
+		loadSidebar("reserve");
 
-	    // 활성 메뉴 표시 (data-route 값을 사용)
-	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
-	    if (current) {
-	      // 전부 초기화
-	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
-	        a.classList.remove('active','bg-primary','text-white');
-	        a.classList.add('text-dark');
-	      });
-	      // 현재만 활성
-	      current.classList.add('active','bg-primary','text-white');
-	      current.classList.remove('text-dark');
-	    }
-	  }
+		const container = document.getElementById('container');
+		const ymSpan = document.getElementById('ym');
+		//const reservationEvents = {
+		//  "2025-09-16": [
+//		    { start: "09:00", end: "09:30", title: "고은님 9:00" },
+//		    { start: "14:00", end: "14:30", title: "이수현 14:00" }
+		//  ],
+		//  "2025-09-15": [
+//		    { start: "10:00", end: "11:00", title: "심박 검사" }
+		 // ]
+		//};
+		// 서버에서 받아온 일별 총 예약 건수 데이터를 저장할 변수
+		// [{DAY_OF_MONTH: "01", TOTAL_COUNT: 5}, {DAY_OF_MONTH: "02", TOTAL_COUNT: 3}, ...]
+		let fetchedDailyReservationCounts = []; 
 
-	  // 이 페이지의 활성 키만 바꿔주면 됨
-	  loadSidebar('patientList');
+		let viewMode='month', viewDate=new Date(); viewDate.setDate(1);
+		const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+		const addDays=(d,n)=>{const t=new Date(d);t.setDate(t.getDate()+n);return t;};
 
-  /* 예약 데이터 (예시) */
-  const reservationEvents = {
-    "2025-09-16": [
-      { start: "09:00", end: "09:30", title: "고은님" },
-      { start: "14:00", end: "14:30", title: "이수현" }
-    ],
-    "2025-09-15": [
-      { start: "10:00", end: "11:00", title: "심박 검사" }
-    ]
-  };
+		//아래는 week 날짜 계산하는 것
+		const startOfWeekMonday=d=>{const t=new Date(d);const day=t.getDay();const diff=(day===0?-6:1-day);t.setDate(t.getDate()+diff);return t;};
 
-  /* 전역 상태 */
-  let viewMode = 'month'; 
-  let viewDate = new Date();
-  viewDate.setDate(1);
 
-  function fmt(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth()+1).padStart(2,'0');
-    const d = String(date.getDate()).padStart(2,'0');
-    return `${y}-${m}-${d}`;
-  }
-  function startOfWeekMonday(d) {
-    const dt = new Date(d);
-    const day = dt.getDay();
-    const diff = (day === 0 ? -6 : 1 - day);
-    dt.setDate(dt.getDate() + diff);
-    dt.setHours(0,0,0,0);
-    return dt;
-  }
-  function addDays(d, n) {
-    const dt = new Date(d);
-    dt.setDate(dt.getDate() + n);
-    return dt;
-  }
+		async function fetchAndRenderCalendarData() {
+		    const year = viewDate.getFullYear();
+		    const month = (viewDate.getMonth() + 1).toString().padStart(2, '0');
+		    const monthStr = `${year}-${month}`; 
 
-  const container = document.getElementById('container');
-  const ymSpan = document.getElementById('ym');
+		    
+		    let apiUrl = ''; 
+		    let params = ''; 
+		    
+		    
+		    
+		    if (viewMode === 'month'){
+		        apiUrl = 'controller?cmd=countMyReserveMonth';
+		        params = `&month=${monthStr}`; 
+		    } else if (viewMode === 'week') { 
+		        apiUrl = 'controller?cmd=countMyReserveWeek';
+		        const monday = startOfWeekMonday(viewDate);
+		        const sunday = addDays(monday, 6); 
+		        const weekMonthStr = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}`;
+		        params = `&month=${weekMonthStr}&startDate=${fmt(monday)}&endDate=${fmt(sunday)}`; 
+		    } else if (viewMode === 'day') {
+		        apiUrl = 'controller?cmd=getReserveDay';
+		        params = `&targetDate=${fmt(viewDate)}`; 
+		    }
+		    
+		    
+		    
+		    try {
+		        
+		        const response = await fetch(`${apiUrl}${params}`);
+		        
+		        if (!response.ok) {
+		            throw new Error(`HTTP error! status: ${response.status}`);
+		        }
+		        
+		       
+		        const data = await response.json(); 
+		       
 
-  function render() {
-    if (viewMode === 'month') renderMonth();
-    else if (viewMode === 'week') renderWeek();
-    else renderDay();
-  }
+		       
+		        fetchedDailyReservationCounts = data; 
+		        
+		       
+		        render();
 
-  /* ✅ Month View (월요일 시작, 날짜 오른쪽 상단) */
-  function renderMonth() {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    ymSpan.textContent = `${year}년 ${month + 1}월`;
+		    } catch (error) {
+		        console.error('캘린더 데이터를 가져오는 중 오류 발생:', error);
+		        alert('예약 데이터를 불러오지 못했습니다. 다시 시도해 주세요.');
+		     
+		        container.innerHTML = '<p class="text-danger">예약 데이터를 불러오는 데 실패했습니다.</p>';
+		    }
+		}
 
-    let firstDay = new Date(year, month, 1).getDay(); // 0=일요일
-    if (firstDay === 0) firstDay = 7; // 일요일을 7로
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    const days = ['월', '화', '수', '목', '금', '토', '일'];
+		//---------- 캘린더 렌더 ----------
+		function render(){
+		  if(viewMode==='month') renderMonth();
+		  else if(viewMode==='week') renderWeek();
+		  else renderDay();
+		}
 
-    let html = '<table class="table table-bordered text-center align-middle month-view"><thead><tr>';
-    for (const d of days) html += `<th>${d}</th>`;
-    html += '</tr></thead><tbody>';
+		function renderMonth(){
+		  const y=viewDate.getFullYear(), m=viewDate.getMonth();
+		  ymSpan.textContent=`${y}년 ${m+1}월`; 
+		  
 
-    let day = 1;
-    let started = false;
+		  const dailyCountsMap = new Map();
+		  if (Array.isArray(fetchedDailyReservationCounts)) {
+		      fetchedDailyReservationCounts.forEach(item => {
+		        
+		          dailyCountsMap.set(parseInt(item.reserveDay.split('-')[2]), item.reserveCount); 
+		      });
+		  }
 
-    for (let r = 0; r < 6 && day <= daysInMonth; r++) {
-      html += '<tr>';
-      for (let c = 1; c <= 7; c++) {
-        if (!started && c < firstDay) {
-          html += '<td></td>';
-        } else if (day > daysInMonth) {
-          html += '<td></td>';
-        } else {
-          const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          const count = (reservationEvents[dateKey] || []).length;
-          html += `<td><strong>${day}</strong><small>총 예약 ${count}건</small></td>`;
-          day++;
-          started = true;
-        }
-      }
-      html += '</tr>';
-    }
+		  let first=new Date(y,m,1).getDay(); 
+		  if(first===0) first=7; 
+		  const days=new Date(y,m+1,0).getDate();
+		  const wd=['일','월','화','수','목','금','토']; 
+		  let html='<table class="table table-bordered text-center align-middle month-view"><thead><tr>';
+		  wd.forEach(d=>html+=`<th>${d}</th>`); 
+		  html+='</tr></thead><tbody>';
 
-    html += '</tbody></table>';
-    container.innerHTML = html;
-  }
+		  let day=1;
+		  let started = false;
 
-  /* ✅ Week View (예약 목록 표시로 변경) */
-  function renderWeek() {
-    const monday = startOfWeekMonday(viewDate);
-    const weekDays = [];
-    for (let i = 0; i < 7; i++) weekDays.push(addDays(monday, i));
-    ymSpan.textContent = `${fmt(weekDays[0])} ~ ${fmt(weekDays[6])}`;
+		  for(let r=0;r<6&&day<=days;r++){ 
+		    html+='<tr>';
+		    for(let c=0;c<7;c++){ 
+		        
+		        if(!started && c < new Date(y,m,1).getDay()) { 
+		          html+='<td></td>';
+		        } else if (day > days) { 
+		          html+='<td></td>';
+		        } else {
+		            const totalCount = dailyCountsMap.get(day) || 0; // 해당 일자의 예약 건수, 없으면 0
+		            const isToday = (new Date().getFullYear() === y && new Date().getMonth() === m && new Date().getDate() === day);
+		            const tdClass = (c === 0 || c === 6) ? 'weekend' : ''; // 일요일(0) 또는 토요일(6)은 주말
+		            
+		            html+=`<td class="${tdClass} ${isToday ? 'today' : ''}"><strong>${day}</strong><small>총 예약 ${totalCount}건</small></td>`;
+		            day++; 
+		            started=true;
+		        }
+		    }
+		    html+='</tr>';
+		  }
+		  html+='</tbody></table>';
+		  container.innerHTML=html;
+		}
 
-    const hours = [];
-    for (let h = 7; h <= 19; h++) hours.push(h);
+		function renderWeek(){
+		    
+		    const mon = startOfWeekMonday(viewDate); 
+		    
+		    
+		    const weekDays = [...Array(7)].map((_, i) => addDays(mon, i)); 
+		    
+		  
+		    ymSpan.textContent = `${fmt(weekDays[0])} ~ ${fmt(weekDays[6])}`;
+		   
+		    
+		    
+		    const hourlyCountsMap = new Map();
+		   
+		    if (Array.isArray(fetchedDailyReservationCounts)) {
+		        // 설명: 'fetchedDailyReservationCounts'는 서버에서 가져온 예약 데이터 배열입니다.
+		        //       이것이 실제로 배열인지 확인하여 오류를 방지합니다. (예: JSON 파싱 실패 등)
 
-    let html = '<table class="table table-bordered text-center align-middle week-view"><thead><tr><th>시간</th>';
-    for (let d of weekDays) {
-      const dayLabel = d.toLocaleDateString('ko-KR', { weekday: 'short' });
-      html += `<th>${dayLabel} (${d.getMonth() + 1}/${d.getDate()})</th>`;
-    }
-    html += '</tr></thead><tbody>';
+		        fetchedDailyReservationCounts.forEach(item => {
+		            // 설명: 서버에서 받아온 각 예약 데이터 'item'에 대해 반복합니다.
+		            //       'item' 객체는 일반적으로 { reserveDay: "YYYY-MM-DD", reserveTime: "HH24:MI", reserveCount: N } 형태일 것입니다.
 
-    for (let h of hours) {
-      html += '<tr>';
-      html += `<td>${h}:00</td>`;
-      for (let d of weekDays) {
-        const key = fmt(d);
-        const evs = (reservationEvents[key] || []).filter(e =>
-          e.start.startsWith(String(h).padStart(2, '0'))
-        );
-        // ✅ 예약 목록 표시 (일간처럼)
-        if (evs.length > 0) {
-          html += `<td class="text-start">${evs.map(e => `<div>${e.start} - ${e.end} ${e.title}</div>`).join('')}</td>`;
-        } else {
-          html += `<td></td>`;
-        }
-      }
-      html += '</tr>';
-    }
+		            const dayKey = item.reserveDay;       // "YYYY-MM-DD" (DB에서 넘어온 값 그대로)
+		            // 설명: 'item'에서 'reserveDay' 필드(예: "2025-09-15")를 추출합니다.
 
-    // ✅ 마지막 줄: 각 날짜별 총 예약 수
-    html += '<tr>';
-    html += `<td class="fw-bold bg-light">총 예약</td>`;
-    for (let d of weekDays) {
-      const key = fmt(d);
-      const total = (reservationEvents[key] || []).length;
-      html += `<td class="bg-light fw-bold">총 ${total}건</td>`;
-    }
-    html += '</tr>';
+		            // item.reserveTime은 "HH24:MI" 형식이므로, 시간(HH24) 부분만 추출
+		            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00'; 
+		            // 설명: 'item.reserveTime' 필드(예: "09:00", "14:30")에서 앞의 두 글자(HH24, 예: "09", "14")만 추출합니다.
+		            //       'item.reserveTime'이 null이거나 undefined일 경우 '00'으로 기본값을 설정하여 오류를 방지합니다.
 
-    html += '</tbody></table>';
-    container.innerHTML = html;
-  }
+		            const count = item.reserveCount;
+		            // 설명: 'item'에서 'reserveCount' 필드(해당 시간대의 예약 건수)를 추출합니다.
 
-  /* ✅ Day View (그대로 유지) */
-  function renderDay() {
-    const key = fmt(viewDate);
-    ymSpan.textContent = key;
+		            const mapKey = `${dayKey}_${hour}`; // 예: "2025-09-15_09"
+		            // 설명: 'dayKey'와 'hour'를 조합하여 Map의 키를 생성합니다. (예: "2025-09-15_09")
+		            
+		            // 같은 날짜/시간의 예약 건수를 합산 (쿼리가 이미 HH24:MI까지 그룹화했으므로 중복되지 않을 가능성이 높음)
+		            hourlyCountsMap.set(mapKey, (hourlyCountsMap.get(mapKey) || 0) + count);
+		            // 설명: 'hourlyCountsMap'에 'mapKey'를 키로, 'count'를 값으로 저장합니다.
+		            //       'hourlyCountsMap.get(mapKey) || 0'는 이미 해당 키에 값이 있으면 그 값을 가져오고, 없으면 0을 가져옵니다.
+		            //       이렇게 하면 같은 키에 대해 여러 건의 예약이 있을 경우 합산할 수 있습니다.
+		            //       (하지만 서버 쿼리가 HH24:MI까지 그룹화한다면, 보통 한 키에 한 건의 데이터만 올 것입니다.)
+		        });
+		    }
+		    
 
-    const hours = [];
-    for (let h=7; h<=19; h++) hours.push(h);
 
-    let html = '<table class="table table-bordered text-center align-middle day-view"><thead><tr><th>시간</th><th>예약</th></tr></thead><tbody>';
-    for (let h of hours) {
-      const evs = (reservationEvents[key]||[]).filter(e => e.start.startsWith(String(h).padStart(2,'0')));
-      html += `<tr><td>${h}:00</td><td class="text-start">${evs.map(e=>`${e.start}-${e.end} ${e.title}`).join('<br>')}</td></tr>`;
-    }
-    html += '</tbody></table>';
-    container.innerHTML = html;
-  }
+		    // 5. 캘린더에 표시할 시간대 (오전 7시부터 오후 7시까지) 정의
+		    const hours = [...Array(13)].map((_, i) => i + 7); 
+		    // 설명: 7시부터 19시까지 총 13개의 시간을 나타내는 배열을 만듭니다.
+		    //       예: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
-  /* ✅ 드롭다운 이벤트 */
-  const viewSelect = document.getElementById('viewSelect');
-  viewSelect.addEventListener('change', () => {
-    viewMode = viewSelect.value;
-    render();
-  });
+		    // 6. HTML 테이블의 시작 및 시간 헤더 생성
+		    let html = '<table class="table table-bordered text-center align-middle week-view"><thead><tr><th>시간</th>';
+		    // 설명: 주간 뷰 테이블의 시작 태그와 "시간" 헤더 셀을 생성합니다.
+		    
+		    // 7. 요일 헤더 (월요일부터 일요일까지) 생성
+		    weekDays.forEach(d => {
+		        // 설명: 'weekDays' 배열에 있는 각 날짜(Date 객체) 'd'에 대해 반복합니다.
+		        const headerDate = (d.getMonth() + 1) + '/' + d.getDate();
+		        // 설명: 'd'의 월과 일을 "M/D" 형식으로 만듭니다. (예: "9/15")
+		        const dayName = d.toLocaleDateString('ko-KR', { weekday: 'short' });
+		        // 설명: 'd'의 요일을 짧은 한글 형식으로 만듭니다. (예: "월", "화")
+		        // 오늘 날짜인 경우 헤더를 빨간색으로 표시
+		        const headerClass = fmt(d) === fmt(new Date()) ? 'text-danger fw-bold' : '';
+		        // 설명: 현재 날짜 'd'가 진짜 오늘 날짜와 같다면 'text-danger fw-bold' 클래스를 추가하여 빨간색 굵은 글씨로 표시합니다.
+		        html += `<th class="${headerClass}">${dayName} (${headerDate})</th>`;
+		        // 설명: 요일 헤더 셀을 HTML에 추가합니다. 예: "<th class="">월 (9/15)</th>"
+		    });
+		    html += '</tr></thead><tbody>';
+		    // 설명: 헤더 행을 닫고 테이블 본문 시작 태그를 추가합니다.
 
-  /* ✅ 이전 / 다음 버튼 */
-  document.getElementById('prev').onclick = ()=>{
-    if (viewMode==='month') viewDate.setMonth(viewDate.getMonth()-1);
-    else if (viewMode==='week') viewDate.setDate(viewDate.getDate()-7);
-    else if (viewMode==='day') viewDate.setDate(viewDate.getDate()-1);
-    render();
-  };
-  document.getElementById('next').onclick = ()=>{
-    if (viewMode==='month') viewDate.setMonth(viewDate.getMonth()+1);
-    else if (viewMode==='week') viewDate.setDate(viewDate.getDate()+7);
-    else if (viewMode==='day') viewDate.setDate(viewDate.getDate()+1);
-    render();
-  };
+		    // 8. 각 시간대별 예약 현황 행 렌더링
+		    hours.forEach(h => {
+		        // 설명: 'hours' 배열에 있는 각 시간(숫자 h, 예: 7, 8, ...)에 대해 반복합니다.
+		        html += `<tr><td>${String(h).padStart(2, '0')}:00</td>`; 
+		        // 설명: 시간 행의 첫 번째 셀 (시간 표시)을 생성합니다. (예: "07:00")
+		        weekDays.forEach(d => {
+		            // 설명: 해당 시간 'h'에 대해 'weekDays' 배열의 각 날짜 'd'에 대해 반복합니다.
+		            //       즉, 월요일 7시, 화요일 7시, ... 일요일 7시 순으로 셀을 채워나갑니다.
 
-  /* ✅ 최초 렌더 */
-  render();
+		            const dayKey = fmt(d); // "YYYY-MM-DD"
+		            // 설명: 현재 날짜 'd'를 "YYYY-MM-DD" 문자열로 포맷팅합니다.
+		            const hourKey = String(h).padStart(2, '0'); // "HH24" (예: "07", "08")
+		            // 설명: 현재 시간 'h'를 두 자리 문자열(예: "07")로 포맷팅합니다.
+		            const fullKey = `${dayKey}_${hourKey}`; // Map에서 조회할 키 (예: "2025-09-15_09")
+		            // 설명: 'hourlyCountsMap'에서 예약 건수를 조회할 키를 만듭니다.
+		            
+		            const count = hourlyCountsMap.get(fullKey) || 0; 
+		            // 설명: 'hourlyCountsMap'에서 'fullKey'에 해당하는 예약 건수를 가져옵니다. 없으면 0입니다.
+		            
+		            html += `<td>${count > 0 ? `<span class="text-danger fw-bold">예약 ${count}건</span>` : ''}</td>`;
+		            // 설명: 예약 건수 'count'가 0보다 크면 "예약 N건"이라는 텍스트를 빨간색 굵은 글씨로 표시하고,
+		            //       0이거나 없으면 빈 문자열을 넣어 셀을 비워둡니다.
+		            //       이 셀을 HTML에 추가합니다.
+		        });
+		        html += '</tr>';
+		        // 설명: 시간 행을 닫습니다.
+		    });
+		    
+		    // 9. "총 예약" 행 렌더링
+		    html += '<tr><td class="fw-bold bg-light">총 예약</td>';
+		    // 설명: 테이블 본문의 마지막 행으로 "총 예약" 레이블 셀을 추가합니다.
+		    weekDays.forEach(d => {
+		        // 설명: 'weekDays' 배열에 있는 각 날짜 'd'에 대해 반복합니다.
+		        const dayKey = fmt(d); // "YYYY-MM-DD"
+		        // 설명: 현재 날짜 'd'를 "YYYY-MM-DD" 문자열로 포맷팅합니다.
+		        let totalDayCount = 0;
+		        // 설명: 현재 요일의 총 예약 건수를 저장할 변수를 초기화합니다.
+		        // 해당 요일의 모든 시간대 예약 건수를 합산
+		        hours.forEach(h => {
+		            // 설명: 해당 요일 'd'의 모든 시간 'h'에 대해 반복합니다.
+		            const hourKey = String(h).padStart(2, '0');
+		            // 설명: 현재 시간 'h'를 두 자리 문자열로 포맷팅합니다.
+		            const fullKey = `${dayKey}_${hourKey}`;
+		            // 설명: 'hourlyCountsMap'에서 조회할 키를 만듭니다.
+		            totalDayCount += (hourlyCountsMap.get(fullKey) || 0);
+		            // 설명: 해당 요일의 각 시간대 예약 건수를 'totalDayCount'에 합산합니다.
+		        });
+		        html += `<td class="bg-light fw-bold">총 예약 ${totalDayCount}건</td>`;
+		        // 설명: 해당 요일의 총 예약 건수를 표시하는 셀을 HTML에 추가합니다.
+		    });
+		    html += '</tr></tbody></table>';
+		    // 설명: "총 예약" 행을 닫고 테이블 본문과 테이블 태그를 닫습니다.
+
+		    // 10. 생성된 HTML을 캘린더 컨테이너에 삽입
+		    container.innerHTML = html; 
+		    // 설명: 최종적으로 생성된 모든 HTML 문자열을 'container' (캘린더 내용이 표시될 div)의 내부에 삽입하여 화면에 렌더링합니다.
+		}
+
+		function renderDay(){
+		    const currentDay = viewDate;
+		    ymSpan.textContent = fmt(currentDay); // 상단에 "2025-09-16" 표시
+
+		    // 요일 제목 표시 (예: "화요일")
+		    const dayName = currentDay.toLocaleDateString('ko-KR', { weekday: 'long' });
+
+		    // ⭐ 1. 서버에서 받아온 상세 예약 데이터를 Map 형태로 변환 ⭐
+		    //    키: "YYYY-MM-DD_HH" (예: "2025-09-16_08"), 값: 해당 시간대의 예약 객체 배열
+		    const hourlyReservationsMap = new Map();
+		    if (Array.isArray(fetchedDailyReservationCounts)) { // 변수명은 이대로 사용하되, 데이터 내용이 변경되었다고 가정
+		        fetchedDailyReservationCounts.forEach(item => {
+		            const dayKey = item.reserveDay;
+		            // 예약 시간 "HH:MI"에서 시(HH) 부분만 추출
+		            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
+		            const mapKey = `${dayKey}_${hour}`;
+
+		            // 해당 시간대의 예약 배열을 가져오거나 새로 생성
+		            const reservations = hourlyReservationsMap.get(mapKey) || [];
+		            // 현재 예약 아이템을 배열에 추가
+		            reservations.push(item);
+		            hourlyReservationsMap.set(mapKey, reservations);
+		        });
+		    }
+
+		    // 2. 캘린더에 표시할 시간대 (오전 7시부터 오후 7시까지) 정의
+		    const hours = [...Array(13)].map((_, i) => i + 7); // 7시부터 19시 (스크린샷 기준)
+
+		    // 3. HTML 구조 시작: 시간 축과 예약 내용을 담을 컨테이너
+		    let html = `
+		        <div class="d-flex flex-column align-items-center mb-3">
+		            <h3 class="fw-bold">${dayName}</h3>
+		        </div>
+		        <div class="day-view-grid d-flex">
+		            <div class="time-axis" style="width: 80px; text-align: right; padding-right: 10px;">
+		    `;
+		    hours.forEach(h => {
+		        html += `<div class="time-label" style="height: 60px; line-height: 60px;">${String(h).padStart(2, '0')}:00</div>`;
+		    });
+		    html += `
+		            </div>
+		            <div class="reservation-content flex-grow-1 border-start">
+		    `;
+
+		 // 4. 각 시간대별 예약 현황 렌더링
+		    hours.forEach(h => {
+		        const dayKey = fmt(currentDay);
+		        const hourKey = String(h).padStart(2, '0');
+		        const fullKey = `${dayKey}_${hourKey}`;
+		        
+		        // 해당 시간대의 예약 목록을 가져옵니다.
+		        const reservationsInHour = hourlyReservationsMap.get(fullKey) || [];
+
+		        html += `
+		            <div class="hour-slot">
+		        `;
+		        
+		        // 해당 시간대에 속하는 예약들을 렌더링
+		        reservationsInHour.forEach(res => {
+		            // ⭐ 이 부분이 수정되었습니다. 색상 클래스를 무채색으로 고정합니다. ⭐
+		            const bgColorClass = 'text-bg-secondary'; // 모든 진료과에 대해 무채색(회색)으로 통일
+
+		            // ⭐ 표시 형식과 툴팁 내용은 기존과 동일하게 유지 ⭐
+		            const displayTime = res.reserveTime ? res.reserveTime.substring(0, 5) : '';
+		            const blockText = `${res.patientName} 님  ${displayTime}  ${res.department}  ${res.employeeName} 예약`;
+		            const tooltipText = `${res.patientName} 님 (${displayTime})  ${res.department}  ${res.employeeName} 예약`;
+
+		            html += `
+		                <div class="reservation-block badge ${bgColorClass} m-1"
+		                     data-bs-toggle="tooltip" data-bs-placement="top"
+		                     title="${tooltipText}"
+		                     data-reservation-id="${res.reservationId || ''}">
+		                    ${blockText}
+		                </div>
+		            `;
+		        });
+
+		        html += `
+		            </div>
+		        `;
+		    });
+
+		    // 5. HTML 구조 마무리 (여기서 `reservation-content`와 `day-view-grid`를 닫습니다)
+		    html += `
+		            </div> </div> `;
+
+		    container.innerHTML = html;
+
+		    // 6. Bootstrap 툴팁 초기화 (렌더링 후 호출 필요)
+		    // 이 코드는 툴팁이 제대로 작동하도록 'renderDay()' 함수 호출 후에 실행되어야 합니다.
+		    // fetchAndRenderCalendarData() 호출 후 render()에서 이 코드를 호출하는 것이 좋습니다.
+		    // var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		    // var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		    //   return new bootstrap.Tooltip(tooltipTriggerEl)
+		    // })
+		}
+
+		// ✅ 이벤트 핸들러 변경: render() 대신 fetchAndRenderCalendarData() 호출
+		document.getElementById('viewSelect').addEventListener('change', e => { 
+		    viewMode = e.target.value; 
+		    fetchAndRenderCalendarData(); 
+		});
+
+		document.getElementById('prev').onclick = () => { 
+		    if(viewMode === 'month') viewDate.setMonth(viewDate.getMonth() - 1);
+		    else if(viewMode === 'week') viewDate.setDate(viewDate.getDate() - 7);
+		    else viewDate.setDate(viewDate.getDate() - 1);
+		    fetchAndRenderCalendarData(); // 데이터 다시 가져오기
+		};
+
+		document.getElementById('next').onclick = () => { 
+		    if(viewMode === 'month') viewDate.setMonth(viewDate.getMonth() + 1);
+		    else if(viewMode === 'week') viewDate.setDate(viewDate.getDate() + 7);
+		    else viewDate.setDate(viewDate.getDate() + 1);
+		    fetchAndRenderCalendarData(); // 데이터 다시 가져오기
+		};
+
+		// ✅ 페이지 로드 시 초기 캘린더 데이터를 가져옵니다.
+		fetchAndRenderCalendarData();
   </script>
 </body>
 </html>

@@ -45,7 +45,16 @@ public class SmsDAOTest {
 	}
 	@Test
 	public void getReserveSmsTest(){
-		List<ReserveSmsVO> smsList = dao.getReserveSms();
+		int page = 2;
+	    int pageSize = 10;
+	    int startRow = (page - 1) * pageSize + 1; // 11
+	    int endRow = page * pageSize;             // 20
+	    
+		Map<String, Object> map = new HashMap<>();
+        map.put("startRow", startRow);
+        map.put("endRow", endRow );
+
+		List<ReserveSmsVO> smsList = dao.getReserveSms(map);
 		System.out.println(smsList);
 		assertTrue(smsList.size()>0);
 	}
@@ -56,7 +65,16 @@ public class SmsDAOTest {
 		}
 	@Test
 	public void getCommonSmsTest() {
-        List<CommonSmsVO> smsList = dao.getCommonSms();
+		int page = 2;
+	    int pageSize = 10;
+	    int startRow = (page - 1) * pageSize + 1; // 11
+	    int endRow = page * pageSize;             // 20
+	    
+		Map<String, Object> map = new HashMap<>();
+        map.put("startRow", startRow);
+        map.put("endRow", endRow );
+
+        List<CommonSmsVO> smsList = dao.getCommonSms(map);
         System.out.println(smsList);
         assertTrue(smsList.size()>0);
 	}

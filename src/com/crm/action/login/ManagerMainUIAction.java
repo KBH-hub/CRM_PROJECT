@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.login;
 
 import java.io.IOException;
 
@@ -7,13 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
 
-public class sendCommonSMSAction implements Action {
+public class ManagerMainUIAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
-		
-		
-		return null;
+
+		return "reserveList.html";
 	}
 
 }

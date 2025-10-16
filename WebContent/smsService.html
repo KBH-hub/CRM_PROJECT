@@ -161,10 +161,11 @@
 								</tbody>
 							</table>
 						</div>
-						<p class="text-end w-75 mx-auto mt-2 text-muted" id="recipientCount">수신자 : 0명</p>
-						
+						<p class="text-end w-75 mx-auto mt-2 text-muted"
+							id="recipientCount">수신자 : 0명</p>
+
 						<button type="button" class="btn btn-warning btn-sm">초기화</button>
-						<button id = sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
+						<button id=sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
 							id="commonSmsRecord">보낸 메세지함</button>
 					</div>
@@ -359,28 +360,32 @@
 	<script>
 	
 	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
-	  async function loadSidebar(activeKey) {
-	    const slot = document.getElementById('sidebar-slot');
-	    const resp = await fetch('./sidebar.html'); // 경로는 프로젝트 구조에 맞게
-	    const html = await resp.text();
-	    slot.innerHTML = html;
-
-	    // 활성 메뉴 표시 (data-route 값을 사용)
-	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
-	    if (current) {
-	      // 전부 초기화
-	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
-	        a.classList.remove('active','bg-primary','text-white');
-	        a.classList.add('text-dark');
-	      });
-	      // 현재만 활성
-	      current.classList.add('active','bg-primary','text-white');
-	      current.classList.remove('text-dark');
+	function loadSidebar(activeKey) {
+	  $.ajax({
+	    url: "./sidebar.html",
+	    dataType: "html",
+	    success: function (html) {
+	      $("#sidebar-slot").html(html);
+	      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
+	      $links.removeClass("active bg-primary text-white").addClass("text-dark");
+	      var $current = $links.filter("[data-route='" + activeKey + "']");
+	      $current.addClass("active bg-primary text-white").removeClass("text-dark");
 	    }
-	  }
+	  });
+	}
 
 	  // 이 페이지의 활성 키만 바꿔주면 됨
 	  loadSidebar('smsService');
+	  
+	  function showAlert(message, onClose) {
+		  $("#alertMessage").text(message);
+		  var modal = new bootstrap.Modal(document.getElementById("alertModal"));
+		  $("#alertModal").on("hidden.bs.modal", function handler() {
+		    if (typeof onClose === "function") onClose();
+		    $("#alertModal").off("hidden.bs.modal", handler);
+		  });
+		  modal.show();
+		}
 	  </script>
 
 	<script
@@ -468,7 +473,7 @@
     
     
     //보낸 메시지함 클릭
-     $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=reserveSmsUI");
+     $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=smsRecordUI");
     
 	// ✅ 기본html 관련 js 
 	  const reserveBtn = document.getElementById('reserveBtn');

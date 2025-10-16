@@ -39,6 +39,20 @@ public class SmsDAO {
 		return list;
 	}
 	
+    public int getReserveSmsCount(int reserveSmsNo) {
+        SqlSession session = DBCP.getSqlSessionFactory().openSession();
+        int count = session.selectOne("smsMapper.getReserveSmsCount", reserveSmsNo);
+        session.close();
+        return count;
+    }
+    
+    public int getCommonSmsCount(int commonSmsNo) {
+        SqlSession session = DBCP.getSqlSessionFactory().openSession();
+        int count = session.selectOne("smsMapper.getCommonSmsCount", commonSmsNo);
+        session.close();
+        return count;
+    }
+	
 	public int addReserveSms(int reserveNo, String employeeId, String templateName){
 		int result = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
@@ -59,11 +73,12 @@ public class SmsDAO {
 	public List<CommonSmsVO> getCommonSms(){
 		List<CommonSmsVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getCommonSms");
+		list = conn.selectList("smsMapper.getSMSCount");
 		conn.close();
 		return list;
 	}
 	
+    
 	public int addCommonSms(int patientNo, String employeeId, String content){
 		int result = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();

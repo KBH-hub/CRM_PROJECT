@@ -24,8 +24,8 @@ public class GetCommonRecipientAction implements Action {
 		}
 		SmsDAO dao = new SmsDAO();
 		List<CommonSmsVO> list = dao.getCommonRecipient(patientNo);
-		request.setAttribute("list", list);
-		return "commonSMSList.jsp";
+		request.setAttribute("result", list);
+		return "result.jsp";
 	}
 
 }

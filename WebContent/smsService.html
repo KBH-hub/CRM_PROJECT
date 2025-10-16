@@ -164,7 +164,7 @@
 						<p class="text-end w-75 mx-auto mt-2 text-muted" id="recipientCount">수신자 : 0명</p>
 						
 						<button type="button" class="btn btn-warning btn-sm">초기화</button>
-						<button type="button" class="btn btn-success btn-sm">전송</button>
+						<button id = sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
 							id="commonSmsRecord">보낸 메세지함</button>
 					</div>
@@ -492,7 +492,31 @@
 	    showSection(commonSec, reserveSec, commonBtn, reserveBtn);
 	  });
 
+	//======일반메시지 관련=======
+	$("#sendSMSbtn").on("click", function(){
+		 const content = $("#contentBox").val().trim();
+
+		  if (selectedRecipients.length === 0) {
+		    showAlert("수신자 명단이 비어 있습니다. 먼저 명단을 추가하세요.");
+		    return;
+		  }
+		  if (!content) {
+		    showAlert("메시지 내용을 입력하세요.");
+		    return;
+		  }
+		  
+		  const payload = {
+				    content: content,
+				    // 필요시 employeeId는 서버 세션에서 가져가도록 권장(프론트에서 보내지 않음)
+				    // 요청에 ids, 이름, 전화 모두 포함하고 싶다면 아래 배열들을 함께 보냄
+				    patientNo: selectedRecipients.map(r => r.patientNo),
+				    patientName: selectedRecipients.map(r => r.patientName),
+				    phone: selectedRecipients.map(r => r.phone)
+				  };
+
+	})
 	
+	  
 	// ✅ 명단추가 모달 js
 	document.addEventListener('DOMContentLoaded', () => {
   // 각 모달(또는 원하는 컨테이너)마다 select-all 로직을 연결
@@ -811,7 +835,11 @@ function validateDates() {
   });
 
   $("#startDate, #endDate, #doctorSelect").change(validateDates);
-
+ 
+  //선택한 수신자들을 여기 보관
+  let selectedIds = [];
+  let selectedRecipients = [];
+  
   $("#sendSmsSelectBtn").click(function () {
 	  const ids = [];
 	  $("#patientTableBody .row-check:checked").each(function () {
@@ -835,6 +863,15 @@ function validateDates() {
 	        $("#recipientCount").text("수신자 : 0명");
 	        return;
 	      }
+	      
+	      // ✅ 전역 보관
+	      selectedIds = ids.slice(); // 복사 저장
+	      // 응답 VO에 patientNo가 없으면, ids 순서대로 매칭
+	      selectedRecipients = list.map(r => ({
+	        patientNo: r.patientNo || "",
+	        patientName: r.patientName || "",
+	        phone: r.phone || ""
+	      }));
 
 	      list.forEach(r => {
 	        $tbody.append(`

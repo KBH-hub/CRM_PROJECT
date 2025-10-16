@@ -54,6 +54,16 @@
 		order by template_name desc
 	</select>
 	
+	<select id="getReserveSmsCount" parameterType="map" resultType="int">
+		select count(reserve_sms_no)
+		from reserve_sms	
+	</select>
+
+	<select id="getCommonSmsCount" parameterType="map" resultType="int">
+		select count(common_sms_no)
+		from common_sms	
+	</select>
+	
 	<select id="getReserveSms" resultMap="ReserveSmsMap">
 		select rs.reserve_sms_no, p.patient_name, e.employee_name, p.phone, TO_CHAR(rs.datetime,
 		'YYYY-MM-DD HH24:MI') as datetime, rs.template_name
@@ -105,6 +115,4 @@
 		join patient p on p.patient_no = cs.patient_no
 		where cs.common_sms_no = #{commonSmsNo}
 	</select>
-	
-
 </mapper>

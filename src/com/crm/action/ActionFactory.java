@@ -16,6 +16,7 @@ import com.crm.action.reserveList.CountReserveWeekByTimeAction;
 import com.crm.action.reserveList.ReserveCalUIAction;
 import com.crm.action.reserveList.ReserveListUIAction;
 import com.crm.action.reserveList.getReserveDayAction;
+import com.crm.action.reserveList.getReserveDetailAction;
 import com.crm.action.smsService.GetTemplateAction;
 import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
@@ -100,6 +101,10 @@ public class ActionFactory {
 			
 		case "getReserveDay":
 			a = new getReserveDayAction();
+			break;
+			
+		case "getReserveDetail":
+			a = new getReserveDetailAction();
 			break;
 			
 		case "loginUI":

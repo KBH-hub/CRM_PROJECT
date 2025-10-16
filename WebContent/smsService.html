@@ -111,8 +111,22 @@
 							<input id="templateNameBox" type="text"
 								class="form-control d-inline-block w-50 ms-2 mt-2"
 								placeholder="템플릿명" disabled>
-							<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
-							<p>수신자 : 0명</p>
+						<div class="mt-3 w-75 mx-auto border rounded overflow-auto"
+							style="height: 300px;">
+							<table class="table table-sm mb-0 text-center align-middle">
+								<thead>
+									<tr>
+										<th style="width: 40%; background: transparent;">이름</th>
+										<th style="width: 60%; background: transparent;">전화번호</th>
+									</tr>
+								</thead>
+								<tbody id="reserveRecipientTableBody" style="background: transparent;">
+									<!-- modal -->
+								</tbody>
+							</table>
+						</div>
+						<p class="text-end w-75 mx-auto mt-2 text-muted"
+							id="reserveRecipientCount">수신자 : 0명</p>
 							<div
 								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
 								<button type="button" class="btn btn-outline-secondary"
@@ -263,7 +277,8 @@
 						</div>
 						<div class="modal-footer d-flex justify-content-between">
 							<div class="d-flex gap-2">
-								<button class="btn btn-primary">선택 환자 메시지 보내기</button>
+								<button id="sendReserveSmsSelectBtn" class="btn btn-primary"
+									data-bs-dismiss="modal">선택 환자 메시지 보내기</button>
 							</div>
 						</div>
 					</div>
@@ -436,6 +451,19 @@
 		  $("#recipientTableBody").empty();
 		  $("#recipientCount").text("수신자 : 0명");
 		  $("#commonSmsAddBtn").prop("disabled", false);
+		  $("#reserveRecipientTableBody").empty();
+		  $("#reserveRecipientCount").text("수신자 : 0명");
+		  
+		  // 선택 상태(공통) 초기화
+		  selectedIds = [];
+		  selectedRecipients = [];
+
+		  // 모달 내 체크박스들 초기화(선택 전체/행 체크)
+		  $('.select-all').each(function(){
+		    this.checked = false;
+		    this.indeterminate = false;
+		  });
+		  $('.row-check').prop('checked', false);
     }
     // JSON 배열 → <ul> 렌더링
     function renderList(list) {
@@ -704,7 +732,7 @@ function renderReserveList(reserveList){
     return;
   }
   reserveList.forEach(r=>{
-	    const $tr = $('<tr>');
+	    const $tr = $('<tr>').attr('data-reserve-no', r.reserveNo || '');
 	    // 체크박스 열
 	    $tr.append('<td><input type="checkbox" class="row-check"></td>');
 	    // 데이터 열들
@@ -900,27 +928,28 @@ function validateDates() {
 	  });
 	});
 
-  $("#sendSmsSelectBtn").click(function () {
+  $("#sendReserveSmsSelectBtn").click(function () {
 	  const ids = [];
-	  $("#patientTableBody .row-check:checked").each(function () {
-	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
-	  });
+	  $("#reserveTable tbody .row-check:checked").each(function () {
+		  const rno = $(this).closest("tr").data("reserve-no");
+		  if (rno) ids.push(rno);
+		  });
 	  if (ids.length === 0) {
-	    showAlert("선택된 환자가 없습니다.");
+	    showAlert("선택된 예약이 없습니다.");
 	    return;
 	  }
 
 	  $.ajax({
-	    url: "controller?cmd=getCommonRecipient",
+	    url: "controller?cmd=getReserveRecipient",
 	    type: "POST",
-	    data: { patientNo: ids },
+	    data: { reserveNo: ids },
 	    traditional: true,   // 배열 전송
 	    dataType: "json",
 	    success: function (list) {
-	      const $tbody = $("#recipientTableBody").empty();
+	      const $tbody = $("#reserveRecipientTableBody").empty();
 
 	      if (!Array.isArray(list) || list.length === 0) {
-	        $("#recipientCount").text("수신자 : 0명");
+	        $("#reserveRecipientCount").text("수신자 : 0명");
 	        return;
 	      }
 	      
@@ -942,7 +971,7 @@ function validateDates() {
 	        `);
 	      });
 
-	      $("#recipientCount").text(`수신자 : ${list.length}명`);
+	      $("#reserveRecipientCount").text(`수신자 : ${list.length}명`);
 	    },
 	    error: function () {
 	      showAlert("전송 중 오류가 발생했습니다.");

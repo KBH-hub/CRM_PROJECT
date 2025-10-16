@@ -3,6 +3,7 @@ package com.crm.action;
 import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetCommonRecipientAction;
 import com.crm.action.smsService.GetCommonSmsAction;
+import com.crm.action.smsService.GetReserveRecipientAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.smsService.GetReseveSmsAction;
 import com.crm.action.patient.AddPatientAction;
@@ -90,6 +91,9 @@ public class ActionFactory {
 			break;
 		case "getReserveSms":
 			a = new GetReseveSmsAction();
+			break;
+		case "getReserveRecipient":
+			a = new GetReserveRecipientAction();
 			break;
 		case "getCommonSms":
 			a = new GetCommonSmsAction();

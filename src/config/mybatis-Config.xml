@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
     <mapper resource="config/reserveMapper.xml"/>
     <mapper resource="config/doctorMapper.xml"/>
     <mapper resource="config/patientMapper.xml"/>
-    <mapper resource="config/smsMapper.xml"/>
+    <mapper resource="config/SMSMapper.xml"/>
   </mappers>
   
 </configuration>

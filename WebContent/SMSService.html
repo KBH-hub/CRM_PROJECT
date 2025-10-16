@@ -97,7 +97,7 @@
 				</ul>
 
 				<!-- ✅ 예약 메시지 구역 -->
-				<div class="reserveSms fade-section show">
+				<div class="reserveSMS fade-section show">
 
 					<div class="row justify-content-center align-items-start mt-3">
 						<!-- 왼쪽 영역 -->
@@ -130,7 +130,7 @@
 							<div
 								class="mb-4 d-flex justify-content-between align-items-center w-75 mx-auto">
 								<button type="button" class="btn btn-outline-secondary"
-									id="reserveSmsRecord">보낸 메시지함</button>
+									id="reserveSMSRecord">보낸 메시지함</button>
 								<div class="d-flex gap-2">
 									<button type="button"
 										class="btn btn-warning btn-sm btnReset">초기화</button>
@@ -157,12 +157,12 @@
 				</div>
 
 				<!-- ✅ 일반 메시지 구역 -->
-				<div class="commonSms fade-section">
+				<div class="commonSMS fade-section">
 					<div class="text-center">
 						<textarea id=contentBox class="form-control w-75 mx-auto mb-3"
 							rows="10" placeholder="메시지 내용을 입력하세요."></textarea>
 						<button type="button" class="btn btn-secondary btn-sm"
-							data-bs-toggle="modal" data-bs-target="#patientListModal" id="commonSmsAddBtn">명단
+							data-bs-toggle="modal" data-bs-target="#patientListModal" id="commonSMSAddBtn">명단
 							추가</button>
 						<div class="mt-3 w-75 mx-auto border rounded overflow-auto"
 							style="height: 300px;">
@@ -184,7 +184,7 @@
 						<button type="button" class="btn btn-warning btn-sm btnReset">초기화</button>
 						<button id=sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
-							id="commonSmsRecord">보낸 메세지함</button>
+							id="commonSMSRecord">보낸 메세지함</button>
 					</div>
 				</div>
 			</div>
@@ -200,7 +200,7 @@
 
 						<div class="modal-header">
 							<div class="d-flex gap-2">
-								<h5 class="modal-title fw-bold">예약 목록(sms)</h5>
+								<h5 class="modal-title fw-bold">예약 목록(SMS)</h5>
 							</div>
 							<div>
 								<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
@@ -277,7 +277,7 @@
 						</div>
 						<div class="modal-footer d-flex justify-content-between">
 							<div class="d-flex gap-2">
-								<button id="sendReserveSmsSelectBtn" class="btn btn-primary"
+								<button id="sendReserveSMSSelectBtn" class="btn btn-primary"
 									data-bs-dismiss="modal">선택 환자 메시지 보내기</button>
 							</div>
 						</div>
@@ -294,7 +294,7 @@
 					<div class="modal-content custom-modal-size">
 						<div
 							class="modal-header d-flex justify-content-between align-items-center">
-							<h5 class="modal-title fw-bold">환자 목록 (sms)</h5>
+							<h5 class="modal-title fw-bold">환자 목록 (SMS)</h5>
 							<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
 						</div>
 						<div class="modal-body">
@@ -348,7 +348,7 @@
 
 						<div class="modal-footer d-flex justify-content-between">
 							<div>
-								<button id="sendCommonSmsSelectBtn" class="btn btn-primary"
+								<button id="sendCommonSMSSelectBtn" class="btn btn-primary"
 									data-bs-dismiss="modal">선택 환자 메시지 보내기</button>
 							</div>
 						</div>
@@ -393,7 +393,7 @@
 	}
 
 	  // 이 페이지의 활성 키만 바꿔주면 됨
-	  loadSidebar('smsService');
+	  loadSidebar('SMSService');
 	  </script>
 	  
 	<script type="text/javascript">
@@ -450,7 +450,7 @@
 		  $("#contentBox").val("");
 		  $("#recipientTableBody").empty();
 		  $("#recipientCount").text("수신자 : 0명");
-		  $("#commonSmsAddBtn").prop("disabled", false);
+		  $("#commonSMSAddBtn").prop("disabled", false);
 		  $("#reserveRecipientTableBody").empty();
 		  $("#reserveRecipientCount").text("수신자 : 0명");
 		  
@@ -501,13 +501,13 @@
     }
     
     //보낸 메시지함 클릭
-     $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=smsRecordUI");
+     $("#reserveSMSRecord").on("click", ()=> location.href="controller?cmd=SMSRecordUI");
     
 	// ✅ 기본html 관련 js 
 	  const reserveBtn = document.getElementById('reserveBtn');
 	  const commonBtn  = document.getElementById('commonBtn');
-	  const reserveSec = document.querySelector('.reserveSms');
-	  const commonSec  = document.querySelector('.commonSms');
+	  const reserveSec = document.querySelector('.reserveSMS');
+	  const commonSec  = document.querySelector('.commonSMS');
 
 	  function showSection(showEl, hideEl, activeBtn, inactiveBtn) {
 	    hideEl.classList.remove('show');
@@ -878,7 +878,7 @@ function validateDates() {
   let selectedIds = [];
   let selectedRecipients = [];
   
-  $("#sendCommonSmsSelectBtn").click(function () {
+  $("#sendCommonSMSSelectBtn").click(function () {
 	  const ids = [];
 	  $("#patientTableBody .row-check:checked").each(function () {
 	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
@@ -928,7 +928,7 @@ function validateDates() {
 	  });
 	});
 
-  $("#sendReserveSmsSelectBtn").click(function () {
+  $("#sendReserveSMSSelectBtn").click(function () {
 	  const ids = [];
 	  $("#reserveTable tbody .row-check:checked").each(function () {
 		  const rno = $(this).closest("tr").data("reserve-no");
@@ -1015,8 +1015,8 @@ function validateDates() {
 	  
 
 
-	document.getElementById("commonSmsRecord").addEventListener("click", () => {
-		  window.location.href = "smsRecord.html?tab=common";
+	document.getElementById("commonSMSRecord").addEventListener("click", () => {
+		  window.location.href = "SMSRecord.html?tab=common";
 		});
 	
 	const params = new URLSearchParams(window.location.search);
@@ -1026,7 +1026,7 @@ function validateDates() {
 	  params.forEach((value, key) => {
 	    if (key === "patientNo") ids.push(value);
 	  });
-	  $("#commonSmsAddBtn").prop("disabled", true);
+	  $("#commonSMSAddBtn").prop("disabled", true);
 	  $.ajax({
 		    url: "controller?cmd=getCommonRecipient",
 		    type: "POST",

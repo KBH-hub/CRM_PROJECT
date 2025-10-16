@@ -11,7 +11,7 @@
 .fade-section { opacity:0; transition:opacity 0.4s ease-in-out; display:none; }
 .fade-section.show { display:block; opacity:1; }
 
-.commonSms tbody tr:hover { background-color:#f6f6f6; cursor:pointer; }
+.commonSMS tbody tr:hover { background-color:#f6f6f6; cursor:pointer; }
 
 /* 공용 페이저 하나만 스타일링 */
 #pager .page-item.active .page-link {
@@ -52,7 +52,7 @@
         </ul>
 
         <!-- 예약 -->
-        <div class="reserveSms fade-section show text-center">
+        <div class="reserveSMS fade-section show text-center">
           <div class="table-responsive">
             <table class="table table-bordered align-middle text-center">
               <thead class="table-light">
@@ -65,13 +65,13 @@
                   <th>템플릿명</th>
                 </tr>
               </thead>
-              <tbody id="reserveSmsTableBody"></tbody>
+              <tbody id="reserveSMSTableBody"></tbody>
             </table>
           </div>
         </div>
 
         <!-- 일반 -->
-        <div class="commonSms fade-section">
+        <div class="commonSMS fade-section">
           <div class="table-responsive">
             <table class="table table-bordered align-middle text-center">
               <thead class="table-light">
@@ -84,7 +84,7 @@
                   <th>내용</th>
                 </tr>
               </thead>
-              <tbody id="commonSmsTableBody"></tbody>
+              <tbody id="commonSMSTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -148,7 +148,7 @@ function loadSidebar(activeKey) {
     }
   });
 }
-  loadSidebar('smsService');
+  loadSidebar('SMSService');
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -157,8 +157,8 @@ function loadSidebar(activeKey) {
 (() => {
   const reserveBtn = document.getElementById('reserveBtn');
   const commonBtn  = document.getElementById('commonBtn');
-  const reserveSec = document.querySelector('.reserveSms');
-  const commonSec  = document.querySelector('.commonSms');
+  const reserveSec = document.querySelector('.reserveSMS');
+  const commonSec  = document.querySelector('.commonSMS');
 
   // 탭 상태 & 페이지 상태(탭별)
   let activeTab = 'reserve';
@@ -207,8 +207,8 @@ function loadSidebar(activeKey) {
       const text = $(this).text();
 
       const getState = () => activeTab === 'reserve'
-        ? {cur: reserveCurrent, tot: reserveTotal, go: loadReserveSms}
-        : {cur: commonCurrent,  tot: commonTotal,  go: loadCommonSms};
+        ? {cur: reserveCurrent, tot: reserveTotal, go: loadReserveSMS}
+        : {cur: commonCurrent,  tot: commonTotal,  go: loadCommonSMS};
 
       const {cur, tot, go} = getState();
 
@@ -221,10 +221,10 @@ function loadSidebar(activeKey) {
   }
 
   // 예약 로드
-  function loadReserveSms(page = 1){
-    const params = { cmd: "getReserveSms", page, pageSize };
+  function loadReserveSMS(page = 1){
+    const params = { cmd: "getReserveSMS", page, pageSize };
     // 먼저 로딩 표시(사용자 체감 ↑)
-    renderLoading('#reserveSmsTableBody', 10);
+    renderLoading('#reserveSMSTableBody', 10);
 
     $.ajax({
       url: "controller",
@@ -242,7 +242,7 @@ function loadSidebar(activeKey) {
         if (activeTab === 'reserve') renderPager(reserveCurrent, reserveTotal);
       },
       error: function(xhr, status, err) {
-        console.error("getReserveSms error:", status, err, xhr?.responseText);
+        console.error("getReserveSMS error:", status, err, xhr?.responseText);
         alert("보낸 메시지(예약) 목록을 불러오는 중 오류가 발생했습니다.");
         renderReserveTable([]);
         if (activeTab === 'reserve') renderPager(1, 1);
@@ -251,9 +251,9 @@ function loadSidebar(activeKey) {
   }
 
   // 일반 로드
-  function loadCommonSms(page = 1){
-    const params = { cmd: "getCommonSms", page, pageSize };
-    renderLoading('#commonSmsTableBody', 10);
+  function loadCommonSMS(page = 1){
+    const params = { cmd: "getCommonSMS", page, pageSize };
+    renderLoading('#commonSMSTableBody', 10);
 
     $.ajax({
       url: "controller",
@@ -271,7 +271,7 @@ function loadSidebar(activeKey) {
         if (activeTab === 'common') renderPager(commonCurrent, commonTotal);
       },
       error: function(xhr, status, err) {
-        console.error("getCommonSms error:", status, err, xhr?.responseText);
+        console.error("getCommonSMS error:", status, err, xhr?.responseText);
         alert("보낸 메시지(일반) 목록을 불러오는 중 오류가 발생했습니다.");
         renderCommonTable([]);
         if (activeTab === 'common') renderPager(1, 1);
@@ -281,7 +281,7 @@ function loadSidebar(activeKey) {
 
   // 예약 테이블 렌더
   function renderReserveTable(list) {
-    const $tbody = $("#reserveSmsTableBody");
+    const $tbody = $("#reserveSMSTableBody");
     $tbody.empty();
     if (!list || list.length === 0) {
       $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 메시지 기록이 없습니다.</td></tr>");
@@ -295,7 +295,7 @@ function loadSidebar(activeKey) {
             data-phone="${r.phone ?? ''}"
             data-datetime="${r.datetime ?? ''}"
             data-content="${r.templateName ?? ''}">
-          <td>${r.reserveSmsNo  ?? '-'}</td>
+          <td>${r.reserveSMSNo  ?? '-'}</td>
           <td>${r.patientName   ?? '-'}</td>
           <td>${r.phone         ?? '-'}</td>
           <td>${r.employeeName  ?? '-'}</td>
@@ -308,7 +308,7 @@ function loadSidebar(activeKey) {
 
   // 일반 테이블 렌더(열 순서: 수신인→발신인→전화번호)
   function renderCommonTable(list) {
-    const $tbody = $("#commonSmsTableBody");
+    const $tbody = $("#commonSMSTableBody");
     $tbody.empty();
     if (!list || list.length === 0) {
       $tbody.html("<tr><td colspan='10' class='text-center text-muted py-3'>조회된 메시지 기록이 없습니다.</td></tr>");
@@ -322,7 +322,7 @@ function loadSidebar(activeKey) {
             data-phone="${c.phone ?? ''}"
             data-datetime="${c.datetime ?? ''}"
             data-content="${c.content ?? ''}">
-          <td>${c.commonSmsNo  ?? '-'}</td>
+          <td>${c.commonSMSNo  ?? '-'}</td>
           <td>${c.patientName  ?? '-'}</td>
           <td>${c.employeeName ?? '-'}</td>
           <td>${c.phone        ?? '-'}</td>
@@ -349,18 +349,18 @@ function loadSidebar(activeKey) {
   reserveBtn.addEventListener('click', () => {
     showSection(reserveSec, commonSec, reserveBtn, commonBtn);
     activeTab = 'reserve';
-    if (reserveCurrent === 1 && $('#reserveSmsTableBody').children().length === 0) {
-      renderLoading('#reserveSmsTableBody', 10);
+    if (reserveCurrent === 1 && $('#reserveSMSTableBody').children().length === 0) {
+      renderLoading('#reserveSMSTableBody', 10);
     }
-    loadReserveSms(1);
+    loadReserveSMS(1);
   });
   commonBtn.addEventListener('click', () => {
     showSection(commonSec, reserveSec, commonBtn, reserveBtn);
     activeTab = 'common';
-    if (commonCurrent === 1 && $('#commonSmsTableBody').children().length === 0) {
-      renderLoading('#commonSmsTableBody', 10);
+    if (commonCurrent === 1 && $('#commonSMSTableBody').children().length === 0) {
+      renderLoading('#commonSMSTableBody', 10);
     }
-    loadCommonSms(1);
+    loadCommonSMS(1);
   });
 
   // 초기 진입(쿼리스트링)
@@ -371,12 +371,12 @@ function loadSidebar(activeKey) {
     commonSec.style.display = 'block';   commonSec.classList.add('show');
     reserveBtn.classList.remove('active'); commonBtn.classList.add('active');
     activeTab = 'common';
-    renderLoading('#commonSmsTableBody', 10);
-    loadCommonSms(1);
+    renderLoading('#commonSMSTableBody', 10);
+    loadCommonSMS(1);
   } else {
     activeTab = 'reserve';
-    renderLoading('#reserveSmsTableBody', 10);
-    loadReserveSms(1);
+    renderLoading('#reserveSMSTableBody', 10);
+    loadReserveSMS(1);
   }
 
 })();

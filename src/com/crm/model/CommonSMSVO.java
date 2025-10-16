@@ -2,9 +2,9 @@ package com.crm.model;
 
 import java.util.Date;
 
-public class CommonSmsVO {
+public class CommonSMSVO {
 	
-	private int commonSmsNo;
+	private int commonSMSNo;
 	private String employeeId;
 	private String employeeName;
 	private int patientNo;
@@ -14,11 +14,11 @@ public class CommonSmsVO {
 	private String templateName;
 	private String content;
 	
-	public CommonSmsVO(){};
+	public CommonSMSVO(){};
 	
-	public CommonSmsVO(int commonSmsNo, String employeeId, String employeeName, int patientNo, String patientName,
+	public CommonSMSVO(int commonSMSNo, String employeeId, String employeeName, int patientNo, String patientName,
 			String phone, String datetime, String content) {
-		setCommonSmsNo(commonSmsNo);
+		setCommonSMSNo(commonSMSNo);
 		setEmployeeId(employeeId);
 		setEmployeeName(employeeName);
 		setPatientNo(patientNo);
@@ -27,11 +27,11 @@ public class CommonSmsVO {
 		setDatetime(datetime);
 		setContent(content);
 	}
-	public int getCommonSmsNo() {
-		return commonSmsNo;
+	public int getCommonSMSNo() {
+		return commonSMSNo;
 	}
-	public void setCommonSmsNo(int commonSmsNo) {
-		this.commonSmsNo = commonSmsNo;
+	public void setCommonSMSNo(int commonSMSNo) {
+		this.commonSMSNo = commonSMSNo;
 	}
 	public String getEmployeeId() {
 		return employeeId;
@@ -78,7 +78,7 @@ public class CommonSmsVO {
 
 	@Override
 	public String toString() {
-		return "CommonSmsVO [commonSmsNo=" + commonSmsNo + ", employeeId=" + employeeId + ", employeeName="
+		return "CommonSMSVO [commonSMSNo=" + commonSMSNo + ", employeeId=" + employeeId + ", employeeName="
 				+ employeeName + ", patientNo=" + patientNo + ", patientName=" + patientName + ", phone=" + phone
 				+ ", datetime=" + datetime + ", content=" + content + "]\n";
 	}

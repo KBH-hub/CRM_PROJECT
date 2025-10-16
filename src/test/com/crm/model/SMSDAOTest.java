@@ -10,41 +10,41 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.crm.model.CommonSmsVO;
-import com.crm.model.ReserveSmsVO;
-import com.crm.model.SmsDAO;
+import com.crm.model.CommonSMSVO;
+import com.crm.model.ReserveSMSVO;
+import com.crm.model.SMSDAO;
 
 
-public class SmsDAOTest {
+public class SMSDAOTest {
 	
-	static SmsDAO dao;
+	static SMSDAO dao;
 	
 	@BeforeClass
 	public static void start() throws Exception {
-		dao = new SmsDAO();
+		dao = new SMSDAO();
 	}
 	@Test
 	public void getReserveRecipient() {
 		List<Integer> reserveNo = Arrays.asList(10001, 10003); 
-        List<ReserveSmsVO> smsList = dao.getReserveRecipient(reserveNo);
-        System.out.println(smsList);
-		assertTrue(smsList.size()>0);
+        List<ReserveSMSVO> SMSList = dao.getReserveRecipient(reserveNo);
+        System.out.println(SMSList);
+		assertTrue(SMSList.size()>0);
 	}
 	@Test
 	public void getCommonRecipient() {
 		List<Integer> reserveNo = Arrays.asList(6071,6072,6073);
-		List<CommonSmsVO> smsList = dao.getCommonRecipient(reserveNo);
-		System.out.println(smsList);
-		assertTrue(smsList.size()>0);
+		List<CommonSMSVO> SMSList = dao.getCommonRecipient(reserveNo);
+		System.out.println(SMSList);
+		assertTrue(SMSList.size()>0);
 		}
 	@Test
 	public void getTemplateTest(){
-		List<ReserveSmsVO> templateList = dao.getTemplate("");
+		List<ReserveSMSVO> templateList = dao.getTemplate("");
         System.out.println(templateList);
         assertTrue(templateList.size()>0);
 	}
 	@Test
-	public void getReserveSmsTest(){
+	public void getReserveSMSTest(){
 		int page = 2;
 	    int pageSize = 10;
 	    int startRow = (page - 1) * pageSize + 1; // 11
@@ -54,17 +54,17 @@ public class SmsDAOTest {
         map.put("startRow", startRow);
         map.put("endRow", endRow );
 
-		List<ReserveSmsVO> smsList = dao.getReserveSms(map);
-		System.out.println(smsList);
-		assertTrue(smsList.size()>0);
+		List<ReserveSMSVO> SMSList = dao.getReserveSMS(map);
+		System.out.println(SMSList);
+		assertTrue(SMSList.size()>0);
 	}
 	@Test
-	public void addReserveSmsTest(){
-		int result = dao.addReserveSms(10020,"honggd01","시술 예약");
+	public void addReserveSMSTest(){
+		int result = dao.addReserveSMS(10020,"honggd01","시술 예약");
 		assertTrue("insert 실패", result>0);
 		}
 	@Test
-	public void getCommonSmsTest() {
+	public void getCommonSMSTest() {
 		int page = 2;
 	    int pageSize = 10;
 	    int startRow = (page - 1) * pageSize + 1; // 11
@@ -74,21 +74,21 @@ public class SmsDAOTest {
         map.put("startRow", startRow);
         map.put("endRow", endRow );
 
-        List<CommonSmsVO> smsList = dao.getCommonSms(map);
-        System.out.println(smsList);
-        assertTrue(smsList.size()>0);
+        List<CommonSMSVO> SMSList = dao.getCommonSMS(map);
+        System.out.println(SMSList);
+        assertTrue(SMSList.size()>0);
 	}
 
 	@Test
-	public void addCommonSmsTest(){
-        int result = dao.addCommonSms(6072,"honggd01","gd");
+	public void addCommonSMSTest(){
+        int result = dao.addCommonSMS(6072,"honggd01","gd");
         assertTrue("insert 실패", result>0);
 	}
 	
 	@Test
-	public void getCommonSmsDetailTest(){
-	    CommonSmsVO smsDetail = dao.getCommonSmsDetail(10);
-	    System.out.println(smsDetail);
-	    assertEquals("010-2233-4455", smsDetail.getPhone());
+	public void getCommonSMSDetailTest(){
+	    CommonSMSVO SMSDetail = dao.getCommonSMSDetail(10);
+	    System.out.println(SMSDetail);
+	    assertEquals("010-2233-4455", SMSDetail.getPhone());
 	}
 }

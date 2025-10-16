@@ -6,61 +6,61 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
-public class SmsDAO {
-	public List<ReserveSmsVO> getReserveRecipient(List<Integer> reserveNo){
-		List<ReserveSmsVO> list = null;
+public class SMSDAO {
+	public List<ReserveSMSVO> getReserveRecipient(List<Integer> reserveNo){
+		List<ReserveSMSVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getReserveRecipient", reserveNo);
+		list = conn.selectList("SMSMapper.getReserveRecipient", reserveNo);
 		conn.close();
 		return list;
 	}
-	public List<CommonSmsVO> getCommonRecipient(List<Integer> patientNo){
-		List<CommonSmsVO> list = null;
+	public List<CommonSMSVO> getCommonRecipient(List<Integer> patientNo){
+		List<CommonSMSVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getCommonRecipient", patientNo);
+		list = conn.selectList("SMSMapper.getCommonRecipient", patientNo);
 		conn.close();
 		return list;
 	}
-	public List<ReserveSmsVO> getTemplate(String templateName){
-		List<ReserveSmsVO> list = null;
+	public List<ReserveSMSVO> getTemplate(String templateName){
+		List<ReserveSMSVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
 		map.put("templateName", templateName);
-		list = conn.selectList("smsMapper.getTemplate", map);
+		list = conn.selectList("SMSMapper.getTemplate", map);
 		conn.close();
 		return list;
 	}
 	
-	public List<ReserveSmsVO> getReserveSms(Map<String, Object> map){
-		List<ReserveSmsVO> list = null;
+	public List<ReserveSMSVO> getReserveSMS(Map<String, Object> map){
+		List<ReserveSMSVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getReserveSms", map);
+		list = conn.selectList("SMSMapper.getReserveSMS", map);
 		conn.close();
 		return list;
 	}
 	
-    public int getReserveSmsCount() {
+    public int getReserveSMSCount() {
         SqlSession session = DBCP.getSqlSessionFactory().openSession();
-        int count = session.selectOne("smsMapper.getReserveSmsCount");
+        int count = session.selectOne("SMSMapper.getReserveSMSCount");
         session.close();
         return count;
     }
     
-    public int getCommonSmsCount() {
+    public int getCommonSMSCount() {
         SqlSession session = DBCP.getSqlSessionFactory().openSession();
-        int count = session.selectOne("smsMapper.getCommonSmsCount");
+        int count = session.selectOne("SMSMapper.getCommonSMSCount");
         session.close();
         return count;
     }
 	
-	public int addReserveSms(int reserveNo, String employeeId, String templateName){
+	public int addReserveSMS(int reserveNo, String employeeId, String templateName){
 		int result = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
 		map.put("reserveNo", reserveNo);
 		map.put("employeeId", employeeId);
 		map.put("templateName", templateName);
-		result = conn.insert("smsMapper.addReserveSms", map);
+		result = conn.insert("SMSMapper.addReserveSMS", map);
 		if (result>0){
 			conn.commit();
 		} else {
@@ -70,23 +70,23 @@ public class SmsDAO {
 		return result;
 	}
 	
-	public List<CommonSmsVO> getCommonSms(Map<String, Object> map){
-		List<CommonSmsVO> list = null;
+	public List<CommonSMSVO> getCommonSMS(Map<String, Object> map){
+		List<CommonSMSVO> list = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		list = conn.selectList("smsMapper.getCommonSms", map);
+		list = conn.selectList("SMSMapper.getCommonSMS", map);
 		conn.close();
 		return list;
 	}
 	
     
-	public int addCommonSms(int patientNo, String employeeId, String content){
+	public int addCommonSMS(int patientNo, String employeeId, String content){
 		int result = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
 		map.put("patientNo", patientNo);
 		map.put("employeeId", employeeId);
 		map.put("content", content);
-		result = conn.insert("smsMapper.addCommonSms", map);
+		result = conn.insert("SMSMapper.addCommonSMS", map);
 		if (result>0){
 			conn.commit();
 		} else {
@@ -96,10 +96,10 @@ public class SmsDAO {
 		return result;
 	}
 	
-	public CommonSmsVO getCommonSmsDetail(int commonSmsNo){
-		CommonSmsVO vo = null;
+	public CommonSMSVO getCommonSMSDetail(int commonSMSNo){
+		CommonSMSVO vo = null;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		vo = conn.selectOne("smsMapper.getCommonSmsDetail", commonSmsNo);
+		vo = conn.selectOne("SMSMapper.getCommonSMSDetail", commonSMSNo);
 		conn.close();
 		return vo;
 	}

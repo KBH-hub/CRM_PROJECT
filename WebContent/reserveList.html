@@ -439,7 +439,7 @@ table, th, td { border-collapse: collapse; }
 
         <div class="modal-footer d-flex justify-content-between">
           <div class="d-flex gap-2">
-            <button class="btn btn-primary" id="sendSmsBtn">선택 환자 문자 보내기</button>
+            <button class="btn btn-primary" id="sendSMSBtn">선택 환자 문자 보내기</button>
             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">선택 환자 예약 삭제</button>
           </div>
         </div>
@@ -1082,8 +1082,8 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
 })();
 //---------- 문자 보내기 이동 ----------
-document.getElementById("sendSmsBtn").addEventListener("click", () => {
-  window.location.href = "smsService.html";
+document.getElementById("sendSMSBtn").addEventListener("click", () => {
+  window.location.href = "SMSService.html";
 });
 
 const params = new URLSearchParams(window.location.search);

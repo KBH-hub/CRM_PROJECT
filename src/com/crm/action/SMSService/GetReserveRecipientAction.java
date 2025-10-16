@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.SMSService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
-import com.crm.model.ReserveSmsVO;
-import com.crm.model.SmsDAO;
+import com.crm.model.ReserveSMSVO;
+import com.crm.model.SMSDAO;
 
 public class GetReserveRecipientAction implements Action {
 
@@ -22,8 +22,8 @@ public class GetReserveRecipientAction implements Action {
 				reserveNo.add(Integer.parseInt(no));
 			}
 		}
-		SmsDAO dao = new SmsDAO();
-		List<ReserveSmsVO> list = dao.getReserveRecipient(reserveNo);
+		SMSDAO dao = new SMSDAO();
+		List<ReserveSMSVO> list = dao.getReserveRecipient(reserveNo);
 		request.setAttribute("result", list);
 		return "/WEB-INF/json/result.jsp";
 	}

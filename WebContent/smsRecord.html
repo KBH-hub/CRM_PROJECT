@@ -20,7 +20,17 @@
 #pager .page-item.disabled .page-link {
   color:#bbb; pointer-events:none; background:transparent; border-color:transparent;
 }
-#pager .page-link { border:none; background:transparent; color:#4a4a4a; }
+#pager .page-link {
+  border:none; background:transparent; color:#4a4a4a;
+}
+
+.ellipsis-cell {
+  white-space: nowrap;        /* 줄바꿈 X */
+  overflow: hidden;           /* 넘친 글자 숨김 */
+  text-overflow: ellipsis;    /* ... 표시 */
+  max-width: 250px;           /* 셀 폭 고정 (원하는 너비로 조정) */
+}
+
 </style>
 </head>
 <body class="bg-body-tertiary">
@@ -317,7 +327,9 @@ function loadSidebar(activeKey) {
           <td>${c.employeeName ?? '-'}</td>
           <td>${c.phone        ?? '-'}</td>
           <td>${c.datetime     ?? '-'}</td>
-          <td>${c.content      ?? '-'}</td>
+          <td class="ellipsis-cell" title="${c.content ?? ''}">
+          ${c.content ?? '-'}
+          </td>
         </tr>`;
       $tbody.append(tr);
     });

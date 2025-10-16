@@ -37,11 +37,6 @@
     background-color: #7ca7d8;
   }
 
-  .date-header {
-    background-color: #b7cde6 !important;
-    font-weight: bold;
-  }
-
   .week-range {
     background-color: #b7cde6;
     padding: 8px 0;
@@ -86,9 +81,8 @@
 
     <!-- 메인 -->
     <main class="col-10 p-4">
+  <h2 class="mb-3 border-bottom pb-2">의사 주간 근무 표</h2>
   <div class="container bg-white border rounded shadow-sm p-4">
-    <h1 class="fw-bold text-center">의사 주간 근무표</h1>
-
     <div class="mb-3 d-flex justify-content-start gap-2">
       <button class="btn btn-primary btn-sm">선택 지우기</button>
       <button class="btn btn-primary btn-sm" id="doctorListBtn">의사 명단</button>
@@ -367,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	  }
 	});
 	document.getElementById("doctorListBtn").addEventListener("click", () => {
-	  window.location.href = "manageDoctorList.html";
+	  window.location.href = "controller?cmd=doctorListUI";
 	});
 
 

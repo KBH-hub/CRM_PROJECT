@@ -3,7 +3,6 @@ package com.crm.action;
 import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetCommonRecipientAction;
 import com.crm.action.smsService.GetCommonSmsAction;
-import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.smsService.GetReseveSmsAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
@@ -23,6 +22,9 @@ import com.crm.action.smsService.PatientListModalAction;
 import com.crm.action.smsService.ReserveListModalAction;
 import com.crm.action.smsService.SmsRecordUIAction;
 import com.crm.action.smsService.SmsUIAction;
+import com.crm.action.doctorSchedule.DoctorListUIAction;
+import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
+import com.crm.action.doctorSchedule.GetDoctorListAction;
 import com.crm.action.login.DoctorMainUIAction;
 import com.crm.action.login.LoginAction;
 import com.crm.action.login.LoginUIAction;
@@ -38,6 +40,12 @@ public class ActionFactory {
 		Action a = null;
 
 		switch (cmd) {
+		case "getDoctorListAction":
+			a = new GetDoctorListAction();
+			break;
+		case "doctorListUI":
+			a = new DoctorListUIAction();
+			break;
 		case "doctorScheduleUI":
 			a = new DoctorScheduleUIAction();
 			break;

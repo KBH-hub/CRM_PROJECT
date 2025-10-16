@@ -4,7 +4,6 @@
 <%@page import="java.util.List"%>
 <%
  List<CommonSmsVO> list = (List<CommonSmsVO>) request.getAttribute("list");
- if (list == null) list = java.util.Collections.emptyList();
 
  String json = new Gson().toJson(list);
 

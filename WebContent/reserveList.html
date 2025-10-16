@@ -691,10 +691,12 @@ function fillReservationDetailModal(data) {
     if (data && !data.error) {
         // 가정: ReserveVO 필드명과 일치
         document.getElementById('detailName').value = data.patientName || '';
-        document.getElementById('detailPhone').value = data.patientPhone || ''; // ⭐ 추가: 환자 연락처 필드 ⭐
+        document.getElementById('detailPhone').value = data.phone || ''; // ⭐ 추가: 환자 연락처 필드 ⭐
         document.getElementById('visitDate').value = data.reserveDay || '';
         document.getElementById('visitTime').value = data.reserveTime ? data.reserveTime.substring(0, 5) : '';
 
+        
+        
         // 담당의사 / 진료과 셀렉트 박스 설정
         const doctorDeptSelect = document.getElementById('doctorDept');
         doctorDeptSelect.selectedIndex = 0; // 기본값 '-' 또는 첫 번째 옵션으로 초기화 (option value="" 추가 가정)
@@ -714,8 +716,8 @@ function fillReservationDetailModal(data) {
         }
 
         // 내원 사유 설정 (읽기 전용 input과 수정용 textarea 모두)
-        document.getElementById('visitReasonInput').value = data.reserveReason || '';
-        document.getElementById('visitReasonTextarea').value = data.reserveReason || '';
+        document.getElementById('visitReasonInput').value = data.reason || '';
+        document.getElementById('visitReasonTextarea').value = data.reason || '';
 
         // 예약 번호를 모달 요소의 dataset에 저장 (수정/삭제 시 필요)
         document.getElementById('reservationDetailModal').dataset.reserveNo = data.reserveNo;

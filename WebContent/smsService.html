@@ -7,6 +7,8 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="sidebar.js"></script>
+<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -158,14 +160,14 @@
 									</tr>
 								</thead>
 								<tbody id="recipientTableBody" style="background: transparent;">
-									<!-- JS로 데이터가 들어올 자리 -->
+									<!-- modal -->
 								</tbody>
 							</table>
 						</div>
 						<p class="text-end w-75 mx-auto mt-2 text-muted"
 							id="recipientCount">수신자 : 0명</p>
 
-						<button type="button" class="btn btn-warning btn-sm">초기화</button>
+						<button type="button" class="btn btn-warning btn-sm btnReset">초기화</button>
 						<button id=sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
 							id="commonSmsRecord">보낸 메세지함</button>
@@ -325,28 +327,13 @@
 											class="pagination pagination-sm align-items-center gap-2"></ul>
 									</nav>
 								</div>
-
-								<div class="modal fade" id="alertModal" tabindex="-1"
-									aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered">
-										<div class="modal-content text-center border border-primary">
-											<div class="modal-body">
-												<p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
-												<div class="d-flex justify-content-center">
-													<button type="button" class="btn btn-primary px-4"
-														data-bs-dismiss="modal">확인</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
 							</div>
 
 						</div>
 
 						<div class="modal-footer d-flex justify-content-between">
 							<div>
-								<button id="sendSmsSelectBtn" class="btn btn-primary"
+								<button id="sendCommonSmsSelectBtn" class="btn btn-primary"
 									data-bs-dismiss="modal">선택 환자 메시지 보내기</button>
 							</div>
 						</div>
@@ -357,6 +344,20 @@
 		</div>
 		</main>
 	</div>
+	</div>
+	<div class="modal fade" id="alertModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content text-center border border-primary">
+				<div class="modal-body">
+					<p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+					<div class="d-flex justify-content-center">
+						<button type="button" class="btn btn-primary px-4"
+							data-bs-dismiss="modal">확인</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<script>
 	
@@ -378,7 +379,9 @@
 
 	  // 이 페이지의 활성 키만 바꿔주면 됨
 	  loadSidebar('smsService');
+	  </script>
 	  
+	<script type="text/javascript">
 	  function showAlert(message, onClose) {
 		  $("#alertMessage").text(message);
 		  var modal = new bootstrap.Modal(document.getElementById("alertModal"));
@@ -388,13 +391,6 @@
 		  });
 		  modal.show();
 		}
-	  </script>
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-	<script type="text/javascript">
 	//template 리스트 불러오기
 	$(function(){
 		//페이지 로드 시, 전체 리스트 출력
@@ -427,13 +423,20 @@
 	
     //초기화 버튼
 	$(".btnReset").on("click", function() {
-	  $("#templateContentBox").val("");
-	  $("#templateNameBox").val("");
-	  $("#contentBox").val("");
-	  $("#recipientTableBody").empty();
-	  $("#commonSmsAddBtn").prop("disabled", false);
-	$("#templateList .active-template").removeClass("active-template");
+		reset();
 	});
+    
+    function reset(){
+		  $("#templateContentBox").val("");
+		  $("#templateNameBox").val("");
+		  $("#templateList .active-template").removeClass("active-template");
+		  $("#templateName").val(""); // 템플릿 검색어도 비우고 싶으면 유지
+		  
+		  $("#contentBox").val("");
+		  $("#recipientTableBody").empty();
+		  $("#recipientCount").text("수신자 : 0명");
+		  $("#commonSmsAddBtn").prop("disabled", false);
+    }
     // JSON 배열 → <ul> 렌더링
     function renderList(list) {
       const $ul = $("#templateList").empty();
@@ -466,13 +469,8 @@
         // 상세보기 데이터 저장 + 클릭 핸들러
        // $li.data("templateName", name);
      //   $li.data("content", row.templateContent || '');
-
-
       });
-
     }
-    
-    
     
     //보낸 메시지함 클릭
      $("#reserveSmsRecord").on("click", ()=> location.href="controller?cmd=smsRecordUI");
@@ -496,10 +494,12 @@
 
 	  reserveBtn.addEventListener('click', () => {
 	    showSection(reserveSec, commonSec, reserveBtn, commonBtn);
+	    reset();
 	  });
 
 	  commonBtn.addEventListener('click', () => {
 	    showSection(commonSec, reserveSec, commonBtn, reserveBtn);
+	    reset();
 	  });
 
 	//======일반메시지 관련=======
@@ -850,7 +850,7 @@ function validateDates() {
   let selectedIds = [];
   let selectedRecipients = [];
   
-  $("#sendSmsSelectBtn").click(function () {
+  $("#sendCommonSmsSelectBtn").click(function () {
 	  const ids = [];
 	  $("#patientTableBody .row-check:checked").each(function () {
 	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
@@ -900,6 +900,55 @@ function validateDates() {
 	  });
 	});
 
+  $("#sendSmsSelectBtn").click(function () {
+	  const ids = [];
+	  $("#patientTableBody .row-check:checked").each(function () {
+	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
+	  });
+	  if (ids.length === 0) {
+	    showAlert("선택된 환자가 없습니다.");
+	    return;
+	  }
+
+	  $.ajax({
+	    url: "controller?cmd=getCommonRecipient",
+	    type: "POST",
+	    data: { patientNo: ids },
+	    traditional: true,   // 배열 전송
+	    dataType: "json",
+	    success: function (list) {
+	      const $tbody = $("#recipientTableBody").empty();
+
+	      if (!Array.isArray(list) || list.length === 0) {
+	        $("#recipientCount").text("수신자 : 0명");
+	        return;
+	      }
+	      
+	      // ✅ 전역 보관
+	      selectedIds = ids.slice(); // 복사 저장
+	      // 응답 VO에 patientNo가 없으면, ids 순서대로 매칭
+	      selectedRecipients = list.map(r => ({
+	        patientNo: r.patientNo || "",
+	        patientName: r.patientName || "",
+	        phone: r.phone || ""
+	      }));
+
+	      list.forEach(r => {
+	        $tbody.append(`
+	          <tr>
+	            <td style="border:none; background: transparent;">${r.patientName || ""}</td>
+	            <td style="border:none; background: transparent;">${r.phone || ""}</td>
+	          </tr>
+	        `);
+	      });
+
+	      $("#recipientCount").text(`수신자 : ${list.length}명`);
+	    },
+	    error: function () {
+	      showAlert("전송 중 오류가 발생했습니다.");
+	    }
+	  });
+	});
 
   function loadDoctorList(startDate, endDate) {
 	  var prevValue = $("#doctorSelect").val();

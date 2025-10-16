@@ -171,6 +171,7 @@
 
 
 <!-- ✅ Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="sidebar.js"></script>
 	</main>
@@ -178,30 +179,21 @@
 	</div>
 	<script>
 	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
-	  async function loadSidebar(activeKey) {
-	    const slot = document.getElementById('sidebar-slot');
-	    const resp = await fetch('./doctorSidebar.html'); // 경로는 프로젝트 구조에 맞게
-	    const html = await resp.text();
-	    slot.innerHTML = html;
-
-	    // 활성 메뉴 표시 (data-route 값을 사용)
-	    const current = slot.querySelector(`[data-route="${activeKey}"]`);
-	    if (current) {
-	      // 전부 초기화
-	      slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
-	        a.classList.remove('active','bg-primary','text-white');
-	        a.classList.add('text-dark');
-	      });
-	      // 현재만 활성
-	      current.classList.add('active','bg-primary','text-white');
-	      current.classList.remove('text-dark');
-	    }
-	    loadSidebarInfo();
-	  }
-
-	  // 이 페이지의 활성 키만 바꿔주면 됨
-	  loadSidebar('patientList');
-
+	  function loadSidebar(activeKey) {
+		  $.ajax({
+		    url: "./doctorSidebar.html",
+		    dataType: "html",
+		    success: function (html) {
+		      $("#sidebar-slot").html(html);
+		      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
+		      $links.removeClass("active bg-primary text-white").addClass("text-dark");
+		      var $current = $links.filter("[data-route='" + activeKey + "']");
+		      $current.addClass("active bg-primary text-white").removeClass("text-dark");
+		      loadSidebarInfo();
+		    }
+		  });
+		}
+		loadSidebar("reserve");
   /* 예약 데이터 (예시) */
   const reservationEvents = {
     "2025-09-16": [

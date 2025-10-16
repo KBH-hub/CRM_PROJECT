@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.SMSService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,10 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
-import com.crm.model.ReserveSmsVO;
-import com.crm.model.SmsDAO;
+import com.crm.model.ReserveSMSVO;
+import com.crm.model.SMSDAO;
 
-public class GetReseveSmsAction implements Action {
+public class GetReseveSMSAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
@@ -25,9 +25,9 @@ public class GetReseveSmsAction implements Action {
         map.put("startRow", startRow);
         map.put("endRow", endRow);
         
-        SmsDAO dao = new SmsDAO();
-        List<ReserveSmsVO> list = dao.getReserveSms(map);
-        int totalCount = dao.getReserveSmsCount();
+        SMSDAO dao = new SMSDAO();
+        List<ReserveSMSVO> list = dao.getReserveSMS(map);
+        int totalCount = dao.getReserveSMSCount();
         
 
         Map<String, Object> result = new HashMap<>();

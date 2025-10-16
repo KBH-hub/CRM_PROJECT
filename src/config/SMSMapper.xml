@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="smsMapper">
+<mapper namespace="SMSMapper">
 
-	<resultMap id="CommonSmsMap" type="com.crm.model.CommonSmsVO">
-		<result property="commonSmsNo" column="common_sms_no" />
+	<resultMap id="CommonSMSMap" type="com.crm.model.CommonSMSVO">
+		<result property="commonSMSNo" column="common_sms_no" />
 		<result property="employeeId" column="employee_id" />
 		<result property="employeeName" column="employee_name" />
 		<result property="patientNo" column="patient_no" />
@@ -14,8 +14,8 @@
 		<result property="content" column="content" />
 	</resultMap>
 	
-	<resultMap id="ReserveSmsMap" type="com.crm.model.ReserveSmsVO">
-	    <result property="reserveSmsNo" column="reserve_sms_no" />
+	<resultMap id="ReserveSMSMap" type="com.crm.model.ReserveSMSVO">
+	    <result property="reserveSMSNo" column="reserve_sms_no" />
 	    <result property="employeeId" column="employee_id" />
 	    <result property="employeeName" column="employee_name" />
 	    <result property="reserveNo" column="reserve_no" />
@@ -26,7 +26,7 @@
 	    <result property="templateContent" column="template_content" />
 	</resultMap>
 	
-	<select id="getReserveRecipient" parameterType="list" resultMap="ReserveSmsMap">
+	<select id="getReserveRecipient" parameterType="list" resultMap="ReserveSMSMap">
 		select r.reserve_no, p.patient_name, p.phone
 		from reserve r
 		join patient p on p.patient_no = r.patient_no
@@ -36,7 +36,7 @@
 	    </foreach>
 	</select>
 	
-	<select id="getCommonRecipient" parameterType="list" resultMap="CommonSmsMap">
+	<select id="getCommonRecipient" parameterType="list" resultMap="CommonSMSMap">
 		select patient_no, patient_name, phone
 		from patient
 		where patient_no in
@@ -45,7 +45,7 @@
 	    </foreach>
 	</select>
 	
-	<select id="getTemplate" resultMap="ReserveSmsMap">
+	<select id="getTemplate" resultMap="ReserveSMSMap">
 		select template_name, template_content
 		from template
 		<if test="templateName != null and templateName != ''">
@@ -54,83 +54,83 @@
 		order by template_name desc
 	</select>
 	
-	<select id="getReserveSmsCount" resultType="int">
-		select count(reserve_sms_no)
+	<select id="getReserveSMSCount" resultType="int">
+		select count(reserve_SMS_no)
 		from reserve_sms	
 	</select>
 
-	<select id="getCommonSmsCount" resultType="int">
-		select count(common_sms_no)
-		from common_sms	
+	<select id="getCommonSMSCount" resultType="int">
+		select count(common_SMS_no)
+		from common_sms
 	</select>
 	
-	<select id="getReserveSms" resultMap="ReserveSmsMap">
+	<select id="getReserveSMS" resultMap="ReserveSMSMap">
 			SELECT *
 		FROM (
 		  SELECT ROWNUM AS rn, A.*
 		  FROM (
-		select rs.reserve_sms_no, p.patient_name, e.employee_name, p.phone, TO_CHAR(rs.datetime,
+		select rs.reserve_SMS_no, p.patient_name, e.employee_name, p.phone, TO_CHAR(rs.datetime,
 		'YYYY-MM-DD HH24:MI') as datetime, rs.template_name
-		from reserve_sms rs
+		from reserve_SMS rs
 		join template t on t.template_name = rs.template_name
 		join employee e on e.employee_id = rs.employee_id
 		join reserve r on r.reserve_no = rs.reserve_no
 		join patient p on p.patient_no = r.patient_no
-		order by rs.reserve_sms_no desc
+		order by rs.reserve_SMS_no desc
 		) A
 		  WHERE ROWNUM &lt;= #{endRow, jdbcType=NUMERIC}
 		)
 		WHERE rn &gt;= #{startRow, jdbcType=NUMERIC}
 	</select>
 	
-	<insert id="addReserveSms" parameterType="map">
+	<insert id="addReserveSMS" parameterType="map">
 		insert into reserve_sms (RESERVE_SMS_NO , EMPLOYEE_ID
 		, TEMPLATE_NAME , RESERVE_NO , DATETIME) values
-		(reserve_sms_no.nextval, #{employeeId}, #{templateName}, #{reserveNo}, sysdate)
+		(reserve_SMS_no.nextval, #{employeeId}, #{templateName}, #{reserveNo}, sysdate)
 	</insert>
 	
-	<select id="getCommonSms" resultMap="CommonSmsMap">
+	<select id="getCommonSMS" resultMap="CommonSMSMap">
 				SELECT *
 		FROM (
 		  SELECT ROWNUM AS rn, A.*
 		  FROM (
 		select
-		cs.common_sms_no,
+		cs.common_SMS_no,
 		p.patient_name,
 		e.employee_name,
 		p.phone,
 		TO_CHAR(cs.datetime, 'YYYY-MM-DD HH24:MI') as datetime,
 		cs.content
 		from
-		common_sms cs
+		common_SMS cs
 		join employee e on e.employee_id = cs.employee_id
 		join patient p on p.patient_no = cs.patient_no
-		order by cs.common_sms_no desc
+		order by cs.common_SMS_no desc
 				) A
 		  WHERE ROWNUM &lt;= #{endRow, jdbcType=NUMERIC}
 		)
 		WHERE rn &gt;= #{startRow, jdbcType=NUMERIC}
 	</select>
 	
-	<insert id="addCommonSms" parameterType="map">
+	<insert id="addCommonSMS" parameterType="map">
 		insert
-		into common_sms
+		into common_SMS
 		(COMMON_SMS_NO , PATIENT_NO , EMPLOYEE_ID , DATETIME , CONTENT)
-		values (common_sms_no.nextval, #{patientNo}, #{employeeId}, sysdate, #{content})
+		values (common_SMS_no.nextval, #{patientNo}, #{employeeId}, sysdate, #{content})
 	</insert>
 	
-	<select id="getCommonSmsDetail" resultMap="CommonSmsMap">
+	<select id="getCommonSMSDetail" resultMap="CommonSMSMap">
 		select
-		cs.common_sms_no,
+		cs.common_SMS_no,
 		p.patient_name,
 		e.employee_name,
 		p.phone,
 		TO_CHAR(cs.datetime, 'YYYY-MM-DD HH24:MI') as datetime,
 		cs.content	
 		from
-		common_sms cs
+		common_SMS cs
 		join employee e on e.employee_id = cs.employee_id
 		join patient p on p.patient_no = cs.patient_no
-		where cs.common_sms_no = #{commonSmsNo}
+		where cs.common_SMS_no = #{commonSMSNo}
 	</select>
 </mapper>

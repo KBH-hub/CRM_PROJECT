@@ -1,8 +1,8 @@
 package com.crm.model;
 
-public class ReserveSmsVO {
+public class ReserveSMSVO {
 
-	private int reserveSmsNo;
+	private int reserveSMSNo;
 	private String employeeId;
 	private String employeeName;
 	private int reserveNo;
@@ -13,11 +13,11 @@ public class ReserveSmsVO {
 	private String templateContent;
 	
 	
-	public ReserveSmsVO(){};
+	public ReserveSMSVO(){};
 	
-	public ReserveSmsVO(int reserveSmsNo, String employeeId, String employeeName, int reserveNo, String patientName,
+	public ReserveSMSVO(int reserveSMSNo, String employeeId, String employeeName, int reserveNo, String patientName,
 			String phone, String datetime, String templateName, String templateContent) {
-		setReserveSmsNo(reserveSmsNo);
+		setReserveSMSNo(reserveSMSNo);
 		setEmployeeId(employeeId);
 		setEmployeeName(employeeName);
 		setReserveNo(reserveNo);
@@ -28,11 +28,11 @@ public class ReserveSmsVO {
 		setTemplateContent(templateContent);
 	}
 	
-	public int getReserveSmsNo() {
-		return reserveSmsNo;
+	public int getReserveSMSNo() {
+		return reserveSMSNo;
 	}
-	public void setReserveSmsNo(int reserveSmsNo) {
-		this.reserveSmsNo = reserveSmsNo;
+	public void setReserveSMSNo(int reserveSMSNo) {
+		this.reserveSMSNo = reserveSMSNo;
 	}
 	public String getEmployeeId() {
 		return employeeId;
@@ -85,7 +85,7 @@ public class ReserveSmsVO {
 	
 	@Override
 	public String toString() {
-		return "ReserveSmsVO [reserveSmsNo=" + reserveSmsNo + ", employeeId=" + employeeId + ", employeeName="
+		return "ReserveSMSVO [reserveSMSNo=" + reserveSMSNo + ", employeeId=" + employeeId + ", employeeName="
 				+ employeeName + ", reserveNo=" + reserveNo + ", patientName=" + patientName + ", phone=" + phone
 				+ ", datetime=" + datetime + ", templateName=" + templateName + ", templateContent=" + templateContent + "]\n";
 	}

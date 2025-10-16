@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.SMSService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
-import com.crm.model.CommonSmsVO;
-import com.crm.model.SmsDAO;
+import com.crm.model.CommonSMSVO;
+import com.crm.model.SMSDAO;
 
 public class GetCommonRecipientAction implements Action {
 
@@ -22,8 +22,8 @@ public class GetCommonRecipientAction implements Action {
 				patientNo.add(Integer.parseInt(no));
 			}
 		}
-		SmsDAO dao = new SmsDAO();
-		List<CommonSmsVO> list = dao.getCommonRecipient(patientNo);
+		SMSDAO dao = new SMSDAO();
+		List<CommonSMSVO> list = dao.getCommonRecipient(patientNo);
 		request.setAttribute("result", list);
 		return "/WEB-INF/json/result.jsp";
 	}

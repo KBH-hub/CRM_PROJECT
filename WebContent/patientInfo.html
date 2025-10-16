@@ -113,6 +113,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="sidebar.js"></script>
+
 <script>
 function loadSidebar(activeKey) {
 	  $.ajax({
@@ -120,15 +122,11 @@ function loadSidebar(activeKey) {
 	    dataType: "html",
 	    success: function (html) {
 	      $("#sidebar-slot").html(html);
-
 	      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
 	      $links.removeClass("active bg-primary text-white").addClass("text-dark");
-
 	      var $current = $links.filter("[data-route='" + activeKey + "']");
 	      $current.addClass("active bg-primary text-white").removeClass("text-dark");
-	    },
-	    error: function () {
-	      console.error("사이드바 로드 실패");
+	      loadSidebarInfo();
 	    }
 	  });
 	}
@@ -261,47 +259,69 @@ function renderPatientInfo(vo) {
 }
 
 function renderRecordTable(list) {
-  var ul = $("#medicalList");
-  ul.empty();
+	  var ul = $("#medicalList");
+	  ul.empty();
 
-  if (!list || list.length === 0) {
-    ul.html('<li class="list-group-item text-center text-muted py-3">진료 기록이 없습니다.</li>');
-    return;
-  }
+	  if (!list || list.length === 0) {
+	    ul.html('<li class="list-group-item text-center text-muted py-3">진료 기록이 없습니다.</li>');
+	    return;
+	  }
 
-  $.each(list, function(i, r) {
-    var li = $('<li class="list-group-item"></li>');
-    if (i === 0) li.addClass("active");
-    li.data(r);
-    li.html((r.medicalDate || "-") + "<br><small>" + (r.employeeName || "-") + " / " + (r.department || "-") + "</small>");
-    ul.append(li);
-  });
+	  $.each(list, function(i, r) {
+	    var li = $(`
+	      <li class="list-group-item"
+	          data-medical-date="${r.medicalDate || ''}"
+	          data-diagnosis="${r.diagnosis || ''}"
+	          data-firstcome="${r.firstCome || ''}"
+	          data-employee-name="${r.employeeName || ''}"
+	          data-department="${r.department || ''}"
+	          data-insurance="${r.insurance || ''}"
+	          data-content="${r.content || ''}">
+	          ${r.medicalDate || "-"}<br>
+	          <small>${r.employeeName || "-"} / ${r.department || "-"}</small>
+	      </li>
+	    `);
+	    if (i === 0) li.addClass("active");
+	    ul.append(li);
+	  });
 
-  $("#medicalList").on("click", ".list-group-item", function() {
-    $("#medicalList .list-group-item").removeClass("active");
-    $(this).addClass("active");
-    var r = $(this).data();
-    $("#medicalDetail").html(`
-      <div class="border rounded p-3 bg-light">
-        <table class="table table-bordered table-fixed mb-3">
-          <tr>
-            <th class="table-secondary text-center">진단명</th><td>${r.diagnosis || "-"}</td>
-            <th class="table-secondary text-center">진료일</th><td>${r.medicalDate || "-"}</td>
-            <th class="table-secondary text-center">초진여부</th><td>${r.firstCome || "-"}</td>
-          </tr>
-          <tr>
-            <th class="table-secondary text-center">담당의사</th><td>${r.employeeName || "-"}</td>
-            <th class="table-secondary text-center">진료과</th><td>${r.department || "-"}</td>
-            <th class="table-secondary text-center">보험 종류</th><td>${r.insurance || "-"}</td>
-          </tr>
-        </table>
-        <p><strong class="text-primary">내용 :</strong><br>${r.content || "-"}</p>
-      </div>
-    `);
-  });
-  var $first = $("#medicalList .list-group-item").first();
-  if ($first.length) $first.trigger("click");
+	  var $first = $("#medicalList .list-group-item").first();
+	  if ($first.length) $first.trigger("click");
 }
+
+$(document).on("click", "#medicalList .list-group-item", function() {
+  $("#medicalList .list-group-item").removeClass("active");
+  $(this).addClass("active");
+
+  var r = {
+    medicalDate: $(this).attr("data-medical-date"),
+    diagnosis: $(this).attr("data-diagnosis"),
+    firstCome: $(this).attr("data-firstcome"),
+    employeeName: $(this).attr("data-employee-name"),
+    department: $(this).attr("data-department"),
+    insurance: $(this).attr("data-insurance"),
+    content: $(this).attr("data-content")
+  };
+
+  $("#medicalDetail").html(`
+    <div class="border rounded p-3 bg-light">
+      <table class="table table-bordered table-fixed mb-3">
+        <tr>
+          <th class="table-secondary text-center">진단명</th><td>${r.diagnosis || "-"}</td>
+          <th class="table-secondary text-center">진료일</th><td>${r.medicalDate || "-"}</td>
+          <th class="table-secondary text-center">초진여부</th><td>${r.firstCome || "-"}</td>
+        </tr>
+        <tr>
+          <th class="table-secondary text-center">담당의사</th><td>${r.employeeName || "-"}</td>
+          <th class="table-secondary text-center">진료과</th><td>${r.department || "-"}</td>
+          <th class="table-secondary text-center">보험 종류</th><td>${r.insurance || "-"}</td>
+        </tr>
+      </table>
+      <p><strong class="text-primary">내용 :</strong><br>${r.content || "-"}</p>
+    </div>
+  `);
+});
+
 </script>
 </body>
 </html>

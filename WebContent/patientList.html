@@ -197,6 +197,7 @@ function loadPatientList(page) {
       currentPage = page;
       renderTable(list);
       renderPager(totalCount);
+      $("#selectAll").prop("checked", false);
     },
     error: function() {
       showAlert("환자 목록을 불러오는 중 오류가 발생했습니다.");
@@ -254,12 +255,30 @@ function validateDates() {
 $(document).ready(function() {
   $("#selectAll").change(function() {
     $(".row-check").prop("checked", this.checked);
+    if (this.checked) {
+        $("#add-btn").hide();
+      } else {
+        $("#add-btn").show();
+      }
   });
+  
+  $(document).on("change", ".row-check", function() {
+	  const total = $(".row-check").length;
+	  const checked = $(".row-check:checked").length;
+	  $("#selectAll").prop("checked", total > 0 && total === checked);
+
+	  const anyChecked = checked > 0;
+	  if (anyChecked) {
+	    $("#add-btn").hide();
+	  } else {
+	    $("#add-btn").show();
+	  }
+	});
 
   $("#add-btn").click(function() {
     window.location.href = "controller?cmd=addPatientUI";
   });
-  ////////////////message send button code
+  
   $("#sendSMSBtn").click(function() {
   var checked = $(".row-check:checked");
     if (checked.length === 0) {
@@ -273,7 +292,7 @@ $(document).ready(function() {
     const query = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
     window.location.href = "SMSService.html?tab=common&"+query;
   });
-  /////////////////
+
   $(document).on("click", ".detail-btn", function() {
     var patientNo = $(this).closest("tr").children().eq(1).text().trim();
     window.location.href = "controller?cmd=patientInfoUI&patientNo=" + encodeURIComponent(patientNo);

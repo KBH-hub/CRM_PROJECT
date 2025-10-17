@@ -7,16 +7,9 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-  body { background-color: #f3f8fc; }
   .table th {
-    background-color: #dce6f1;
-    text-align: center;
+    background-color: #f8f9fa;
     vertical-align: middle;
-  }
-  .table td {
-    text-align: center;
-    vertical-align: middle;
-    height: 40px;
   }
   .circle {
     display: inline-block;
@@ -26,13 +19,9 @@
     background-color: #7ca7d8;
   }
   .week-range {
-    background-color: #b7cde6;
-    padding: 8px 0;
-    border-radius: 5px;
-    text-align: center;
     font-weight: 600;
-    color: #000;
-    width: 50%;
+    text-align: center;
+    width: 20%;
   }
   .dropdown-menu {
   width: 300px;
@@ -64,33 +53,33 @@
     <div id="sidebar-slot" class="col-2 p-0"></div>
 
     <main class="col-10 p-4">
-      <h2 class="mb-3 border-bottom pb-2">의사 주간 근무 표</h2>
+      <h2 id="title" class="mb-3 border-bottom pb-2">의사 주간 근무 표</h2>
       <div class="container bg-white border rounded shadow-sm p-4">
         <div class="mb-3 d-flex justify-content-start gap-2">
-          <button class="btn btn-primary btn-sm">선택 지우기</button>
+          <button class="btn btn-primary btn-sm" id="selectDeleteBtn">선택 지우기</button>
           <button class="btn btn-primary btn-sm" id="doctorListBtn">의사 명단</button>
-          <button class="btn btn-danger btn-sm">편집하기</button>
+          <button class="btn btn-danger btn-sm" id="editBtn">편집하기</button>
         </div>
 
         <div class="d-flex justify-content-center align-items-center mb-3">
-          <button class="btn btn-outline-secondary btn-sm me-2">◀</button>
-          <div class="week-range">2025년 9월 15일 - 2025년 9월 21일</div>
-          <button class="btn btn-outline-secondary btn-sm ms-2">▶</button>
+          <button id="prev" class="btn btn-outline-secondary btn-sm">◀</button>
+          <div class="week-range"></div>
+          <button id="next" class="btn btn-outline-secondary btn-sm">▶</button>
         </div>
 
         <table class="table table-bordered align-middle text-center">
           <thead>
             <tr class="date-header">
-              <th rowspan="2"><input type="checkbox"></th>
-              <th rowspan="2">이름</th>
-              <th rowspan="2">진료과</th>
-              <th colspan="2">9/15 월</th>
-              <th colspan="2">9/16 화</th>
-              <th colspan="2">9/17 수</th>
-              <th colspan="2">9/18 목</th>
-              <th colspan="2">9/19 금</th>
-              <th colspan="2">9/20 토</th>
-              <th colspan="2">9/21 일</th>
+              <th rowspan="2" style="width:3%;"><input type="checkbox"></th>
+              <th rowspan="2" style="width:10%;">이름</th>
+              <th rowspan="2" style="width:15%;">진료과</th>
+              <th colspan="2"></th>
+              <th colspan="2"></th>
+              <th colspan="2"></th>
+              <th colspan="2"></th>
+              <th colspan="2"></th>
+              <th colspan="2"></th>
+              <th colspan="2"></th>
             </tr>
             <tr class="table-light">
               <th>오전</th><th>오후</th>
@@ -103,7 +92,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- 동적 생성 영역 -->
             <tr>
               <td>
                 <div class="dropdown">
@@ -220,6 +208,9 @@ function loadDoctorSchedule() {
     success: function (list) {
       renderDoctorTable(list, monday);
       loadAvailableDoctors(startDate, endDate);
+      $("thead input[type='checkbox']").prop("checked", false);
+      $("#editBtn").show();
+      $("#doctorListBtn").show();
     },
     error: function () {
       showAlert("의사 근무표 로드 중 오류가 발생했습니다.");
@@ -320,6 +311,7 @@ function bindDropdownEvents() {
     });
 
     $.when.apply($, requests).done(loadDoctorSchedule);
+    location.reload();
   });
 }
 
@@ -341,16 +333,22 @@ function toggleAndSave(cell) {
 }
 
 $(document).ready(function () {
-  const editBtn = $(".btn-danger");
-  const deleteBtn = $(".btn-primary").eq(0);
-  const doctorListBtn = $(".btn-primary").eq(1);
+  const editBtn = $("#editBtn");
+  const deleteBtn = $("#selectDeleteBtn");
+  const doctorListBtn = $("#doctorListBtn");
   const checkAll = $("thead input[type='checkbox']");
   let editing = false;
 
   editBtn.click(function () {
+	  const rowCount = $("table tbody tr").length;
+	  if (rowCount <= 1) {
+		    showAlert("편집할 근무가 없습니다.");
+		    return;
+	  }
+	  
 	  const lastRow = $("table tbody tr:last-child")[0];
-	  const firstColCells = $("table tbody tr td:first-child");
-	  const firstHeader = $("table thead tr th:first-child");
+	  const checkbox_th = $("th:has(input[type='checkbox'])");
+	  const checkbox_td = $("td:has(input[type='checkbox'])");
 	  editing = !editing;
 
 	  if (editing) {
@@ -358,8 +356,10 @@ $(document).ready(function () {
 	    deleteBtn.hide();
 	    doctorListBtn.hide();
 	    $(lastRow).hide();
-	    firstColCells.hide();
-	    firstHeader.hide();
+	    checkbox_th.hide();
+	    checkbox_td.hide();
+	    $("#prev").hide();
+	    $("#next").hide();
 
 	    $("table tbody td[data-id]")
 	      .css("cursor", "pointer")
@@ -374,11 +374,24 @@ $(document).ready(function () {
 	    deleteBtn.show();
 	    doctorListBtn.show();
 	    $(lastRow).show();
-	    firstColCells.show();
-	    firstHeader.show();
+	    checkbox_th.show();
+	    checkbox_td.show();
+	    $("#prev").show();
+	    $("#next").show();
 
 	    $("table tbody td[data-id]").off("click").css("cursor", "default");
 	    loadDoctorSchedule();
+	  }
+	});
+  
+  $(document).on("change", "input[type='checkbox']", function () {
+	  const anyChecked = $("input[type='checkbox']:checked").length > 0;
+	  if (anyChecked) {
+	    editBtn.hide();
+	    doctorListBtn.hide();
+	  } else {
+	    editBtn.show();
+	    doctorListBtn.show();
 	  }
 	});
 
@@ -386,6 +399,12 @@ $(document).ready(function () {
   checkAll.change(function () {
     $("tbody input[type='checkbox']").prop("checked", this.checked);
   });
+  $(document).on("change", "tbody input[type='checkbox']", function () {
+	  const total = $("tbody input[type='checkbox']").length;
+	  const checked = $("tbody input[type='checkbox']:checked").length;
+	  checkAll.prop("checked", total > 0 && total === checked);
+	});
+
 
   deleteBtn.click(function () {
     const checked = $("tbody input[type='checkbox']:checked");
@@ -439,17 +458,18 @@ $(document).ready(function () {
           showAlert("선택한 의사 근무 일정이 삭제되었습니다.", function () {
             checkAll.prop("checked", false);
             loadDoctorSchedule();
+            location.reload();
           });
         });
       });
   });
 
-  $(".btn-outline-secondary.me-2").click(function () {
+  $("#prev").click(function () {
     currentDate = addDays(currentDate, -7);
     loadDoctorSchedule();
   });
 
-  $(".btn-outline-secondary.ms-2").click(function () {
+  $("#next").click(function () {
     currentDate = addDays(currentDate, 7);
     loadDoctorSchedule();
   });

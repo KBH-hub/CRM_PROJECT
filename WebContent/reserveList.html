@@ -1060,10 +1060,10 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
 //새로운 예약 등록 모달 (reservationModal) 관련 JavaScript
 (function() {
-    const reserveDateInput = document.getElementById('reserveDate');
+    const reserveDateInput = document.getElementById('visitDate');
     
-    const reserveHourInput = document.getElementById('reserveHour');
-    const reserveMinuteInput = document.getElementById('reserveMinute');
+    const reserveHourInput = document.getElementById('visitHour');
+    const reserveMinuteInput = document.getElementById('visitMinute');
     
     const doctorDeptSelect = document.getElementById('doctorDept');
     
@@ -1088,7 +1088,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         const selectedMinute = reserveMinuteInput.value; 
 
         // 완전한 시간 문자열 조합 (HH:MM)
-        const reserveTime = (selectedHour && selectedMinute) ? `${selectedHour}:${selectedMinute}` : '';
+    //    const reserveTime = (selectedHour && selectedMinute) ? `${selectedHour}:${selectedMinute}` : '';
         // --- 변경 끝 ---
 
         // 날짜, 시, 분 중 하나라도 선택되지 않았으면 드롭다운 비활성화
@@ -1119,13 +1119,13 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
         doctorDeptSelect.innerHTML = '<option value="">-- 조회 중 --</option>';
         doctorDeptSelect.setAttribute('disabled', true);
-        console.log("DEBUG: 의사 조회 요청 시작...");	
+  
 
         try {
-            // 서버에 Ajax 요청. reserveDateTime 파라미터는 여전히 HH:MM 형태를 사용합니다.
-            // Action 단에서 YYYY-MM-DD HH:MM으로 조합할 것이기 때문에 여기서는 reserveTime만 보냅니다.
-            const requestUrl = `controller?cmd=getPossibleDoctor&workDate=${workDate}&reserveTime=${reserveTime}`; // ⭐ 파라미터 이름 reserveTime으로 변경 ⭐
-            console.log("DEBUG: 요청 URL:", requestUrl);
+           
+            const requestUrl = `controller?cmd=getPossibleDoctor&reserveDate=${workDate}&reserveHour=${selectedHour}&reserveMinute=${selectedMinute}`;
+            
+        
 
             const response = await fetch(requestUrl);
             if (!response.ok) {

@@ -26,24 +26,26 @@
 	</select>
 	
 	<select id="getDoctorName" parameterType="map" resultMap="DoctorMap">
-		SELECT
-		D.DOCTOR_CODE AS doctorCode,
-		E.EMPLOYEE_NAME AS employeeName,
-		D.DEPARTMENT AS department
-		FROM
-		DOCTOR D
-		JOIN
-		EMPLOYEE E ON E.EMPLOYEE_ID = D.EMPLOYEE_ID
-		WHERE
-		D.DEL_FLAG IS NULL
-		AND D.DOCTOR_CODE NOT IN (
-		SELECT DISTINCT DS.DOCTOR_CODE
-		FROM DOCTOR_SCHEDULE DS
-		WHERE DS.WORK_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-		)
-		ORDER BY
-		D.DOCTOR_CODE
+	  SELECT
+	    D.DOCTOR_CODE AS doctorCode,
+	    E.EMPLOYEE_NAME AS employeeName,
+	    D.DEPARTMENT AS department
+	  FROM
+	    DOCTOR D
+	    JOIN EMPLOYEE E ON E.EMPLOYEE_ID = D.EMPLOYEE_ID
+	  WHERE
+	    D.DEL_FLAG IS NULL
+	    AND D.DOCTOR_CODE NOT IN (
+	      SELECT DISTINCT DS.DOCTOR_CODE
+	      FROM DOCTOR_SCHEDULE DS
+	      WHERE DS.DEL_FLAG IS NULL
+	        AND DS.WORK_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	                             AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    )
+	  ORDER BY
+	    D.DOCTOR_CODE
 	</select>
+
 	
 	<insert id="addDoctorSchedule" parameterType="map">
 		insert into doctor_schedule (doctor_schedule_no, doctor_code, work_date, am, pm, del_flag)
@@ -59,9 +61,10 @@
 		where doctor_schedule_no = #{doctorScheduleNo}
 	</update>
 	
-	<update id="deleteDoctorSchedule">
-		update doctor_schedule set del_flag = sysdate
-		where doctor_schedule_no = #{doctorScheduleNo}
+	<update id="deleteDoctorSchedule" parameterType="string">
+	    UPDATE doctor_schedule
+	    SET del_flag = SYSDATE
+	    WHERE doctor_code = #{doctorCode}
 	</update>
 	
 	<select id="getDoctorList" resultMap="DoctorMap">

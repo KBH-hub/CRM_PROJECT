@@ -1,5 +1,9 @@
 eclipse.preferences.version=1
+encoding//src/com/crm/action/ActionFactory.java=UTF-8
+encoding//src/com/crm/action/SMSService/GetTemplateAction.java=UTF-8
+encoding//src/com/crm/action/SMSService/SMSUIAction.java=UTF-8
 encoding//src/com/crm/action/login/LoginAction.java=UTF-8
+encoding//src/com/crm/action/login/SidebarAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/CountReserveWeekByTimeAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/getPossibleDoctorAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/getReserveDayAction.java=UTF-8
@@ -8,5 +12,5 @@ encoding//src/com/crm/servlet/FrontControllerServlet.java=UTF-8
 encoding//src/test/com/crm/model/ManageDoctorDAOTest.java=EUC-KR
 encoding//src/test/com/crm/model/PatientListDAOTest.java=EUC-KR
 encoding//src/test/com/crm/model/ReserveListDAOTest.java=UTF-8
-encoding//src/test/com/crm/model/SmsDAOTest.java=EUC-KR
+encoding//src/test/com/crm/model/SMSDAOTest.java=EUC-KR
 encoding/<project>=UTF-8

@@ -43,7 +43,7 @@ static ManageDoctorDAO dao;
 	}
 	@Test
 	public void deleteDoctorScheduleTest(){
-		int result = dao.deleteDoctorSchedule(30);
+		int result = dao.deleteDoctorSchedule("30");
 		assertTrue("½ÇÆĞ", result>0);
 	}
 	@Test

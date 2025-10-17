@@ -36,7 +36,7 @@ public class ManageDoctorDAO {
 		Map<String, Object> map = new HashMap<>();
 		map.put("doctorCode", doctorCode);
 		map.put("workDate", workDate);
-		result = conn.update("doctorMapper.addDoctorSchedule", map);
+		result = conn.insert("doctorMapper.addDoctorSchedule", map);
 		if (result>0){
 			conn.commit();
 		} else {
@@ -63,10 +63,10 @@ public class ManageDoctorDAO {
 		return result;
 	}
 	
-	public int deleteDoctorSchedule(int doctorScheduleNo){
+	public int deleteDoctorSchedule(String doctorCode){
 		int result = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
-		result = conn.update("doctorMapper.deleteDoctorSchedule", doctorScheduleNo);
+		result = conn.update("doctorMapper.deleteDoctorSchedule", doctorCode);
 		if (result>0){
 			conn.commit();
 		} else {

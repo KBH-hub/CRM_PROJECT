@@ -86,7 +86,7 @@
 
         <div class="text-end mt-4" id="buttonArea">
           <button class="btn btn-primary px-4" id="reserveBtn">예약하기</button>
-          <button class="btn btn-primary px-4" id="sendSmsBtn">메시지 보내기</button>
+          <button class="btn btn-primary px-4" id="sendSMSBtn">메시지 보내기</button>
           <button class="btn btn-primary px-4" id="editBtn">정보 수정</button>
           <button class="btn btn-danger px-4" id="deleteBtn">정보 삭제</button>
           <button class="btn btn-success px-4 d-none" id="saveBtn">저장</button>
@@ -175,25 +175,21 @@ $(document).ready(function() {
     });
   }
 
-  ////////////////reserve button code
   $("#reserveBtn").click(function() {
 	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
 	  });
-  ////////////////
-  ////////////////message send button code
-  $("#sendSmsBtn").click(function() {
+  $("#sendSMSBtn").click(function() {
     var ids = [];
     ids.push($("#patientNo").val());
     const patientNo = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
-    window.location.href = "smsService.html?tab=common&" + patientNo;
+    window.location.href = "SMSService.html?tab=common&" + patientNo;
   });
-  /////////////////
 
   $("#editBtn").click(function() {
     $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {
       $(id).prop("disabled", false);
     });
-    $("#editBtn, #reserveBtn, #sendSmsBtn, #deleteBtn, #patientInfo").addClass("d-none");
+    $("#editBtn, #reserveBtn, #sendSMSBtn, #deleteBtn, #patientInfo").addClass("d-none");
     $("#saveBtn, #patientEdit").removeClass("d-none");
   });
 

@@ -419,7 +419,7 @@ table, th, td { border-collapse: collapse; }
 
         <div class="modal-footer d-flex justify-content-between">
           <div class="d-flex gap-2">
-            <button class="btn btn-primary" id="sendSmsBtn">선택 환자 문자 보내기</button>
+            <button class="btn btn-primary" id="sendSMSBtn">선택 환자 문자 보내기</button>
             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">선택 환자 예약 삭제</button>
           </div>
         </div>
@@ -1369,10 +1369,8 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
 
 //---------- 문자 보내기 이동 ----------
-document.getElementById("sendSmsBtn").addEventListener("click", () => {
-    // 여기에 실제 문자 보내기 로직 (선택된 환자 정보를 가져와서 폼 제출 등)을 구현해야 합니다.
-    // 현재는 단순히 페이지 이동만 합니다.
-    window.location.href = "smsService.html";
+document.getElementById("sendSMSBtn").addEventListener("click", () => {
+  window.location.href = "SMSService.html";
 });
 
 const params = new URLSearchParams(window.location.search);

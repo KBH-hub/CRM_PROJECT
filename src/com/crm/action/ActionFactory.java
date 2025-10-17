@@ -1,12 +1,12 @@
 package com.crm.action;
 
 import com.crm.action.patient.GetDoctorListByDateAction;
-import com.crm.action.smsService.GetCommonRecipientAction;
-import com.crm.action.smsService.GetCommonSmsAction;
-import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
-import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
+import com.crm.action.SMSService.GetCommonRecipientAction;
+import com.crm.action.SMSService.GetCommonSMSAction;
+import com.crm.action.SMSService.GetReserveRecipientAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
-import com.crm.action.smsService.GetReseveSmsAction;
+import com.crm.action.doctorSchedule.EditDoctorScheduleAction;
+import com.crm.action.SMSService.GetReseveSMSAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
 import com.crm.action.patient.DeletePatientAction;
@@ -22,14 +22,20 @@ import com.crm.action.reserveList.ReserveListUIAction;
 import com.crm.action.reserveList.getPossibleDoctorAction;
 import com.crm.action.reserveList.getReserveDayAction;
 import com.crm.action.reserveList.getReserveDetailAction;
-import com.crm.action.smsService.GetTemplateAction;
-import com.crm.action.smsService.PatientListModalAction;
-import com.crm.action.smsService.ReserveListModalAction;
-import com.crm.action.smsService.SmsRecordUIAction;
-import com.crm.action.smsService.SmsUIAction;
+import com.crm.action.doctorSchedule.AddDoctorScheduleAction;
+import com.crm.action.doctorSchedule.DeleteDoctorScheduleAction;
 import com.crm.action.doctorSchedule.DoctorListUIAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.doctorSchedule.GetDoctorListAction;
+import com.crm.action.doctorSchedule.GetDoctorNameAction;
+import com.crm.action.doctorSchedule.GetDoctorScheduleAction;
+import com.crm.action.SMSService.GetTemplateAction;
+import com.crm.action.SMSService.PatientListModalAction;
+import com.crm.action.SMSService.ReserveListModalAction;
+import com.crm.action.SMSService.SMSRecordUIAction;
+import com.crm.action.SMSService.SMSUIAction;
+import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
+import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
 import com.crm.action.login.DoctorMainUIAction;
 import com.crm.action.login.LoginAction;
 import com.crm.action.login.LoginUIAction;
@@ -45,6 +51,21 @@ public class ActionFactory {
 		Action a = null;
 
 		switch (cmd) {
+		case "deleteDoctorSchedule":
+		    a = new DeleteDoctorScheduleAction();
+		    break;
+		case "editDoctorSchedule":
+			a = new EditDoctorScheduleAction();
+			break;
+		case "addDoctorSchedule":
+		    a = new AddDoctorScheduleAction();
+		    break;
+		case "getDoctorName":
+			a = new GetDoctorNameAction();
+			break;
+		case "getDoctorSchedule":
+		    a = new GetDoctorScheduleAction();
+		    break;
 		case "getDoctorListAction":
 			a = new GetDoctorListAction();
 			break;
@@ -92,11 +113,11 @@ public class ActionFactory {
 			a = new ReserveListUIAction();
 			break;
 
-		case "smsUI":
-			a = new SmsUIAction();
+		case "SMSUI":
+			a = new SMSUIAction();
 			break;
-		case "smsRecordUI":
-			a = new SmsRecordUIAction();
+		case "SMSRecordUI":
+			a = new SMSRecordUIAction();
 			break;
 		case "getTemplate":
 			a = new GetTemplateAction();
@@ -107,11 +128,14 @@ public class ActionFactory {
 		case "patientListModal":
 			a = new PatientListModalAction();
 			break;
-		case "getReserveSms":
-			a = new GetReseveSmsAction();
+		case "getReserveSMS":
+			a = new GetReseveSMSAction();
 			break;
-		case "getCommonSms":
-			a = new GetCommonSmsAction();
+		case "getReserveRecipient":
+			a = new GetReserveRecipientAction();
+			break;
+		case "getCommonSMS":
+			a = new GetCommonSMSAction();
 			break;
 		case "getCommonRecipient":
 			a = new GetCommonRecipientAction();

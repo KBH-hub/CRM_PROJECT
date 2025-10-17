@@ -1,4 +1,4 @@
-package com.crm.action.smsService;
+package com.crm.action.SMSService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,10 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.crm.action.Action;
-import com.crm.model.CommonSmsVO;
-import com.crm.model.SmsDAO;
+import com.crm.model.CommonSMSVO;
+import com.crm.model.SMSDAO;
 
-public class GetCommonSmsAction implements Action {
+public class GetCommonSMSAction implements Action {
 
 	@Override
 	public String execute(HttpServletRequest request) throws ServletException, IOException {
@@ -25,9 +25,9 @@ public class GetCommonSmsAction implements Action {
         map.put("startRow", startRow);
         map.put("endRow", endRow);
         
-        SmsDAO dao = new SmsDAO();
-        List<CommonSmsVO> list = dao.getCommonSms(map);
-        int totalCount = dao.getCommonSmsCount();
+        SMSDAO dao = new SMSDAO();
+        List<CommonSMSVO> list = dao.getCommonSMS(map);
+        int totalCount = dao.getCommonSMSCount();
         
 
         Map<String, Object> result = new HashMap<>();

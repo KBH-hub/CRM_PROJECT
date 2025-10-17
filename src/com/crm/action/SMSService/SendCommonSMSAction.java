@@ -16,7 +16,6 @@ public class SendCommonSMSAction implements Action {
         String result = "not_login";
 
         Object employeeId =  request.getSession(false).getAttribute("employeeId");
-        System.out.println((String) employeeId);
         String[] patientNos = request.getParameterValues("patientNo");
         String content = request.getParameter("content");
 

@@ -16,6 +16,7 @@ import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
 import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
 import com.crm.action.doctorSchedule.DoctorListUIAction;
 import com.crm.action.SMSService.SendCommonSMSAction;
+import com.crm.action.SMSService.SendReserveSMSAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
 import com.crm.action.patient.DeletePatientAction;
@@ -133,6 +134,9 @@ public class ActionFactory {
 			break;
 		case "getReserveRecipient":
 			a = new GetReserveRecipientAction();
+			break;
+		case "sendReserveSMS":
+			a = new SendReserveSMSAction();
 			break;
 		case "getCommonSMS":
 			a = new GetCommonSMSAction();

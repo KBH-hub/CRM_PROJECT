@@ -19,6 +19,7 @@ import com.crm.action.reserveList.CountReserveMonthAction;
 import com.crm.action.reserveList.CountReserveWeekByTimeAction;
 import com.crm.action.reserveList.ReserveCalUIAction;
 import com.crm.action.reserveList.ReserveListUIAction;
+import com.crm.action.reserveList.getPossibleDoctorAction;
 import com.crm.action.reserveList.getReserveDayAction;
 import com.crm.action.reserveList.getReserveDetailAction;
 import com.crm.action.smsService.GetTemplateAction;
@@ -146,6 +147,11 @@ public class ActionFactory {
 		case "sidebarAction":
 	        a = new SidebarAction();
 	        break;
+			
+		case "getPossibleDoctor":
+			a = new getPossibleDoctorAction();
+			break;
+			
 		case "loginUI":
 		case "mainUI":
 			a = new LoginUIAction();

@@ -26,8 +26,8 @@ public class CountReserveWeekByTimeAction implements Action {
         String endDate = request.getParameter("endDate");
 		
         if (startDate == null || startDate.isEmpty() || endDate == null || endDate.isEmpty()) {
-            System.err.println("ERROR: startDate �삉�뒗 endDate �뙆�씪誘명꽣媛� �늻�씫�릺�뿀嫄곕굹 鍮꾩뼱�엳�뒿�땲�떎.");
-            request.setAttribute("result", new ArrayList<ReserveVO>()); // 鍮� JSON 諛곗뿴 諛섑솚
+            System.err.println("ERROR: startDate 파라미터 없음");
+            request.setAttribute("result", new ArrayList<ReserveVO>()); 
             return "/WEB-INF/json/result.jsp";
         }
 		

@@ -32,7 +32,7 @@ public class getReserveDetailAction implements Action {
 		ReserveVO reserveDetail = dao.getReserveDetail(reserveNo);
 		
 		request.setAttribute("result", reserveDetail);
-		System.out.println(reserveDetail);
+		
 		return "/WEB-INF/json/result.jsp";
 	}
 

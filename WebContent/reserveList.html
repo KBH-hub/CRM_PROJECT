@@ -174,19 +174,31 @@ table, th, td { border-collapse: collapse; }
               </div>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label">일시</label>
-              <div class="row g-2 align-items-center">
-                <div class="col-md-4 col-12">
-                  <input type="date" class="form-control" id="reserveDate">
-                </div>
-                <div class="col-md-3 col-6">
-                  <input type="time" class="form-control" id="reserveTime">
-                </div>
-              </div>
-            </div>
+						<div class="mb-3">
+							<label class="form-label">일시</label>
+							<div class="row g-2 align-items-center">
+								<div class="col-md-4 col-12">
+									<input type="date" class="form-control" id="reserveDate"
+										required>
+								</div>
+								<div class="col-md-2 col-3">
+									<select class="form-select" id="reserveHour" required>
+										
+										<option value="" selected disabled>시</option>
+									</select>
+								</div>
+								<div class="col-md-2 col-3">
+									<select class="form-select" id="reserveMinute" required>
+									
+										<option value="" selected disabled>분</option>
+										<option value="00">00</option>
+										<option value="30">30</option>
+									</select>
+								</div>
+							</div>
+						</div>
 
-            <div class="col-md-4 mb-3">
+						<div class="col-md-4 mb-3">
               <label class="form-label">환자연락처</label>
               <input type="text" id="patientPhone" class="form-control" readonly>
             </div>
@@ -436,9 +448,18 @@ table, th, td { border-collapse: collapse; }
                 <div class="col-md-4 col-12">
                   <input type="date" id="visitDate" class="form-control" readonly>
                 </div>
-                <div class="col-md-3 col-6">
-                  <input type="time" id="visitTime" class="form-control" readonly>
-                </div>
+                <div class="col-md-2 col-3">
+                  <select class="form-select" id="visitHour" required disabled>
+                    <option value="" selected disabled>시</option>
+                  </select>
+                </div>
+                <div class="col-md-2 col-3">
+                  <select class="form-select" id="visitMinute" required disabled>
+                    <option value="" selected disabled>분</option>
+                    <option value="00">00</option>
+                    <option value="30">30</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -464,13 +485,14 @@ table, th, td { border-collapse: collapse; }
           </form>
         </div>
 
-        <div class="modal-footer justify-content-center">
-          <button id="editBtn" class="btn btn-primary">수정</button>
-          <button id="saveBtn" class="btn btn-success d-none">저장</button>
-          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">삭제</button>
-          <button class="btn btn-secondary">메시지보내기</button>
-        </div>
-      </div>
+				<div class="modal-footer justify-content-center">
+					<button id="editBtn" class="btn btn-primary">수정</button>
+					<button id="saveBtn" class="btn btn-success d-none">저장</button>
+					<button id="deleteBtn" class="btn btn-danger"
+						data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">삭제</button>
+					<button id="messageBtn" class="btn btn-secondary">메시지보내기</button>
+				</div>
+			</div>
     </div>
   </div>
 
@@ -526,6 +548,35 @@ const fmtMonth = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,
 const addDays = (d, n) => { const t = new Date(d); t.setDate(t.getDate() + n); return t; };
 const startOfWeekMonday = d => { const t = new Date(d); const day = t.getDay(); const diff = (day === 0 ? -6 : 1 - day); t.setDate(t.getDate() + diff); return t; };
 
+
+function fillVisitHourOptions(selectedHour = '') { // 기본값으로 빈 문자열을 설정
+    const visitHourSelect = document.getElementById("visitHour");
+    if (!visitHourSelect) return;
+
+    let hourOptions = '<option value="" disabled>시</option>'; // 초기 '시' 옵션은 선택되지 않도록 변경
+    for (let i = 8; i <= 19; i++) {
+        const hour = String(i).padStart(2, '0');
+        // 현재 시간(hour)이 selectedHour와 일치하면 selected 속성 추가
+        const isSelected = (hour === selectedHour) ? 'selected' : '';
+        hourOptions += `<option value="${hour}" ${isSelected}>${hour}</option>`;
+    }
+    visitHourSelect.innerHTML = hourOptions;
+   
+}
+
+function fillVisitMinuteOptions(selectedMinute = '') {
+    const visitMinuteSelect = document.getElementById("visitMinute");
+    if (!visitMinuteSelect) return;
+
+    let minuteOptionsHtml = '<option value="" disabled>분</option>'; // 초기 '분' 옵션
+    const minutes = ['00', '30']; // 00분과 30분만 허용한다고 가정
+    minutes.forEach(m => {
+        const isSelected = (m === selectedMinute) ? 'selected' : '';
+        minuteOptionsHtml += `<option value="${m}" ${isSelected}>${m}</option>`;
+    });
+    visitMinuteSelect.innerHTML = minuteOptionsHtml;
+}
+   
 
 async function fetchAndRenderCalendarData() {
     const year = viewDate.getFullYear();
@@ -628,6 +679,7 @@ function renderMonth(){
     initTooltips();
 }
 
+
 function renderWeek(){
     const mon = startOfWeekMonday(viewDate);
     const weekDays = [...Array(7)].map((_, i) => addDays(mon, i));
@@ -685,57 +737,89 @@ function renderWeek(){
     initTooltips();
 }
 
-//---------- 예약 상세 모달 채우기 함수 추가 ----------
+
 function fillReservationDetailModal(data) {
+    
+
     if (data && !data.error) {
-        // 가정: ReserveVO 필드명과 일치
-        document.getElementById('detailName').value = data.patientName || '';
-        document.getElementById('detailPhone').value = data.phone || ''; // ⭐ 추가: 환자 연락처 필드 ⭐
-        document.getElementById('visitDate').value = data.reserveDay || '';
-        document.getElementById('visitTime').value = data.reserveTime ? data.reserveTime.substring(0, 5) : '';
+        const detailNameElement = document.getElementById('detailName');
+        const visitDateElement = document.getElementById('visitDate');
+        const visitHourSelect = document.getElementById('visitHour');
+        const visitMinuteSelect = document.getElementById('visitMinute');
+        const detailPhoneElement = document.getElementById('detailPhone');
+        const doctorDeptSelect = document.getElementById('doctorDept'); // select 요소
+        const visitReasonInputElement = document.getElementById('visitReasonInput');
+        const visitReasonTextareaElement = document.getElementById('visitReasonTextarea');
 
+        if (detailNameElement) {
+            detailNameElement.value = data.patientName || '';
+        }
+
+        if (visitDateElement) {
+            visitDateElement.value = data.reserveDay || '';
+        }
+
+        const reserveTime = data.reserveTime || '00:00';
+        const [hour, minute] = reserveTime.split(':');
+
+        fillVisitHourOptions(hour); // visitHourSelect 채우고, 현재 시간으로 선택
+        fillVisitMinuteOptions(minute); // visitMinuteSelect 채우고, 현재 분으로 선택
         
-        
-        // 담당의사 / 진료과 셀렉트 박스 설정
-        const doctorDeptSelect = document.getElementById('doctorDept');
-        doctorDeptSelect.selectedIndex = 0; // 기본값 '-' 또는 첫 번째 옵션으로 초기화 (option value="" 추가 가정)
+        if (detailPhoneElement) {
+            detailPhoneElement.value = data.phone || '';
+        }
 
-        // 서버에서 받은 부서와 의사 이름을 조합하여 해당하는 옵션을 찾음
-        const targetDept = data.department || '';
-        const targetDoctor = data.employeeName || '';
-        const targetEmployeeNo = data.employeeNo || ''; // 사번도 매칭에 사용할 수 있음
+        if (doctorDeptSelect) {
+            doctorDeptSelect.selectedIndex = 0;
 
-        for (let i = 0; i < doctorDeptSelect.options.length; i++) {
-            const optionText = doctorDeptSelect.options[i].text;
-            // 부서, 의사 이름, 사번이 모두 포함된 옵션 찾기
-            if (optionText.includes(targetDept) && optionText.includes(targetDoctor) && optionText.includes(targetEmployeeNo)) {
-                doctorDeptSelect.selectedIndex = i;
-                break;
+            const targetDept = data.department || '';
+            const targetDoctor = data.employeeName || '';
+            const targetEmployeeNo = data.employeeNo || '';
+
+            for (let i = 0; i < doctorDeptSelect.options.length; i++) {
+                const optionText = doctorDeptSelect.options[i].text;
+                if (optionText.includes(targetDept) && optionText.includes(targetDoctor) && optionText.includes(targetEmployeeNo)) {
+                    doctorDeptSelect.selectedIndex = i;
+                    break;
+                }
             }
         }
 
-        // 내원 사유 설정 (읽기 전용 input과 수정용 textarea 모두)
-        document.getElementById('visitReasonInput').value = data.reason || '';
-        document.getElementById('visitReasonTextarea').value = data.reason || '';
+        if (visitReasonInputElement) {
+            visitReasonInputElement.value = data.reason || '';
+        }
+        if (visitReasonTextareaElement) {
+            visitReasonTextareaElement.value = data.reason || '';
+        }
 
-        // 예약 번호를 모달 요소의 dataset에 저장 (수정/삭제 시 필요)
-        document.getElementById('reservationDetailModal').dataset.reserveNo = data.reserveNo;
+        const reservationDetailModalElement = document.getElementById('reservationDetailModal');
+        if (reservationDetailModalElement) {
+            reservationDetailModalElement.dataset.reserveNo = data.reserveNo;
+        }
 
-        // 모달 UI 상태 초기화 (상세 보기 모드로)
-        document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
-        document.getElementById("editBtn").classList.remove("d-none"); // 수정 버튼 보이기
-        document.getElementById("saveBtn").classList.add("d-none");      // 저장 버튼 숨기기
+        const modalTitleElement = document.querySelector("#reservationDetailModal .modal-title");
+        if (modalTitleElement) {
+            modalTitleElement.innerText = "예약 상세";
+        }
         
-        // 필드들 읽기 전용으로 설정
-        document.getElementById("detailName").setAttribute("readonly", true); // 이름 필드는 항상 readonly로 유지
-        document.getElementById("detailPhone").setAttribute("readonly", true); // 연락처 필드도 항상 readonly로 유지
-        document.getElementById("visitDate").setAttribute("readonly", true);
-        document.getElementById("visitTime").setAttribute("readonly", true);
-        document.getElementById("doctorDept").setAttribute("disabled", true); // 셀렉트 박스는 disabled
-        document.getElementById("visitReasonTextarea").classList.add("d-none"); // 텍스트 영역 숨김
-        document.getElementById("visitReasonInput").classList.remove("d-none"); // 읽기 전용 input 보이기
+        const editBtn = document.getElementById("editBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const deleteBtn = document.getElementById("deleteBtn");
+        const messageBtn = document.getElementById("messageBtn");
 
-        toggleModal("reservationDetailModal", true); // 예약 상세 모달 열기
+        if (editBtn) editBtn.classList.remove("d-none");
+        if (saveBtn) saveBtn.classList.add("d-none");
+        if (deleteBtn) deleteBtn.classList.remove("d-none");
+        if (messageBtn) messageBtn.classList.remove("d-none");
+
+        if (visitDateElement) visitDateElement.setAttribute("readonly", true);
+        if (visitHourSelect) visitHourSelect.setAttribute("disabled", true); 
+        if (visitMinuteSelect) visitMinuteSelect.setAttribute("disabled", true); 
+        if (doctorDeptSelect) doctorDeptSelect.setAttribute("disabled", true);
+        if (visitReasonTextareaElement) visitReasonTextareaElement.classList.add("d-none");
+        if (visitReasonInputElement) visitReasonInputElement.classList.remove("d-none");
+
+        toggleModal("reservationDetailModal", true);
     } else {
         alert(data.error || "예약 상세 정보를 불러오지 못했습니다.");
     }
@@ -743,19 +827,19 @@ function fillReservationDetailModal(data) {
 
 function renderDay(){
     const currentDay = viewDate;
-    ymSpan.textContent = fmt(currentDay); // 상단에 "2025-09-16" 표시
+    ymSpan.textContent = fmt(currentDay); 
 
     const dayName = currentDay.toLocaleDateString('ko-KR', { weekday: 'long' });
 
     const hourlyReservationsMap = new Map();
-    const currentDayKey = fmt(currentDay); // 현재 선택된 날짜의 키 생성
+    const currentDayKey = fmt(currentDay); 
 
     if (Array.isArray(fetchedDailyReservationCounts)) {
         fetchedDailyReservationCounts.forEach(item => {
-            // 현재 날짜와 일치하는 예약만 필터링
+          
             if (item.reserveDay === currentDayKey) {
                 const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
-                const mapKey = `${currentDayKey}_${hour}`; // 현재 날짜와 시간으로 mapKey 생성
+                const mapKey = `${currentDayKey}_${hour}`; 
                 const reservations = hourlyReservationsMap.get(mapKey) || [];
                 reservations.push(item);
                 hourlyReservationsMap.set(mapKey, reservations);
@@ -782,7 +866,7 @@ function renderDay(){
 
     hours.forEach(h => {
         const hourKey = String(h).padStart(2, '0');
-        const fullKey = `${currentDayKey}_${hourKey}`; // 현재 날짜와 시간으로 fullKey 생성
+        const fullKey = `${currentDayKey}_${hourKey}`; 
 
         const reservationsInHour = hourlyReservationsMap.get(fullKey) || [];
 
@@ -791,7 +875,7 @@ function renderDay(){
         `;
 
         reservationsInHour.forEach(res => {
-            const bgColorClass = 'text-bg-secondary'; // 또는 res.someColorField에 따라 동적으로 설정
+            const bgColorClass = 'text-bg-secondary'; 
 
             const displayTime = res.reserveTime ? res.reserveTime.substring(0, 5) : '';
             const blockText = `${res.patientName} 님  ${displayTime}`;
@@ -818,8 +902,7 @@ function renderDay(){
 
     container.innerHTML = html;
 
-    // ⭐ 수정: renderDay() 함수 내부에서 이벤트 리스너를 동적으로 연결 ⭐
-    // ⭐ 중요: 기존의 document.querySelectorAll('.reservation-block') 블록을 이 위치로 이동하고 수정 ⭐
+ 
     document.querySelectorAll('.reservation-block').forEach(block => {
         block.addEventListener('click', async (event) => {
             event.preventDefault();
@@ -837,7 +920,7 @@ function renderDay(){
                 }
                 const data = await response.json();
                 
-                // 현재 열려있는 managerReservationModal이 있다면 닫고 스택에 추가
+                
                 const managerModalEl = document.getElementById("managerReservationModal");
                 if (managerModalEl && bootstrap.Modal.getInstance(managerModalEl) && bootstrap.Modal.getInstance(managerModalEl)._isShown) {
                     modalStack.push(managerModalEl.id);
@@ -852,20 +935,20 @@ function renderDay(){
         });
     });
 
-    // ⭐ 툴팁 초기화: DOM이 업데이트된 후 호출 ⭐
+  
     initTooltips();
 }
 
-// ⭐ 툴팁 초기화 함수 분리 ⭐
+
 function initTooltips() {
-    // 기존 툴팁 인스턴스가 있다면 파괴 (메모리 누수 방지)
+   
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(tooltipEl => {
         const tooltip = bootstrap.Tooltip.getInstance(tooltipEl);
         if (tooltip) {
             tooltip.dispose();
         }
     });
-    // 새로운 툴팁 인스턴스 생성
+   
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -941,9 +1024,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 // ---------- 환자 검색 ----------
 (function(){
     let selected=null;
-    // 이 부분은 동적으로 로드되는 테이블에 대해 이벤트 위임을 사용하거나
-    // 환자 목록이 로드된 후에 이벤트를 다시 바인딩해야 합니다.
-    // 현재는 하드코딩된 tbody tr에만 적용됩니다.
+
     document.querySelectorAll("#patientSearchModal tbody tr").forEach(row=>{
         row.addEventListener("click",()=>{
             if(selected) selected.classList.remove("table-active");
@@ -975,6 +1056,119 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         document.getElementById("patientSearchInput").value="";
         document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>r.style.display="");
     });
+})();
+
+//새로운 예약 등록 모달 (reservationModal) 관련 JavaScript
+(function() {
+    const reserveDateInput = document.getElementById('reserveDate');
+    
+    const reserveHourInput = document.getElementById('reserveHour');
+    const reserveMinuteInput = document.getElementById('reserveMinute');
+    
+    const doctorDeptSelect = document.getElementById('doctorDept');
+    
+    function fillTimeOptions() {
+        // 기존 옵션 (placeholder) 유지, 나머지 삭제
+        reserveHourInput.innerHTML = '<option value="" selected disabled>시</option>';
+        for (let h = 8; h <= 17; h++) { // 08시부터 17시까지
+            const hourValue = String(h).padStart(2, '0'); // "08", "09", ... "17"
+            const option = document.createElement('option');
+            option.value = hourValue;
+            option.textContent = hourValue;
+            reserveHourInput.appendChild(option);
+        }
+    }
+    
+    fillTimeOptions();
+
+    async function updatePossibleDoctors() {
+        const workDate = reserveDateInput.value;
+        // --- 변경 시작 ---
+        const selectedHour = reserveHourInput.value;    
+        const selectedMinute = reserveMinuteInput.value; 
+
+        // 완전한 시간 문자열 조합 (HH:MM)
+        const reserveTime = (selectedHour && selectedMinute) ? `${selectedHour}:${selectedMinute}` : '';
+        // --- 변경 끝 ---
+
+        // 날짜, 시, 분 중 하나라도 선택되지 않았으면 드롭다운 비활성화
+        if (!workDate || !selectedHour || !selectedMinute) { 
+            console.log("DEBUG: 날짜, 시, 또는 분이 선택되지 않아 의사 조회 건너뜀.");
+            doctorDeptSelect.innerHTML = '<option value="">-- 날짜와 시간을 선택해주세요 --</option>';
+            doctorDeptSelect.setAttribute('disabled', true);
+            return;
+        }
+
+       
+        // 12시 00분부터 12시 59분까지는 점심시간으로 간주하여 예약 불가
+        const LUNCH_START_HOUR = 12; // 12:00
+        const LUNCH_END_HOUR = 13;  // 13:00 (13:00부터 예약 가능)
+
+        const currentHour = parseInt(selectedHour, 10);
+        const currentMinute = parseInt(selectedMinute, 10);
+
+        if (currentHour === LUNCH_START_HOUR && currentMinute === 0) { // 12:00 정각 선택 시 점심시간
+            alert('점심시간(12:00 ~ 13:00)에는 예약할 수 없습니다. 다른 시간을 선택해주세요.');
+            doctorDeptSelect.innerHTML = '<option value="">-- 점심시간은 예약 불가 --</option>';
+            doctorDeptSelect.setAttribute('disabled', true);
+            // 선택된 시간 초기화
+            reserveHourInput.value = '';
+            reserveMinuteInput.value = '';
+            return; // 이후 로직 (서버 요청) 실행 중단
+        }
+
+        doctorDeptSelect.innerHTML = '<option value="">-- 조회 중 --</option>';
+        doctorDeptSelect.setAttribute('disabled', true);
+        console.log("DEBUG: 의사 조회 요청 시작...");	
+
+        try {
+            // 서버에 Ajax 요청. reserveDateTime 파라미터는 여전히 HH:MM 형태를 사용합니다.
+            // Action 단에서 YYYY-MM-DD HH:MM으로 조합할 것이기 때문에 여기서는 reserveTime만 보냅니다.
+            const requestUrl = `controller?cmd=getPossibleDoctor&workDate=${workDate}&reserveTime=${reserveTime}`; // ⭐ 파라미터 이름 reserveTime으로 변경 ⭐
+            console.log("DEBUG: 요청 URL:", requestUrl);
+
+            const response = await fetch(requestUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const doctors = await response.json();
+
+            // 드롭다운 초기화
+            doctorDeptSelect.innerHTML = '<option value="">-- 담당의사 / 진료과 선택 --</option>';
+
+            if (doctors && doctors.length > 0) {
+                doctors.forEach(doctor => {
+                    const option = document.createElement('option');
+                    // option.value에 의사 정보를 담아 나중에 예약 등록 시 활용
+                    option.value = `${doctor.employeeNo}|${doctor.department}|${doctor.employeeName}`;
+                    option.textContent = `${doctor.department} / ${doctor.employeeName}`;
+                    doctorDeptSelect.appendChild(option);
+                });
+                doctorDeptSelect.removeAttribute('disabled'); // 가능한 의사가 있으면 활성화
+            } else {
+                doctorDeptSelect.innerHTML = '<option value="">-- 해당 시간에 가능한 의사가 없습니다 --</option>';
+            }
+
+        } catch (error) {
+            console.error('DEBUG: 가능한 의사 목록을 가져오는 중 오류 발생:', error);
+            doctorDeptSelect.innerHTML = '<option value="">-- 의사 목록 로드 실패 --</option>';
+        }
+    }
+
+    // 날짜 및 새로 추가된 시/분 입력 필드에 이벤트 리스너 추가
+    if (reserveDateInput) {
+        reserveDateInput.addEventListener('change', updatePossibleDoctors);
+    }
+    // --- 변경 시작 ---
+    if (reserveHourInput) {
+        reserveHourInput.addEventListener('change', updatePossibleDoctors); // 시 변경 시
+    }
+    if (reserveMinuteInput) {
+        reserveMinuteInput.addEventListener('change', updatePossibleDoctors); // 분 변경 시
+    }
+
+    // 예약 모달이 열릴 때마다 가능한 의사 목록을 다시 로드 (초기값 설정 등)
+    document.getElementById('reservationModal').addEventListener('show.bs.modal', updatePossibleDoctors);
 })();
 
 // ---------- 예약 목록 ----------
@@ -1028,55 +1222,129 @@ document.querySelectorAll('.modal').forEach(modalEl => {
     });
 })(); 
 // ---------- 예약 상세 ----------
-(function(){
-    const editBtn=document.getElementById("editBtn");
-    const saveBtn=document.getElementById("saveBtn");
-    const date=document.getElementById("visitDate");
-    const time=document.getElementById("visitTime");
-    const doctor=document.getElementById("doctorDept");
-    const reasonInput=document.getElementById("visitReasonInput");
-    const reasonArea=document.getElementById("visitReasonTextarea");
-    const confirmDeleteBtn=document.getElementById("confirmDeleteBtn");
+// ---------- 예약 상세 ----------
+(function() {
+    // ... 기존 DOM 요소 가져오는 부분 ...
+    const reservationDetailModal = document.getElementById("reservationDetailModal");
+    const date = document.getElementById("visitDate");
+    // const time = document.getElementById("visitTime"); // 이 줄은 이제 필요 없으므로 삭제하거나 주석 처리합니다.
+    const visitHourSelect = document.getElementById("visitHour"); // 새로 추가
+    const visitMinuteSelect = document.getElementById("visitMinute"); // 새로 추가
+    const doctor = document.getElementById("doctorDept");
+    const reasonInput = document.getElementById("visitReasonInput");
+    const reasonArea = document.getElementById("visitReasonTextarea");
+    const editBtn = document.getElementById("editBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const messageBtn = document.getElementById("messageBtn");
 
-    editBtn.addEventListener("click",e=>{
+    // ------- fillTimeOptions 함수 복사 및 수정 (새로운 예약 모달과 유사하게) -------
+    // visitHourSelect에 시간 옵션을 채우는 함수
+   // **[2-1에서 수정한 변수 선언 바로 다음 줄]** 에 붙여넣기
+    // visitHourSelect에 시간 옵션을 채우는 함수
+ 
+    
+    
+    
+    
+    
+    // fillVisitHourOptions(); 
+    
+    // 페이지 로드 시 한 번 호출하여 시간 옵션 채우기 (아니면 editBtn 클릭 시 호출)
+    // fillVisitHourOptions(); // 초기에는 disabled 상태이므로 수정 모드 진입 시 채우는 것이 더 좋습니다.
+    // --------------------------------------------------------------------------
+
+
+
+    // 수정 버튼 클릭 시 이벤트 핸들러
+    editBtn.addEventListener("click", e => {
         e.preventDefault();
         date.removeAttribute("readonly");
-        time.removeAttribute("readonly");
+        // 기존: time.removeAttribute("readonly");
+        visitHourSelect.removeAttribute("disabled"); // 시간 select 활성화
+        visitMinuteSelect.removeAttribute("disabled"); // 분 select 활성화
+        
+        
+        const currentHour = visitHourSelect.value;
+        const currentMinute = visitMinuteSelect.value; // 추가
+        fillVisitHourOptions(currentHour);
+        fillVisitMinuteOptions(currentMinute); // ⭐ 이곳도 추가 ⭐
+        
+        
         doctor.removeAttribute("disabled");
         reasonInput.classList.add("d-none");
         reasonArea.classList.remove("d-none");
-        reasonArea.value=reasonInput.value;
-        document.querySelector("#reservationDetailModal .modal-title").innerText="예약 수정";
-        editBtn.classList.add("d-none");
-        saveBtn.classList.remove("d-none");
+        reasonArea.value = reasonInput.value;
+
+        // 모달 제목 변경
+        document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 수정";
+
+        // 버튼 가시성 변경
+        editBtn.classList.add("d-none"); // 수정 버튼 숨김
+        saveBtn.classList.remove("d-none"); // 저장 버튼 보임
+        deleteBtn.classList.add("d-none"); // 삭제 버튼 숨김
+        messageBtn.classList.add("d-none"); // 메시지 보내기 버튼 숨김
     });
 
-    saveBtn.addEventListener("click",e=>{
+    // 저장 버튼 클릭 시 이벤트 핸들러
+    saveBtn.addEventListener("click", e => {
         e.preventDefault();
-        
-        const reserveNo = reservationDetailModal.dataset.reserveNo; // 저장된 예약 번호 가져오기
+
+        // TODO: 여기서 updatedData를 서버로 보내는 AJAX 요청을 구현해야 합니다.
+        const reserveNo = reservationDetailModal.dataset.reserveNo;
         const updatedData = {
             reserveNo: reserveNo,
-            patientName: document.getElementById('detailName').value, // 환자 이름 (수정 불가 필드라면 원래 값)
+            patientName: document.getElementById('detailName').value,
             reserveDay: date.value,
-            reserveTime: time.value,
-            doctorDept: doctor.value, // "내과 - 김의사" 형태
+            // 기존: reserveTime: time.value,
+            reserveTime: `${visitHourSelect.value}:${visitMinuteSelect.value}`, // 시간과 분 합쳐서 전송
+            doctorDept: doctor.value,
             reserveReason: reasonArea.value
         };
-        // TODO: 여기서 updatedData를 서버로 보내는 AJAX 요청을 구현해야 합니다.
         // 예: fetch('controller?cmd=updateReserve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updatedData) })
+        // 실제 AJAX 요청이 성공했을 때만 아래 UI 변경 로직을 실행하는 것이 좋습니다.
 
-        date.setAttribute("readonly",true);
-        time.setAttribute("readonly",true);
-        doctor.setAttribute("disabled",true);
-        reasonInput.value=reasonArea.value;
+        date.setAttribute("readonly", true);
+        // 기존: time.setAttribute("readonly", true);
+        visitHourSelect.setAttribute("disabled", true); // 시간 select 비활성화
+        visitMinuteSelect.setAttribute("disabled", true); // 분 select 비활성화
+        doctor.setAttribute("disabled", true);
+        reasonInput.value = reasonArea.value;
         reasonArea.classList.add("d-none");
         reasonInput.classList.remove("d-none");
-        document.querySelector("#reservationDetailModal .modal-title").innerText="예약 상세";
-        saveBtn.classList.add("d-none");
-        editBtn.classList.remove("d-none");
+
+        // 모달 제목 변경
+        document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
+
+        // 버튼 가시성 변경
+        saveBtn.classList.add("d-none"); // 저장 버튼 숨김
+        editBtn.classList.remove("d-none"); // 수정 버튼 보임
+        deleteBtn.classList.remove("d-none"); // 삭제 버튼 다시 보임
+        messageBtn.classList.remove("d-none"); // 메시지 보내기 버튼 다시 보임
     });
 
+    // ... (중요: 이 모달을 닫았을 때 초기 상태로 되돌리는 closeBtn 이벤트도 확인해야 합니다.)
+    // 일반적으로 모달이 닫힐 때, 모든 필드를 readonly/disabled 상태로 되돌리고 버튼들도 초기 상태로 되돌리는 로직을 추가하는 것이 좋습니다.
+    // 예를 들어, reservationDetailModal의 'hide.bs.modal' 이벤트 리스너를 추가하여 상태를 리셋할 수 있습니다.
+    reservationDetailModal.addEventListener('hide.bs.modal', function () {
+        date.setAttribute("readonly", true);
+        visitHourSelect.setAttribute("disabled", true);
+        visitMinuteSelect.setAttribute("disabled", true);
+        doctor.setAttribute("disabled", true);
+        reasonArea.classList.add("d-none");
+        reasonInput.classList.remove("d-none");
+        document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
+        saveBtn.classList.add("d-none");
+        editBtn.classList.remove("d-none");
+        deleteBtn.classList.remove("d-none");
+        messageBtn.classList.remove("d-none");
+    });
+
+
+    // 이 함수는 외부에서 호출되어야 합니다 (예: 예약 목록에서 특정 예약 클릭 시)
+    window.fillReservationDetailModal = fillReservationDetailModal;
+
+})(); // 예약 상세 관련 JavaScript 끝
     confirmDeleteBtn.addEventListener("click", () => {
         const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
         deleteModal.hide();
@@ -1101,7 +1369,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         }
     });
 
-})();
+
 //---------- 문자 보내기 이동 ----------
 document.getElementById("sendSmsBtn").addEventListener("click", () => {
     // 여기에 실제 문자 보내기 로직 (선택된 환자 정보를 가져와서 폼 제출 등)을 구현해야 합니다.

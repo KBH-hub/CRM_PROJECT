@@ -17,6 +17,9 @@ import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
 import com.crm.action.doctorSchedule.DoctorListUIAction;
 import com.crm.action.SMSService.SendCommonSMSAction;
 import com.crm.action.SMSService.SendReserveSMSAction;
+import com.crm.action.doctorReserveList.CountDailyAllReserveAction;
+import com.crm.action.doctorReserveList.CountDailyMyReserveAction;
+import com.crm.action.doctorReserveList.GetMyReserveListAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
 import com.crm.action.patient.DeletePatientAction;
@@ -69,7 +72,7 @@ public class ActionFactory {
 		    break;
 		case "getDoctorListAction":
 			a = new GetDoctorListAction();
-			break;
+			break; 
 		case "doctorListUI":
 			a = new DoctorListUIAction();
 			break;
@@ -78,6 +81,15 @@ public class ActionFactory {
 			break;
 		case "countMyReserveWeek":
 			a = new CountMyReserveWeekAction();
+			break;
+		case "getMyReserveList":
+			a = new GetMyReserveListAction();
+			break;
+		case "countDailyAllReserve":
+			a = new CountDailyAllReserveAction();
+			break;
+		case "countDailyMyReserve":
+			a = new CountDailyMyReserveAction();
 			break;
 		case "doctorScheduleUI":
 			a = new DoctorScheduleUIAction();

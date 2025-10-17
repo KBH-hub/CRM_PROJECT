@@ -17,6 +17,25 @@
 #medicalList::-webkit-scrollbar {
   width: 6px;
 }
+
+#medicalList {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  display: block;
+}
+
+#medicalList::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 4px;
+}
+
+#medicalList::-webkit-scrollbar-track {
+  background-color: #f1f3f5;
+}
 </style>
   
 </head>

@@ -22,7 +22,7 @@ public class LoginAction implements Action {
 		String authority = new LoginDAO().login(employeeId, pw, loginIp);
 		
 		if(authority != null){
-			HttpSession session = request.getSession(true);
+			HttpSession session = request.getSession();
 			session.setAttribute("employeeId", employeeId);
 			if ("관리자".equals(authority)) {
                 request.setAttribute("redirectUrl", "reserveList.html");
@@ -30,7 +30,7 @@ public class LoginAction implements Action {
                 request.setAttribute("redirectUrl", "doctorReserveList.html");
             }
 
-            url = "/WEB-INF/json/redirect.jsp"; // redirect.jsp占쎈�占쎄� JS �귐���占쎌��占쎌��占쎈�� 筌ｌ����
+            url = "/WEB-INF/json/redirect.jsp";
         }
 		return url;
 	}

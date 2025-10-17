@@ -7,6 +7,19 @@ import com.crm.action.SMSService.GetReserveRecipientAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.doctorSchedule.EditDoctorScheduleAction;
 import com.crm.action.SMSService.GetReseveSMSAction;
+import com.crm.action.SMSService.GetTemplateAction;
+import com.crm.action.SMSService.PatientListModalAction;
+import com.crm.action.SMSService.ReserveListModalAction;
+import com.crm.action.SMSService.SMSRecordUIAction;
+import com.crm.action.SMSService.SMSUIAction;
+import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
+import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
+import com.crm.action.doctorSchedule.DoctorListUIAction;
+import com.crm.action.SMSService.SendCommonSMSAction;
+import com.crm.action.SMSService.SendReserveSMSAction;
+import com.crm.action.doctorReserveList.CountDailyAllReserveAction;
+import com.crm.action.doctorReserveList.CountDailyMyReserveAction;
+import com.crm.action.doctorReserveList.GetMyReserveListAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
 import com.crm.action.patient.DeletePatientAction;
@@ -25,18 +38,9 @@ import com.crm.action.reserveList.getReserveDayAction;
 import com.crm.action.reserveList.getReserveDetailAction;
 import com.crm.action.doctorSchedule.AddDoctorScheduleAction;
 import com.crm.action.doctorSchedule.DeleteDoctorScheduleAction;
-import com.crm.action.doctorSchedule.DoctorListUIAction;
-import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.doctorSchedule.GetDoctorListAction;
 import com.crm.action.doctorSchedule.GetDoctorNameAction;
 import com.crm.action.doctorSchedule.GetDoctorScheduleAction;
-import com.crm.action.SMSService.GetTemplateAction;
-import com.crm.action.SMSService.PatientListModalAction;
-import com.crm.action.SMSService.ReserveListModalAction;
-import com.crm.action.SMSService.SMSRecordUIAction;
-import com.crm.action.SMSService.SMSUIAction;
-import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
-import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
 import com.crm.action.login.DoctorMainUIAction;
 import com.crm.action.login.LoginAction;
 import com.crm.action.login.LoginUIAction;
@@ -69,7 +73,7 @@ public class ActionFactory {
 		    break;
 		case "getDoctorListAction":
 			a = new GetDoctorListAction();
-			break;
+			break; 
 		case "doctorListUI":
 			a = new DoctorListUIAction();
 			break;
@@ -78,6 +82,15 @@ public class ActionFactory {
 			break;
 		case "countMyReserveWeek":
 			a = new CountMyReserveWeekAction();
+			break;
+		case "getMyReserveList":
+			a = new GetMyReserveListAction();
+			break;
+		case "countDailyAllReserve":
+			a = new CountDailyAllReserveAction();
+			break;
+		case "countDailyMyReserve":
+			a = new CountDailyMyReserveAction();
 			break;
 		case "doctorScheduleUI":
 			a = new DoctorScheduleUIAction();
@@ -135,11 +148,17 @@ public class ActionFactory {
 		case "getReserveRecipient":
 			a = new GetReserveRecipientAction();
 			break;
+		case "sendReserveSMS":
+			a = new SendReserveSMSAction();
+			break;
 		case "getCommonSMS":
 			a = new GetCommonSMSAction();
 			break;
 		case "getCommonRecipient":
 			a = new GetCommonRecipientAction();
+			break;
+		case "sendCommonSMS":	
+			a = new SendCommonSMSAction();
 			break;
 		case "reserveCalUI": 
 			a = new ReserveCalUIAction();

@@ -311,7 +311,6 @@ function bindDropdownEvents() {
     });
 
     $.when.apply($, requests).done(loadDoctorSchedule);
-    location.reload();
   });
 }
 
@@ -458,7 +457,6 @@ $(document).ready(function () {
           showAlert("선택한 의사 근무 일정이 삭제되었습니다.", function () {
             checkAll.prop("checked", false);
             loadDoctorSchedule();
-            location.reload();
           });
         });
       });

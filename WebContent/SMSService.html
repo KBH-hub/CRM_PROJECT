@@ -134,7 +134,7 @@
 								<div class="d-flex gap-2">
 									<button type="button"
 										class="btn btn-warning btn-sm btnReset">초기화</button>
-									<button type="button" class="btn btn-success btn-sm">전송</button>
+									<button id = "sendReserveSMSbtn" type="button" class="btn btn-success btn-sm">전송</button>
 								</div>
 							</div>
 						</div>
@@ -182,7 +182,7 @@
 							id="recipientCount">수신자 : 0명</p>
 
 						<button type="button" class="btn btn-warning btn-sm btnReset">초기화</button>
-						<button id=sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
+						<button id="sendCommonSMSbtn" type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
 							id="commonSMSRecord">보낸 메세지함</button>
 					</div>
@@ -530,8 +530,8 @@
 	    reset();
 	  });
 
-	//======일반메시지 관련=======
-	$("#sendSMSbtn").on("click", function(){
+	//======일반메시지 보내기=======
+	$("#sendCommonSMSbtn").on("click", function(){
 		 const content = $("#contentBox").val().trim();
 
 		  if (selectedRecipients.length === 0) {
@@ -543,17 +543,72 @@
 		    return;
 		  }
 		  
-		  const payload = {
-				    content: content,
-				    // 필요시 employeeId는 서버 세션에서 가져가도록 권장(프론트에서 보내지 않음)
-				    // 요청에 ids, 이름, 전화 모두 포함하고 싶다면 아래 배열들을 함께 보냄
-				    patientNo: selectedRecipients.map(r => r.patientNo),
-				    patientName: selectedRecipients.map(r => r.patientName),
-				    phone: selectedRecipients.map(r => r.phone)
-				  };
+		  $.ajax({
+			  url: "controller?cmd=sendCommonSMS",
+			  type: "post",
+			  data: {
+				  patientNo: selectedRecipients.map(r => r.patientNo),
+				  patientName: selectedRecipients.map(r => r.patientName),
+				  phone: selectedRecipients.map(r => r.phone),
+				  content: content
+			  },
+			  traditional: true,
+			  dataType: "json",
+			  success: function(data){
+				  const res = String(data).trim(); // "success"
+				    if (res === "success"){
+				      showAlert("메시지 전송 성공", reset);
+				    } else {
+				      showAlert("전송 실패");
+				    }
+			  },
+			    error: function(xhr, status, err) {
+			        console.error("전송 중 오류:", err);
+			        showAlert("전송 중 오류가 발생했습니다.");
+			      }
+		  })
 
 	})
 	
+		//======예약자 메시지 보내기=======
+	$("#sendReserveSMSbtn").on("click", function(){
+		 const templateName = $("#templateNameBox").val().trim();
+
+		  if (selectedRecipients.length === 0) {
+		    showAlert("수신자 명단이 비어 있습니다. 먼저 명단을 추가하세요.");
+		    return;
+		  }
+		  if (!templateName) {
+		    showAlert("템플릿을 선택하세요.");
+		    return;
+		  }
+		  
+		  $.ajax({
+			  url: "controller?cmd=sendReserveSMS",
+			  type: "post",
+			  data: {
+				  reserveNo: selectedRecipients.map(r => r.reserveNo),
+				  patientName: selectedRecipients.map(r => r.patientName),
+				  phone: selectedRecipients.map(r => r.phone),
+				  templateName: templateName
+			  },
+			  traditional: true,
+			  dataType: "json",
+			  success: function(data){
+				  const res = String(data).trim(); // "success"
+				    if (res === "success"){
+				      showAlert("메시지 전송 성공", reset);
+				    } else {
+				      showAlert("전송 실패");
+				    }
+			  },
+			    error: function(xhr, status, err) {
+			        console.error("전송 중 오류:", err);
+			        showAlert("전송 중 오류가 발생했습니다.");
+			      }
+		  })
+
+	})
 	  
 	// ✅ 명단추가 모달 js
 	document.addEventListener('DOMContentLoaded', () => {
@@ -957,7 +1012,7 @@ function validateDates() {
 	      selectedIds = ids.slice(); // 복사 저장
 	      // 응답 VO에 patientNo가 없으면, ids 순서대로 매칭
 	      selectedRecipients = list.map(r => ({
-	        patientNo: r.patientNo || "",
+	        reserveNo: r.reserveNo || "",
 	        patientName: r.patientName || "",
 	        phone: r.phone || ""
 	      }));

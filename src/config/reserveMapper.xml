@@ -339,5 +339,36 @@
 		</where>
 		ORDER BY r.datetime
 	</select>
+	
+	<select id="getMyReserveListDay" parameterType="map" resultMap="ReserveMap">
+		SELECT
+		r.reserve_no,
+		p.patient_name,
+		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS
+		reserveDay,
+		TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
+		d.department,
+		e.employee_name,
+		r.reason
+		FROM reserve r
+		JOIN patient p ON
+		r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON
+		r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON
+		ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id =
+		e.employee_id
+		<where>
+			r.del_flag IS NULL
+			<if test="employeeId != null and employeeId != ''">
+				AND e.employee_id = #{employeeId}
+				<if test="targetDate != null and targetDate != ''">
+					AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{targetDate}
+				</if>
+			</if>
+		</where>
+		ORDER BY r.datetime
+	</select>
 
 </mapper>

@@ -182,7 +182,7 @@
 							id="recipientCount">수신자 : 0명</p>
 
 						<button type="button" class="btn btn-warning btn-sm btnReset">초기화</button>
-						<button id=sendSMSbtn type="button" class="btn btn-success btn-sm">전송</button>
+						<button id="sendCommonSMSbtn" type="button" class="btn btn-success btn-sm">전송</button>
 						<button type="button" class="btn btn-outline-secondary btn-sm"
 							id="commonSMSRecord">보낸 메세지함</button>
 					</div>
@@ -531,7 +531,7 @@
 	  });
 
 	//======일반메시지 관련=======
-	$("#sendSMSbtn").on("click", function(){
+	$("#sendCommonSMSbtn").on("click", function(){
 		 const content = $("#contentBox").val().trim();
 
 		  if (selectedRecipients.length === 0) {
@@ -543,14 +543,30 @@
 		    return;
 		  }
 		  
-		  const payload = {
-				    content: content,
-				    // 필요시 employeeId는 서버 세션에서 가져가도록 권장(프론트에서 보내지 않음)
-				    // 요청에 ids, 이름, 전화 모두 포함하고 싶다면 아래 배열들을 함께 보냄
-				    patientNo: selectedRecipients.map(r => r.patientNo),
-				    patientName: selectedRecipients.map(r => r.patientName),
-				    phone: selectedRecipients.map(r => r.phone)
-				  };
+		  $.ajax({
+			  url: "controller?cmd=sendCommonSMS",
+			  type: "post",
+			  data: {
+				  patientNo: selectedRecipients.map(r => r.patientNo),
+				  patientName: selectedRecipients.map(r => r.patientName),
+				  phone: selectedRecipients.map(r => r.phone),
+				  content: content
+			  },
+			  traditional: true,
+			  dataType: "json",
+			  success: function(data){
+				  const res = String(data).trim(); // "success"
+				    if (res === "success"){
+				      showAlert("메시지 전송 성공", reset);
+				    } else {
+				      showAlert("전송 실패");
+				    }
+			  },
+			    error: function(xhr, status, err) {
+			        console.error("전송 중 오류:", err);
+			        showAlert("전송 중 오류가 발생했습니다.");
+			      }
+		  })
 
 	})
 	

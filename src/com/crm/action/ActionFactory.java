@@ -10,6 +10,7 @@ import com.crm.action.SMSService.PatientListModalAction;
 import com.crm.action.SMSService.ReserveListModalAction;
 import com.crm.action.SMSService.SMSRecordUIAction;
 import com.crm.action.SMSService.SMSUIAction;
+import com.crm.action.SMSService.SendCommonSMSAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
@@ -100,6 +101,9 @@ public class ActionFactory {
 			break;
 		case "getCommonRecipient":
 			a = new GetCommonRecipientAction();
+			break;
+		case "sendCommonSMS":	
+			a = new SendCommonSMSAction();
 			break;
 		case "reserveCalUI": 
 			a = new ReserveCalUIAction();

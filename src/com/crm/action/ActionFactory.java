@@ -11,6 +11,7 @@ import com.crm.action.SMSService.ReserveListModalAction;
 import com.crm.action.SMSService.SMSRecordUIAction;
 import com.crm.action.SMSService.SMSUIAction;
 import com.crm.action.SMSService.SendCommonSMSAction;
+import com.crm.action.SMSService.SendReserveSMSAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.patient.AddPatientAction;
 import com.crm.action.patient.AddPatientUIAction;
@@ -95,6 +96,9 @@ public class ActionFactory {
 			break;
 		case "getReserveRecipient":
 			a = new GetReserveRecipientAction();
+			break;
+		case "sendReserveSMS":
+			a = new SendReserveSMSAction();
 			break;
 		case "getCommonSMS":
 			a = new GetCommonSMSAction();

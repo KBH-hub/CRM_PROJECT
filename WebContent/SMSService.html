@@ -1071,47 +1071,60 @@ function validateDates() {
 
 
 	document.getElementById("commonSMSRecord").addEventListener("click", () => {
-		  window.location.href = "SMSRecord.html?tab=common";
+		  window.location.href = "controller?cmd=SMSRecordUI&tab=common";
 		});
 	
-	const params = new URLSearchParams(window.location.search);
-	if (params.get("tab") === "common") {
-	  commonBtn.click(); // 일반 메시지 탭 자동 활성화
-	  const ids = [];
-	  params.forEach((value, key) => {
-	    if (key === "patientNo") ids.push(value);
-	  });
-	  $("#commonSMSAddBtn").prop("disabled", true);
-	  $.ajax({
-		    url: "controller?cmd=getCommonRecipient",
-		    type: "POST",
-		    data: { patientNo: ids },
-		    traditional: true,   // 배열 전송
-		    dataType: "json",
-		    success: function (list) {
-		      const $tbody = $("#recipientTableBody").empty();
-	
-		      if (!Array.isArray(list) || list.length === 0) {
-		        $("#recipientCount").text("수신자 : 0명");
-		        return;
-		      }
-	
-		      list.forEach(r => {
-		        $tbody.append(`
-		          <tr>
-		            <td style="border:none; background: transparent;">${r.patientName || ""}</td>
-		            <td style="border:none; background: transparent;">${r.phone || ""}</td>
-		          </tr>
-		        `);
-		      });
-	
-		      $("#recipientCount").text(`수신자 : ${list.length}명`);
-		    },
-		    error: function () {
-		      showAlert("전송 중 오류가 발생했습니다.");
-		    }
-	  });
-	}
+	document.addEventListener("DOMContentLoaded", function () {
+	  const params = new URLSearchParams(window.location.search);
+
+	  if (params.get("tab") === "common") {
+	    commonBtn.click();
+
+	    const stored = sessionStorage.getItem("selectedPatientNos");
+	    if (!stored) return;
+
+	    const ids = JSON.parse(stored);
+
+	    $.ajax({
+	      url: "controller?cmd=getCommonRecipient",
+	      type: "POST",
+	      data: { patientNo: ids },
+	      traditional: true,
+	      dataType: "json",
+	      success: function (list) {
+	        const $tbody = $("#recipientTableBody").empty();
+
+	        if (!Array.isArray(list) || list.length === 0) {
+	          $("#recipientCount").text("수신자 : 0명");
+	          return;
+	        }
+	        
+	        selectedRecipients = list.map(r => ({
+	            patientNo: r.patientNo || "",
+	            patientName: r.patientName || "",
+	            phone: r.phone || ""
+	          }));
+
+	        list.forEach(r => {
+	          $tbody.append(`
+	            <tr>
+	              <td style="border:none; background: transparent;">${r.patientName || ""}</td>
+	              <td style="border:none; background: transparent;">${r.phone || ""}</td>
+	            </tr>
+	          `);
+	        });
+
+	        $("#recipientCount").text(`수신자 : ${list.length}명`);
+	      },
+	      complete: function () {
+	        sessionStorage.removeItem("selectedPatientNos");
+	      },
+	      error: function () {
+	        showAlert("전송 중 오류가 발생했습니다.");
+	      }
+	    });
+	  }
+	});
 	
 	
 </script>

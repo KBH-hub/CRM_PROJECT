@@ -17,6 +17,7 @@ import com.crm.action.patient.PatientInfoUIAction;
 import com.crm.action.patient.PatientUIAction;
 import com.crm.action.reserveList.CountReserveMonthAction;
 import com.crm.action.reserveList.CountReserveWeekByTimeAction;
+import com.crm.action.reserveList.EditReserveAction;
 import com.crm.action.reserveList.ReserveCalUIAction;
 import com.crm.action.reserveList.ReserveListUIAction;
 import com.crm.action.reserveList.getPossibleDoctorAction;
@@ -175,6 +176,12 @@ public class ActionFactory {
 		case "getPossibleDoctor":
 			a = new getPossibleDoctorAction();
 			break;
+			
+		case "editReserve":
+			a = new EditReserveAction();
+			break;
+			
+		
 			
 		case "loginUI":
 		case "mainUI":

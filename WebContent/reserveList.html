@@ -1138,7 +1138,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
                 doctors.forEach(doctor => {
                     const option = document.createElement('option');
                     // option.value에 의사 정보를 담아 나중에 예약 등록 시 활용
-                    option.value = `${doctor.employeeNo}|${doctor.department}|${doctor.employeeName}`;
+                    option.value = `${doctor.doctorScheduleNo}|${doctor.employeeNo}|${doctor.department}|${doctor.employeeName}`;
                     option.textContent = `${doctor.department} / ${doctor.employeeName}`;
                     doctorDeptSelect.appendChild(option);
                 });
@@ -1224,7 +1224,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 (function() {
     // ... 기존 DOM 요소 가져오는 부분 ...
     const reservationDetailModal = document.getElementById("reservationDetailModal");
-    const date = document.getElementById("visitDate");
+    const visitDate = document.getElementById("visitDate");
     // const time = document.getElementById("visitTime"); // 이 줄은 이제 필요 없으므로 삭제하거나 주석 처리합니다.
     const visitHourSelect = document.getElementById("visitHour"); // 새로 추가
     const visitMinuteSelect = document.getElementById("visitMinute"); // 새로 추가
@@ -1257,7 +1257,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
     // 수정 버튼 클릭 시 이벤트 핸들러
     editBtn.addEventListener("click", e => {
         e.preventDefault();
-        date.removeAttribute("readonly");
+        visitDate.removeAttribute("readonly");
         // 기존: time.removeAttribute("readonly");
         visitHourSelect.removeAttribute("disabled"); // 시간 select 활성화
         visitMinuteSelect.removeAttribute("disabled"); // 분 select 활성화
@@ -1284,48 +1284,101 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         messageBtn.classList.add("d-none"); // 메시지 보내기 버튼 숨김
     });
 
-    // 저장 버튼 클릭 시 이벤트 핸들러
-    saveBtn.addEventListener("click", e => {
-        e.preventDefault();
+ // 저장 버튼 클릭 시 이벤트 핸들러
+        saveBtn.addEventListener("click", async e => {
+            e.preventDefault();
 
-        // TODO: 여기서 updatedData를 서버로 보내는 AJAX 요청을 구현해야 합니다.
-        const reserveNo = reservationDetailModal.dataset.reserveNo;
-        const updatedData = {
-            reserveNo: reserveNo,
-            patientName: document.getElementById('detailName').value,
-            reserveDay: date.value,
-            // 기존: reserveTime: time.value,
-            reserveTime: `${visitHourSelect.value}:${visitMinuteSelect.value}`, // 시간과 분 합쳐서 전송
-            doctorDept: doctor.value,
-            reserveReason: reasonArea.value
-        };
-        // 예: fetch('controller?cmd=updateReserve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updatedData) })
-        // 실제 AJAX 요청이 성공했을 때만 아래 UI 변경 로직을 실행하는 것이 좋습니다.
+            const reserveNo = reservationDetailModal.dataset.reserveNo;
+            
+            const doctorInfo = doctor.value; // 'doctor' 변수 사용
+    		let doctorScheduleNo = null;
+            let employeeNo = null;
+            let department = null;
+            let employeeName = null;
+            if (doctorInfo) {
+        const parts = doctorInfo.split('|');
+        // 길이가 4인지 확인하고 각 변수에 할당합니다.
+        if (parts.length === 4) { 
+            doctorScheduleNo = parts[0];
+            employeeNo = parts[1];
+            department = parts[2];
+            employeeName = parts[3];
+        }
+    }
+            
+            const updatedData = {
+                reserveNo: reserveNo,
+                patientName: document.getElementById('detailName').value, // 'detailName' ID 직접 참조
+                reserveDay: visitDate.value,
+                reserveTime: `${visitHourSelect.value}:${visitMinuteSelect.value}`,
+    			doctorScheduleNo: doctorScheduleNo,
+                employeeNo: employeeNo,
+                department: department,
+                employeeName: employeeName,
+                reason: reasonArea.value
+            };
 
-        date.setAttribute("readonly", true);
-        // 기존: time.setAttribute("readonly", true);
-        visitHourSelect.setAttribute("disabled", true); // 시간 select 비활성화
-        visitMinuteSelect.setAttribute("disabled", true); // 분 select 비활성화
-        doctor.setAttribute("disabled", true);
-        reasonInput.value = reasonArea.value;
-        reasonArea.classList.add("d-none");
-        reasonInput.classList.remove("d-none");
+            if (!updatedData.reserveNo || !updatedData.patientName || !updatedData.reserveDay ||
+                !updatedData.reserveTime || !updatedData.employeeNo || !updatedData.department ||
+                !updatedData.employeeName || !updatedData.reason) {
+                alert("모든 필수 정보를 입력하거나 선택해주세요.");
+                return;
+            }
+            
+            try {
+                const response = await fetch('controller?cmd=editReserve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+            
+            	if (!response.ok) {
+            		throw new Error(`HTTP error! status: ${response.status}`);
+            	}
+            	
+            	const result = await response.json();
+            	
+            	if (result.success) { 
+            		alert('예약이 성공적으로 수정되었습니다.');
+            		// UI 상태를 다시 '읽기 전용'으로 변경
+            		visitDate.setAttribute("readonly", true);
+            		visitHourSelect.setAttribute("disabled", true);
+            		visitMinuteSelect.setAttribute("disabled", true);
+            		doctor.setAttribute("disabled", true);
+            		reasonInput.value = reasonArea.value;
+            		reasonArea.classList.add("d-none");
+            		reasonInput.classList.remove("d-none");
 
-        // 모달 제목 변경
-        document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
+            		document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
+            		saveBtn.classList.add("d-none");
+            		editBtn.classList.remove("d-none");
+            		deleteBtn.classList.remove("d-none");
+            		messageBtn.classList.remove("d-none");
 
-        // 버튼 가시성 변경
-        saveBtn.classList.add("d-none"); // 저장 버튼 숨김
-        editBtn.classList.remove("d-none"); // 수정 버튼 보임
-        deleteBtn.classList.remove("d-none"); // 삭제 버튼 다시 보임
-        messageBtn.classList.remove("d-none"); // 메시지 보내기 버튼 다시 보임
-    });
+            		fetchAndRenderCalendarData(); 
+            		// 만약 managerReservationModal이 열려 있다면 목록도 새로고침
+            		const managerModalEl = document.getElementById('managerReservationModal');
+                    if (managerModalEl && bootstrap.Modal.getInstance(managerModalEl) && bootstrap.Modal.getInstance(managerModalEl)._isShown) {
+                        // refreshManagerReservationTable(); // 이 함수는 구현 필요
+                    }
+            	} else {
+                	alert(result.message || '예약 수정에 실패했습니다.');
+            	}
+
+            } catch (error) {
+                console.error('예약 수정 중 오류 발생:', error);
+                alert('예약 수정 처리 중 문제가 발생했습니다. 다시 시도해 주세요.');
+            }
+        });
+        
+     
+  
 
     // ... (중요: 이 모달을 닫았을 때 초기 상태로 되돌리는 closeBtn 이벤트도 확인해야 합니다.)
     // 일반적으로 모달이 닫힐 때, 모든 필드를 readonly/disabled 상태로 되돌리고 버튼들도 초기 상태로 되돌리는 로직을 추가하는 것이 좋습니다.
     // 예를 들어, reservationDetailModal의 'hide.bs.modal' 이벤트 리스너를 추가하여 상태를 리셋할 수 있습니다.
     reservationDetailModal.addEventListener('hide.bs.modal', function () {
-        date.setAttribute("readonly", true);
+        visitDate.setAttribute("readonly", true);
         visitHourSelect.setAttribute("disabled", true);
         visitMinuteSelect.setAttribute("disabled", true);
         doctor.setAttribute("disabled", true);
@@ -1341,8 +1394,10 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
     // 이 함수는 외부에서 호출되어야 합니다 (예: 예약 목록에서 특정 예약 클릭 시)
     window.fillReservationDetailModal = fillReservationDetailModal;
+    
+})();
 
-})(); // 예약 상세 관련 JavaScript 끝
+ // 예약 상세 관련 JavaScript 끝
     confirmDeleteBtn.addEventListener("click", () => {
         const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
         deleteModal.hide();

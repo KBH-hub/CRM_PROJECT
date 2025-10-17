@@ -23,17 +23,17 @@ public class getReserveDayAction implements Action {
 		if(targetDate == null || targetDate.isEmpty()){
 			
 			 System.err.println("ERROR:targetDate 파라미터가 누락되었거나 비어있습니다.");
-	            request.setAttribute("list", new ArrayList<ReserveVO>()); // 빈 JSON 배열 반환
-	            return "reserveList.jsp";
+	            request.setAttribute("result", new ArrayList<ReserveVO>()); // 빈 JSON 배열 반환
+	            return "/WEB-INF/json/result.jsp";
 		}
 		
 		ReserveListDAO dao = new ReserveListDAO();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		List<ReserveVO> getReserveDay = dao.getReserveDay(targetDate);
-		request.setAttribute("list", getReserveDay);
+		request.setAttribute("result", getReserveDay);
         
-		return "reserveList.jsp";
+		return "/WEB-INF/json/result.jsp";
 	}
 
 }

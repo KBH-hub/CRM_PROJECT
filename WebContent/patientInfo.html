@@ -175,31 +175,23 @@ $(document).ready(function() {
     });
   }
 
-  ////////////////reserve button code
   $("#reserveBtn").click(function() {
 	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
 	  });
-  ////////////////
-  ////////////////message send button code
   $("#sendSMSBtn").click(function() {
     var ids = [];
     ids.push($("#patientNo").val());
     const patientNo = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
     window.location.href = "SMSService.html?tab=common&" + patientNo;
   });
-  /////////////////
 
   $("#editBtn").click(function() {
     $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {
       $(id).prop("disabled", false);
     });
-<<<<<<< HEAD
-    $("#editBtn, #reserveBtn, #sendSmsBtn, #deleteBtn, #patientInfo").addClass("d-none");
+    $("#editBtn, #reserveBtn, #sendSMSBtn, #deleteBtn, #patientInfo").addClass("d-none");
     $("#saveBtn, #patientEdit").removeClass("d-none");
-=======
-    $("#editBtn, #reserveBtn, #sendSMSBtn, #deleteBtn").addClass("d-none");
-    $("#saveBtn").removeClass("d-none");
->>>>>>> refs/heads/SmsService
+
   });
 
   $("#saveBtn").click(function() {

@@ -3,8 +3,11 @@ package com.crm.action;
 import com.crm.action.patient.GetDoctorListByDateAction;
 import com.crm.action.smsService.GetCommonRecipientAction;
 import com.crm.action.smsService.GetCommonSmsAction;
+import com.crm.action.doctorReserveList.CountDailyAllReserveAction;
+import com.crm.action.doctorReserveList.CountDailyMyReserveAction;
 import com.crm.action.doctorReserveList.CountMyReserveMonthAction;
 import com.crm.action.doctorReserveList.CountMyReserveWeekAction;
+import com.crm.action.doctorReserveList.GetMyReserveListAction;
 import com.crm.action.doctorSchedule.DoctorScheduleUIAction;
 import com.crm.action.smsService.GetReseveSmsAction;
 import com.crm.action.patient.AddPatientAction;
@@ -53,6 +56,15 @@ public class ActionFactory {
 			break;
 		case "countMyReserveWeek":
 			a = new CountMyReserveWeekAction();
+			break;
+		case "getMyReserveList":
+			a = new GetMyReserveListAction();
+			break;
+		case "countDailyAllReserve":
+			a = new CountDailyAllReserveAction();
+			break;
+		case "countDailyMyReserve":
+			a = new CountDailyMyReserveAction();
 			break;
 		case "doctorScheduleUI":
 			a = new DoctorScheduleUIAction();

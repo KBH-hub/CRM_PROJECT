@@ -1087,9 +1087,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         const selectedHour = reserveHourInput.value;    
         const selectedMinute = reserveMinuteInput.value; 
 
-        // 완전한 시간 문자열 조합 (HH:MM)
-    //    const reserveTime = (selectedHour && selectedMinute) ? `${selectedHour}:${selectedMinute}` : '';
-        // --- 변경 끝 ---
+     
 
         // 날짜, 시, 분 중 하나라도 선택되지 않았으면 드롭다운 비활성화
         if (!workDate || !selectedHour || !selectedMinute) { 

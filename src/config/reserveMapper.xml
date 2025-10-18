@@ -151,7 +151,7 @@
 		#{reserveNo}
 	</select>
 
-	<select id="getPatientName" resultMap="ReserveMap">
+ 	<select id="getPatientName" resultMap="ReserveMap">
 		SELECT
 		p.patient_no,
 		p.patient_name,
@@ -167,7 +167,8 @@
 		p.patient_no, p.patient_name, p.phone
 		ORDER BY MAX(mr.medical_date)
 		DESC
-	</select>
+	</select> 
+
 
 	<select id="getPossibleDoctor" resultMap="ReserveMap">
 		SELECT

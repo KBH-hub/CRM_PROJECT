@@ -28,10 +28,12 @@ import com.crm.action.patient.GetPatientDetailAction;
 import com.crm.action.patient.GetPatientListAction;
 import com.crm.action.patient.PatientInfoUIAction;
 import com.crm.action.patient.PatientUIAction;
+import com.crm.action.reserveList.AddReserveAction;
 import com.crm.action.reserveList.CountReserveMonthAction;
 import com.crm.action.reserveList.CountReserveWeekByTimeAction;
 import com.crm.action.reserveList.DeleteReserveAction;
 import com.crm.action.reserveList.EditReserveAction;
+import com.crm.action.reserveList.GetPatientNameAction;
 import com.crm.action.reserveList.ReserveCalUIAction;
 import com.crm.action.reserveList.ReserveListUIAction;
 import com.crm.action.reserveList.getPossibleDoctorAction;
@@ -205,7 +207,13 @@ public class ActionFactory {
 			a = new DeleteReserveAction();
 			break;
 			
-		
+		case "getPatientName":
+			a = new GetPatientNameAction();
+			break;
+			
+		case "addReserve":
+			a = new AddReserveAction();
+			break;
 			
 		case "loginUI":
 		case "mainUI":

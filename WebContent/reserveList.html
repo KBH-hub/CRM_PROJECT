@@ -195,6 +195,7 @@ table, th, td {
 							<div class="input-group">
 								<input type="text" id="patientName" class="form-control"
 									readonly>
+									<input type="hidden" id="patientNo">
 								<button class="btn btn-outline-danger" type="button"
 									data-bs-toggle="modal" data-bs-target="#patientSearchModal">환자
 									조회</button>
@@ -248,7 +249,7 @@ table, th, td {
 				</div>
 
 				<div class="modal-footer justify-content-center">
-					<button class="btn btn-primary">저장</button>
+					<button id="addReserveSaveBtn" class="btn btn-primary">저장</button>
 					<button class="btn btn-primary modal-back-btn">취소</button>
 					<button class="btn btn-primary">문자보내기</button>
 				</div>
@@ -285,18 +286,7 @@ table, th, td {
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>6102</td>
-								<td>이승희</td>
-								<td>010-1111-2222</td>
-								<td>2025-09-03</td>
-							</tr>
-							<tr>
-								<td>5800</td>
-								<td>이승희</td>
-								<td>010-2656-5566</td>
-								<td>2023-07-05</td>
-							</tr>
+							<tr><td colspan="4" class="text-center text-muted">이름을 검색하셍ㄵ</td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -1020,6 +1010,13 @@ document.querySelectorAll('.modal').forEach(modalEl => {
     document.getElementById("selectPatientBtn").addEventListener("click",()=>{
         if(selected){
             const tds=selected.querySelectorAll("td");
+            
+         
+            const patientNoValue = selected.dataset.patientNo; 
+
+            
+            document.getElementById("patientNo").value = patientNoValue;
+            
             document.getElementById("patientName").value=tds[1].innerText;
             document.getElementById("patientPhone").value=tds[2].innerText;
             toggleModal("patientSearchModal",false);
@@ -1027,10 +1024,67 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         }
     });
     const search=()=>{
-        const kw=document.getElementById("patientSearchInput").value.trim();
-        document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>{
-            const name=r.querySelectorAll("td")[1].innerText.trim();
-            r.style.display=(kw==""||name === kw)?"":"none";
+        const kw=document.getElementById("patientSearchInput").value.trim(); 
+        const tbody = $("#patientSearchModal tbody");
+
+        if (kw === "") {
+            tbody.html('<tr><td colspan="4" class="text-center text-muted">이름을 검색하ㄴㅇ</td></tr>');
+            return; 
+        }
+
+       
+        $.ajax({
+            url: 'controller?cmd=getPatientName', 
+            method: 'GET', 
+            data: { keyword: kw }, 
+            dataType: 'json', 
+            beforeSend: function() {
+               
+                tbody.html('<tr><td colspan="4" class="text-center text-muted">검색 중...</td></tr>');
+            },
+            success: function(result) { 
+            	
+            	console.log("서버 응답 데이터:", result);
+                tbody.empty(); 
+
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    
+                    result.data.forEach(patient => { 
+                       
+                        const $tr = $('<tr>').attr('data-patient-no', patient.patientNo); 
+                        
+                        
+                        $tr.append($('<td>').text(patient.patientNo || ''));
+                        $tr.append($('<td>').text(patient.patientName || ''));
+                        $tr.append($('<td>').text(patient.phone || ''));
+                        $tr.append($('<td>').text(patient.recentVisitDate || '')); // 필드명은 실제 VO/DTO에 맞게
+
+                       
+                        tbody.append($tr);
+                    });
+
+                   
+                    $("#patientSearchModal tbody tr").on("click", function() {
+                       
+                        if(selected) selected.classList.remove("table-active"); 
+                        this.classList.add("table-active");
+                        selected = this; 
+                    });
+                    selected = null; 
+
+                } else if (result.success) { 
+                    tbody.html('<tr><td colspan="4" class="text-center text-muted">검색 결과가 없습니다.</td></tr>');
+                } else { 
+                    console.error("환자 검색 실패:", result.message);
+                    tbody.html('<tr><td colspan="4" class="text-center text-danger">' + (result.message || '검색 중 오류 발생') + '</td></tr>');
+                }
+            }, 
+            error: function(jqXHR, textStatus, errorThrown) {
+               
+                console.error("환자 검색 오류:", textStatus, errorThrown);
+                tbody.html('<tr><td colspan="4" class="text-center text-danger">검색 중 오류가 발생했습니다.</td></tr>');
+            }
         });
     };
     document.getElementById("searchBtn").addEventListener("click",search);
@@ -1681,6 +1735,77 @@ function openReserveListForCurrentView() {
             alert('예약 삭제 처리 중 오류가 발생했습니다.');
             if(deleteModal) deleteModal.hide(); 
         }
+    });
+    
+ // ---------- 예약 등록 처리 ----------
+    $('#addReserveSaveBtn').on('click', function(event) {
+        event.preventDefault();
+
+       
+        const patientNo = $('#patientNo').val();
+        const patientName = $('#patientName').val(); 
+        const reserveDate = $('#reserveDate').val();
+        const reserveHour = $('#reserveHour').val();
+        const reserveMinute = $('#reserveMinute').val();
+        const doctorInfo = $('#doctorSelect').val();
+        const visitReason = $('#visitReason').val();
+        
+        
+        if (!patientNo || !reserveDate || !reserveHour || !reserveMinute || !doctorInfo) {
+        alert("환자 조회 및 예약 일시, 담당 의사는 필수 입력 항목입니다.");
+        return;
+    }
+
+        
+        const parts = doctorInfo.split('|');
+        let doctorScheduleNo = null;
+        if (parts.length === 4) {
+            doctorScheduleNo = parts[0]; 
+        } else {
+            alert("담당 의사 정보 형식이 올바르지 않습니다.");
+            return;
+        }
+
+       
+        const newReservationData = {
+        	patientNo: patientNo,
+            patientName: patientName,     
+            reserveDay: reserveDate,
+            reserveTime: `${reserveHour}:${reserveMinute}`,
+            doctorScheduleNo: doctorScheduleNo, 
+            reason: visitReason
+            
+        };
+
+       
+        $.ajax({
+            url: 'controller?cmd=addReserve',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(newReservationData),
+            dataType: 'json',
+            success: function(result) {
+                if (result.success) {
+                    alert('예약이 성공적으로 등록되었습니다.');
+                   
+                    const reservationModalEl = document.getElementById('reservationModal');
+                    const reservationModal = bootstrap.Modal.getInstance(reservationModalEl);
+                    if (reservationModal) {
+                        reservationModal.hide();
+                    }
+                
+                    
+                    
+                    fetchAndRenderCalendarData(); 
+                } else {
+                    alert(result.message || '예약 등록에 실패했습니다.');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('예약 등록 중 오류 발생:', textStatus, errorThrown);
+                alert('예약 등록 처리 중 오류가 발생했습니다.');
+            }
+        });
     });
 
 

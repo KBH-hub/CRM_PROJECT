@@ -1549,10 +1549,10 @@ function openReserveListForCurrentView() {
         fillVisitMinuteOptions(currentMinute); // ⭐ 이곳도 추가 ⭐
         
         updatePossibleDoctors('visitDate', 'visitHour', 'visitMinute', 'doctorDept');
-        
-        visitDate.addEventListener('change', updatePossibleDoctors);
-        visitHourSelect.addEventListener('change', updatePossibleDoctors);
-        visitMinuteSelect.addEventListener('change', updatePossibleDoctors);
+
+        visitDate.addEventListener('change', () => updatePossibleDoctors('visitDate', 'visitHour', 'visitMinute', 'doctorDept'));
+        visitHourSelect.addEventListener('change', () => updatePossibleDoctors('visitDate', 'visitHour', 'visitMinute', 'doctorDept'));
+        visitMinuteSelect.addEventListener('change', () => updatePossibleDoctors('visitDate', 'visitHour', 'visitMinute', 'doctorDept'));
         
         doctor.removeAttribute("disabled");
         reasonInput.classList.add("d-none");

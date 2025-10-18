@@ -583,67 +583,81 @@ async function fetchAndRenderCalendarData() {
     }
 }
 
+
+
 async function updatePossibleDoctors(dateId, hourId, minuteId, doctorSelectId) {
-    const dateInput = document.getElementById(dateId);
-    const hourSelect = document.getElementById(hourId);
-    const minuteSelect = document.getElementById(minuteId);
-    const doctorSelect = document.getElementById(doctorSelectId);
+ 
+ const dateInput = document.getElementById(dateId);
+ const hourSelect = document.getElementById(hourId);
+ const minuteSelect = document.getElementById(minuteId);
+ const doctorSelect = document.getElementById(doctorSelectId);
 
-    const workDate = dateInput?.value;
-    const selectedHour = hourSelect?.value;
-    const selectedMinute = minuteSelect?.value;
 
-    if (!workDate || !selectedHour || !selectedMinute) {
-        console.log("DEBUG: 날짜, 시, 또는 분이 선택되지 않아 의사 조회 건너뜀.");
-        if (doctorSelect) {
-            doctorSelect.innerHTML = '<option value="">-- 날짜와 시간을 선택해주세요 --</option>';
-            doctorSelect.setAttribute('disabled', true);
-        }
-        return;
-    }
 
-    const LUNCH_START_HOUR = 12; 
-    const LUNCH_END_HOUR = 13;  
-    const currentHour = parseInt(selectedHour, 10);
-    const currentMinute = parseInt(selectedMinute, 10);
+ const workDate = dateInput?.value;
+ const selectedHour = hourSelect?.value;
+ const selectedMinute = minuteSelect?.value;
 
-    if (currentHour === LUNCH_START_HOUR && currentMinute === 0) {
-        alert('점심시간(12:00 ~ 13:00)에는 예약할 수 없습니다.');
-        if (doctorSelect) {
-            doctorSelect.innerHTML = '<option value="">-- 점심시간은 예약 불가 --</option>';
-            doctorSelect.setAttribute('disabled', true);
-        }
-        hourSelect.value = '';
-        minuteSelect.value = '';
-        return;
-    }
 
-    doctorSelect.innerHTML = '<option value="">-- 조회 중 --</option>';
-    doctorSelect.setAttribute('disabled', true);
 
-    try {
-        const url = `controller?cmd=getPossibleDoctor&reserveDate=${workDate}&reserveHour=${selectedHour}&reserveMinute=${selectedMinute}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const doctors = await response.json();
+ if (!workDate || !selectedHour || !selectedMinute) {
+     
+     if (doctorSelect) {
+         doctorSelect.innerHTML = '<option value="">-- 날짜와 시간을 선택해주세요 --</option>';
+         doctorSelect.setAttribute('disabled', true);
+     }
+     return;
+ }
 
-        doctorSelect.innerHTML = '<option value="">-- 담당의사 / 진료과 선택 --</option>';
-        if (doctors && doctors.length > 0) {
-            doctors.forEach(doctor => {
-                const option = document.createElement('option');
-                option.value = `${doctor.doctorScheduleNo}|${doctor.employeeNo}|${doctor.department}|${doctor.employeeName}`;
-                option.textContent = `${doctor.department} / ${doctor.employeeName}`;
-                doctorSelect.appendChild(option);
-            });
-            doctorSelect.removeAttribute('disabled');
-        } else {
-            doctorSelect.innerHTML = '<option value="">-- 해당 시간에 가능한 의사가 없습니다 --</option>';
-        }
-    } catch (err) {
-        console.error('DEBUG: 가능한 의사 목록을 가져오는 중 오류 발생:', err);
-        doctorSelect.innerHTML = '<option value="">-- 의사 목록 로드 실패 --</option>';
-    }
+ const LUNCH_START_HOUR = 12; 
+ const LUNCH_END_HOUR = 13;  
+ const currentHour = parseInt(selectedHour, 10);
+ const currentMinute = parseInt(selectedMinute, 10);
+
+ if (currentHour === LUNCH_START_HOUR && currentMinute === 0) {
+     alert('점심시간(12:00 ~ 13:00)에는 예약할 수 없습니다.');
+     if (doctorSelect) {
+         doctorSelect.innerHTML = '<option value="">-- 점심시간은 예약 불가 --</option>';
+         doctorSelect.setAttribute('disabled', true);
+     }
+     hourSelect.value = '';
+     minuteSelect.value = '';
+     return;
+ }
+
+ doctorSelect.innerHTML = '<option value="">-- 조회 중 --</option>';
+ doctorSelect.setAttribute('disabled', true);
+
+ try {
+     const url = `controller?cmd=getPossibleDoctor&reserveDate=${workDate}&reserveHour=${selectedHour}&reserveMinute=${selectedMinute}`;
+ 
+     
+     const response = await fetch(url);
+     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+     const doctors = await response.json();
+     
+  
+
+     doctorSelect.innerHTML = '<option value="">-- 담당의사 / 진료과 선택 --</option>';
+     if (doctors && doctors.length > 0) {
+         doctors.forEach(doctor => {
+             const option = document.createElement('option');
+             option.value = `${doctor.doctorScheduleNo}|${doctor.employeeNo}|${doctor.department}|${doctor.employeeName}`;
+             option.textContent = `${doctor.department} / ${doctor.employeeName}`;
+             doctorSelect.appendChild(option);
+         });
+         doctorSelect.removeAttribute('disabled');
+        
+     } else {
+         doctorSelect.innerHTML = '<option value="">-- 해당 시간에 가능한 의사가 없습니다 --</option>';
+       
+     }
+ } catch (err) {
+     
+     doctorSelect.innerHTML = '<option value="">-- 의사 목록 로드 실패 --</option>';
+ }
 }
+
 
 
 
@@ -1194,14 +1208,21 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
     // 날짜 및 새로 추가된 시/분 입력 필드에 이벤트 리스너 추가
     if (reserveDateInput) {
-        reserveDateInput.addEventListener('change', updatePossibleDoctors);
+    	reserveDateInput.addEventListener('change', () => {
+    	    updatePossibleDoctors('reserveDate', 'reserveHour', 'reserveMinute', 'doctorSelect');
+    	});
     }
     // --- 변경 시작 ---
     if (reserveHourInput) {
-        reserveHourInput.addEventListener('change', updatePossibleDoctors); // 시 변경 시
+    	reserveHourInput.addEventListener('change', () => {
+    	    updatePossibleDoctors('reserveDate', 'reserveHour', 'reserveMinute', 'doctorSelect');
+    	});
+
     }
     if (reserveMinuteInput) {
-        reserveMinuteInput.addEventListener('change', updatePossibleDoctors); // 분 변경 시
+    	reserveMinuteInput.addEventListener('change', () => {
+    	    updatePossibleDoctors('reserveDate', 'reserveHour', 'reserveMinute', 'doctorSelect');
+    	});
     }
 
     // 예약 모달이 열릴 때마다 가능한 의사 목록을 다시 로드 (초기값 설정 등)

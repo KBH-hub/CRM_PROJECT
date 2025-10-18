@@ -197,13 +197,16 @@ $(document).ready(function() {
   $("#reserveBtn").click(function() {
 	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
 	  });
-  $("#sendSMSBtn").click(function() {
-    var ids = [];
-    ids.push($("#patientNo").val());
-    const patientNo = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
-    window.location.href = "SMSService.html?tab=common&" + patientNo;
-  });
-
+  $("#sendSMSBtn").click(function () {
+	  const id = $("#patientNo").val()?.trim();
+	  if (!id) {
+	    showAlert("환자번호를 찾을 수 없습니다.");
+	    return;
+	  }
+	  const ids = [id];
+	  sessionStorage.setItem("selectedPatientNos", JSON.stringify(ids));
+	  window.location.href = "controller?cmd=SMSUI&tab=common";
+	});
   $("#editBtn").click(function() {
     $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {
       $(id).prop("disabled", false);

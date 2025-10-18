@@ -106,7 +106,6 @@
     white-space: nowrap; /* 텍스트 줄바꿈 방지 */
     overflow: hidden; /* 넘치는 텍스트 숨김 */
     text-overflow: ellipsis; /* 넘치는 텍스트 ... 처리 */
-    flex-grow: 1;
     max-width: 100%; /* 부모 너비를 넘지 않도록 */
     height: fit-content%; /* 내용에 맞춰 높이 조절 */
     /* 스크린샷의 색상들을 반영하여 여러 스타일 클래스 추가 가능 */
@@ -431,6 +430,16 @@
 			    const hourKey = String(h).padStart(2, '0');
 			    html += `<tr><td>${hourKey}:00</td>`;
 
+			    const hourlyCountsMap = new Map();
+			    if (Array.isArray(fetchedDailyReservationCounts)) {
+			        fetchedDailyReservationCounts.forEach(item => {
+			            const dayKey = item.reserveDay;
+			            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
+			            const count = item.reserveCount;
+			            const mapKey = `${dayKey}_${hour}`;
+			            hourlyCountsMap.set(mapKey, (hourlyCountsMap.get(mapKey) || 0) + count);
+			        });
+			    }
 			    weekDays.forEach(d => {
 			      const dayKey = fmt(d);
 			      const reservationsInHour = fetchedDailyReservationCounts.filter(

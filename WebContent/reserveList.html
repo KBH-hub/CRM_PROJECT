@@ -1058,7 +1058,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
                         $tr.append($('<td>').text(patient.patientNo || ''));
                         $tr.append($('<td>').text(patient.patientName || ''));
                         $tr.append($('<td>').text(patient.phone || ''));
-                        $tr.append($('<td>').text(patient.recentVisitDate || '')); // 필드명은 실제 VO/DTO에 맞게
+                        $tr.append($('<td>').text(patient.inDate || ''));
 
                        
                         tbody.append($tr);

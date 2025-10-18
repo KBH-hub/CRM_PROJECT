@@ -394,7 +394,7 @@ table, th, td {
 					<div class="d-flex gap-2">
 						<button id="sendReserveSMSSelectBtn" class="btn btn-primary"
 							data-bs-dismiss="modal">선택 메시지 보내기</button>
-						<button id="sendReserveSMSSelectBtn" class="btn btn-primary"
+						<button id="sendDeleteSelectBtn" class="btn btn-primary"
 							data-bs-dismiss="modal">선택 예약 삭제</button>
 					</div>
 				</div>
@@ -1154,7 +1154,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
     document.getElementById('reservationModal').addEventListener('show.bs.modal', updatePossibleDoctors);
 })();
 
-// ---------- 예약 목록 ----------
+// ---------- 예약 목록 모달 ----------
 
 let managerModalInited = false;
 let suppressAutoInit = false;
@@ -1686,17 +1686,20 @@ function openReserveListForCurrentView() {
 
 //---------- 문자 보내기 이동 ----------
 document.getElementById("sendReserveSMSSelectBtn").addEventListener("click", () => {
-  window.location.href = "SMSService.html";
-});
+		  const checked = $(".row-check:checked");
+		  if (checked.length === 0) {
+		    showAlert("메시지 발송할 환자를 선택하세요.");
+		    return;
+		  }
 
-const params = new URLSearchParams(window.location.search);
-if (params.get("tab") === "reserve") {
-    // reserveBtn이 null일 가능성 처리
-    const reserveButton = document.getElementById("reserveBtn");
-    if (reserveButton) {
-        reserveButton.click();
-    }
-}
+		  const ids = $("#reserveTable tbody .row-check:checked")
+		  .map(function () { return $(this).closest("tr").data("reserveNo"); })
+		  .get();
+		  
+		  sessionStorage.setItem("selectedReserveNos", JSON.stringify(ids));
+		  window.location.href = "controller?cmd=SMSUI&tab=reserve";
+		});
+
 </script>
 </body>
 </html>

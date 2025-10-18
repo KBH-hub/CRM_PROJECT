@@ -1678,21 +1678,17 @@ function openReserveListForCurrentView() {
     
 })();
 
-//========================================
-//이 코드를 HTML 파일에서 아래 위치에 넣으세요:
-//1. 기존 confirmDeleteBtn 이벤트 리스너를 찾아서 **삭제**
-//2. 그 자리에 이 전체 코드를 **붙여넣기**
-//========================================
+
 
 //---------- 선택 예약 삭제 기능 ----------
 (function() {
- // ===== 1. 선택 삭제 버튼 클릭 =====
+
  const deleteSelectBtn = document.getElementById("deleteReserveSelectBtn");
  if (deleteSelectBtn) {
      deleteSelectBtn.addEventListener("click", function(e) {
          e.preventDefault();
          
-         // 체크된 예약 찾기
+        
          const checkedRows = document.querySelectorAll('#reserveTable tbody .row-check:checked');
          
          if (checkedRows.length === 0) {
@@ -1700,7 +1696,7 @@ function openReserveListForCurrentView() {
              return;
          }
          
-         // 선택된 예약 번호들 수집
+       
          const reserveNos = [];
          checkedRows.forEach(checkbox => {
              const row = checkbox.closest('tr');
@@ -1732,7 +1728,7 @@ function openReserveListForCurrentView() {
      });
  }
  
- // ===== 2. 삭제 확인 버튼 클릭 (단일 삭제 + 선택 삭제 통합) =====
+
  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
  if (confirmDeleteBtn) {
      confirmDeleteBtn.addEventListener("click", async function() {
@@ -1743,7 +1739,7 @@ function openReserveListForCurrentView() {
          
          try {
              if (deleteType === 'multiple') {
-                 // ===== 선택 삭제 처리 =====
+               
                  const reserveNos = JSON.parse(deleteModalEl.dataset.reserveNos || '[]');
                  
                  if (reserveNos.length === 0) {
@@ -1752,7 +1748,6 @@ function openReserveListForCurrentView() {
                      return;
                  }
                  
-                 // 각 예약을 순차적으로 삭제 (기존 API 재사용)
                  let successCount = 0;
                  let failCount = 0;
                  
@@ -1810,7 +1805,7 @@ function openReserveListForCurrentView() {
                  }
                  
              } else {
-                 // ===== 단일 삭제 처리 (기존 코드) =====
+              
                  const reservationDetailModalEl = document.getElementById("reservationDetailModal");
                  const reserveNoToDelete = reservationDetailModalEl.dataset.reserveNo;
                  
@@ -1866,7 +1861,7 @@ function openReserveListForCurrentView() {
              alert('예약 삭제 처리 중 오류가 발생했습니다.');
              if (deleteModal) deleteModal.hide();
          } finally {
-             // 삭제 타입 초기화
+            
              deleteModalEl.dataset.deleteType = '';
              deleteModalEl.dataset.reserveNos = '';
          }
@@ -1874,9 +1869,7 @@ function openReserveListForCurrentView() {
  }
 })();
 
-//========================================
-//✅ 백엔드는 수정 불필요! 기존 deleteReserve 재사용
-//========================================
+
     
  // ---------- 예약 등록 처리 ----------
     $('#addReserveSaveBtn').on('click', function(event) {

@@ -10,7 +10,7 @@ async function loadSidebarReserve() {
     const data = await resp.json();
 
     // 서버 응답 구조: { result: [ { RESERVE_COUNT: 12 } ] }
-    const count = data.result?.[0]?.RESERVE_COUNT ?? 0;
+    const count = (data.result && data.result[0] && data.result[0].RESERVE_COUNT) || 0;
 
     document.getElementById('allReserve').textContent = count;
   } catch (err) {

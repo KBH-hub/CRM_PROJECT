@@ -234,10 +234,7 @@ table, th, td {
 						<div class="col-md-4 mb-3">
 							<label class="form-label">담당의사 / 진료과</label> <select
 								class="form-select" id="doctorSelect">
-								<option value="" selected>-</option>
-								<option>신경외과 / 나신경 / DN002</option>
-								<option>정형외과 / 원장 / DO003</option>
-								<option>정형외과 / 김의사 / DO001</option>
+								
 							</select>
 						</div>
 
@@ -286,7 +283,7 @@ table, th, td {
 							</tr>
 						</thead>
 						<tbody>
-							<tr><td colspan="4" class="text-center text-muted">이름을 검색하셍ㄵ</td></tr>
+						
 						</tbody>
 					</table>
 				</div>
@@ -384,8 +381,7 @@ table, th, td {
 					<div class="d-flex gap-2">
 						<button id="sendReserveSMSSelectBtn" class="btn btn-primary"
 							data-bs-dismiss="modal">선택 메시지 보내기</button>
-						<button id="sendReserveSMSSelectBtn" class="btn btn-primary"
-							data-bs-dismiss="modal">선택 예약 삭제</button>
+						<button id="deleteReserveSelectBtn" class="btn btn-danger" data-bs-dismiss="modal">선택 예약 삭제</button>
 					</div>
 				</div>
 			</div>
@@ -1682,71 +1678,205 @@ function openReserveListForCurrentView() {
     
 })();
 
-    confirmDeleteBtn.addEventListener("click", async () => {
-        const deleteModalEl = document.getElementById("deleteConfirmModal");
-        const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
-        
-      
-        const reservationDetailModalEl = document.getElementById("reservationDetailModal");
-        const reserveNoToDelete = reservationDetailModalEl.dataset.reserveNo;
+//========================================
+//이 코드를 HTML 파일에서 아래 위치에 넣으세요:
+//1. 기존 confirmDeleteBtn 이벤트 리스너를 찾아서 **삭제**
+//2. 그 자리에 이 전체 코드를 **붙여넣기**
+//========================================
 
-        if (!reserveNoToDelete) {
-            alert("삭제할 예약 번호를 찾을 수 없습니다.");
-            if(deleteModal) deleteModal.hide();
-            return;
-        }
+//---------- 선택 예약 삭제 기능 ----------
+(function() {
+ // ===== 1. 선택 삭제 버튼 클릭 =====
+ const deleteSelectBtn = document.getElementById("deleteReserveSelectBtn");
+ if (deleteSelectBtn) {
+     deleteSelectBtn.addEventListener("click", function(e) {
+         e.preventDefault();
+         
+         // 체크된 예약 찾기
+         const checkedRows = document.querySelectorAll('#reserveTable tbody .row-check:checked');
+         
+         if (checkedRows.length === 0) {
+             alert('삭제할 예약을 선택해주세요.');
+             return;
+         }
+         
+         // 선택된 예약 번호들 수집
+         const reserveNos = [];
+         checkedRows.forEach(checkbox => {
+             const row = checkbox.closest('tr');
+             const reserveNo = row.dataset.reserveNo;
+             if (reserveNo) {
+                 reserveNos.push(reserveNo);
+             }
+         });
+         
+         if (reserveNos.length === 0) {
+             alert('유효한 예약을 찾을 수 없습니다.');
+             return;
+         }
+         
+         // 삭제 확인 모달에 데이터 저장
+         const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+         deleteConfirmModal.dataset.deleteType = 'multiple';
+         deleteConfirmModal.dataset.reserveNos = JSON.stringify(reserveNos);
+         
+         // 확인 메시지 변경
+         const modalBody = deleteConfirmModal.querySelector('.modal-body p');
+         if (modalBody) {
+             modalBody.textContent = `선택한 ${reserveNos.length}개의 예약을 삭제하시겠습니까?`;
+         }
+         
+         // 삭제 확인 모달 열기
+         const modal = new bootstrap.Modal(deleteConfirmModal);
+         modal.show();
+     });
+ }
+ 
+ // ===== 2. 삭제 확인 버튼 클릭 (단일 삭제 + 선택 삭제 통합) =====
+ const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+ if (confirmDeleteBtn) {
+     confirmDeleteBtn.addEventListener("click", async function() {
+         const deleteModalEl = document.getElementById("deleteConfirmModal");
+         const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
+         
+         const deleteType = deleteModalEl.dataset.deleteType;
+         
+         try {
+             if (deleteType === 'multiple') {
+                 // ===== 선택 삭제 처리 =====
+                 const reserveNos = JSON.parse(deleteModalEl.dataset.reserveNos || '[]');
+                 
+                 if (reserveNos.length === 0) {
+                     alert('삭제할 예약이 없습니다.');
+                     if (deleteModal) deleteModal.hide();
+                     return;
+                 }
+                 
+                 // 각 예약을 순차적으로 삭제 (기존 API 재사용)
+                 let successCount = 0;
+                 let failCount = 0;
+                 
+                 for (const reserveNo of reserveNos) {
+                     try {
+                         const response = await fetch('controller?cmd=deleteReserve', {
+                             method: 'POST',
+                             headers: {
+                                 'Content-Type': 'application/json',
+                             },
+                             body: JSON.stringify({ reserveNo: reserveNo })
+                         });
+                         
+                         if (response.ok) {
+                             const result = await response.json();
+                             if (result.success) {
+                                 successCount++;
+                             } else {
+                                 failCount++;
+                             }
+                         } else {
+                             failCount++;
+                         }
+                     } catch (err) {
+                         console.error(`예약 ${reserveNo} 삭제 실패:`, err);
+                         failCount++;
+                     }
+                 }
+                 
+                 // 결과 처리
+                 if (successCount > 0) {
+                     if (failCount > 0) {
+                         alert(`${successCount}개의 예약이 삭제되었습니다. (${failCount}개 실패)`);
+                     } else {
+                         alert(`${successCount}개의 예약이 성공적으로 삭제되었습니다.`);
+                     }
+                     
+                     if (deleteModal) deleteModal.hide();
+                     
+                     // 예약 목록 새로고침
+                     loadReserveList();
+                     
+                     // 달력 새로고침
+                     fetchAndRenderCalendarData();
+                     
+                     // 전체 선택 체크박스 해제
+                     const selectAllCheckbox = document.querySelector('#reserveTable thead .selectAll');
+                     if (selectAllCheckbox) {
+                         selectAllCheckbox.checked = false;
+                     }
+                 } else {
+                     alert('선택한 예약을 삭제하지 못했습니다.');
+                     if (deleteModal) deleteModal.hide();
+                     return;
+                 }
+                 
+             } else {
+                 // ===== 단일 삭제 처리 (기존 코드) =====
+                 const reservationDetailModalEl = document.getElementById("reservationDetailModal");
+                 const reserveNoToDelete = reservationDetailModalEl.dataset.reserveNo;
+                 
+                 if (!reserveNoToDelete) {
+                     alert("삭제할 예약 번호를 찾을 수 없습니다.");
+                     if (deleteModal) deleteModal.hide();
+                     return;
+                 }
+                 
+                 const response = await fetch('controller?cmd=deleteReserve', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify({ reserveNo: reserveNoToDelete })
+                 });
+                 
+                 if (!response.ok) {
+                     throw new Error(`HTTP error! status: ${response.status}`);
+                 }
+                 
+                 const result = await response.json();
+                 
+                 if (result.success) {
+                     alert('예약이 성공적으로 삭제되었습니다.');
+                     
+                     if (deleteModal) deleteModal.hide();
+                     
+                     if (reservationDetailModalEl) {
+                         const detailModal = bootstrap.Modal.getInstance(reservationDetailModalEl);
+                         if (detailModal) detailModal.hide();
+                     }
+                     
+                     modalStack.length = 0;
+                     
+                     const managerModalEl = document.getElementById("managerReservationModal");
+                     if (managerModalEl) {
+                         const managerModal = bootstrap.Modal.getOrCreateInstance(managerModalEl);
+                         managerModal.show();
+                         loadReserveList();
+                     }
+                     
+                     fetchAndRenderCalendarData();
+                     
+                 } else {
+                     alert(result.message || '예약 삭제에 실패했습니다.');
+                     if (deleteModal) deleteModal.hide();
+                 }
+             }
+             
+         } catch (error) {
+             console.error('예약 삭제 중 오류 발생:', error);
+             alert('예약 삭제 처리 중 오류가 발생했습니다.');
+             if (deleteModal) deleteModal.hide();
+         } finally {
+             // 삭제 타입 초기화
+             deleteModalEl.dataset.deleteType = '';
+             deleteModalEl.dataset.reserveNos = '';
+         }
+     });
+ }
+})();
 
-        try {
-            
-            const response = await fetch('controller?cmd=deleteReserve', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ reserveNo: reserveNoToDelete })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json(); 
-
-            if (result.success) {
-                alert('예약이 성공적으로 삭제되었습니다.');
-
-           
-                if(deleteModal) deleteModal.hide();
-
-                
-                if (reservationDetailModalEl) {
-                    const detailModal = bootstrap.Modal.getInstance(reservationDetailModalEl);
-                    if (detailModal) detailModal.hide();
-                }
-                
-                modalStack.length = 0;
-
-              
-                const managerModalEl = document.getElementById("managerReservationModal");
-                if (managerModalEl) {
-                    const managerModal = bootstrap.Modal.getOrCreateInstance(managerModalEl);
-                    managerModal.show();
-                    loadReserveList(); 
-                }
-                
-
-            } else {
-               
-                alert(result.message || '예약 삭제에 실패했습니다.');
-                if(deleteModal) deleteModal.hide(); 
-            }
-
-        } catch (error) {
-            console.error('예약 삭제 중 오류 발생:', error);
-            alert('예약 삭제 처리 중 오류가 발생했습니다.');
-            if(deleteModal) deleteModal.hide(); 
-        }
-    });
+//========================================
+//✅ 백엔드는 수정 불필요! 기존 deleteReserve 재사용
+//========================================
     
  // ---------- 예약 등록 처리 ----------
     $('#addReserveSaveBtn').on('click', function(event) {
@@ -1818,6 +1948,11 @@ function openReserveListForCurrentView() {
             }
         });
     });
+ 
+ 
+ 
+ 
+
 
 
 //---------- 문자 보내기 이동 ----------

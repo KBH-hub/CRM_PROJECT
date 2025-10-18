@@ -260,21 +260,55 @@
 	<script>
 	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
 	  function loadSidebar(activeKey) {
-		  $.ajax({
-		    url: "./doctorSidebar.html",
-		    dataType: "html",
-		    success: function (html) {
-		      $("#sidebar-slot").html(html);
-		      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
-		      $links.removeClass("active bg-primary text-white").addClass("text-dark");
-		      var $current = $links.filter("[data-route='" + activeKey + "']");
-		      $current.addClass("active bg-primary text-white").removeClass("text-dark");
-		      loadSidebarInfo();
-		      loadSidebarReserve();
-		      loadSidebarMyReserve();
-		    }
-		  });
-		}
+  $.ajax({
+    url: "./doctorSidebar.html",
+    dataType: "html",
+    success: async function (html) {
+      $("#sidebar-slot").html(html);
+
+      // ✅ 사이드바 메뉴 활성화 표시
+      var $links = $("#sidebar-slot").find("#sidebar-nav .nav-link");
+      $links.removeClass("active bg-primary text-white").addClass("text-dark");
+      var $current = $links.filter("[data-route='" + activeKey + "']");
+      $current.addClass("active bg-primary text-white").removeClass("text-dark");
+
+      // ✅ 사이드바 기본 정보 (이름, 직책, IP 등)
+      loadSidebarInfo();
+
+      // ✅ 예약 데이터 불러오기
+      try {
+        // 1️⃣ 전체 예약 건수
+        const respAll = await fetch('controller?cmd=countDailyAllReserve&t=' + Date.now(), {
+          cache: 'no-store',
+          credentials: 'include'
+        });
+        if (!respAll.ok) throw new Error('전체 예약 불러오기 실패');
+        const dataAll = await respAll.json();
+        const allCount = dataAll.result?.[0]?.RESERVE_COUNT ?? 0;
+        const allEl = document.getElementById('allReserve');
+        if (allEl) allEl.textContent = allCount;
+
+        // 2️⃣ 내 예약 건수
+        const respMy = await fetch('controller?cmd=countDailyMyReserve&t=' + Date.now(), {
+          cache: 'no-store',
+          credentials: 'include'
+        });
+        if (!respMy.ok) throw new Error('내 예약 불러오기 실패');
+        const dataMy = await respMy.json();
+        const myCount = dataMy.result?.[0]?.RESERVE_COUNT ?? 0;
+        const myEl = document.getElementById('myReserve');
+        if (myEl) myEl.textContent = myCount;
+
+      } catch (err) {
+        console.error('사이드바 예약 건수 불러오기 실패:', err);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error('사이드바 로드 실패:', status, error);
+    }
+  });
+}
+
 		loadSidebar("reserve");
 
 		

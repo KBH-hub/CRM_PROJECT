@@ -782,6 +782,16 @@
 
 		// ---------- 예약 목록 모달----------
 
+
+		function modalBack(btn) {
+		    const modalEl = btn.closest('.modal');
+		    if (!modalEl) return;
+		    toggleModal(modalEl.id, false);
+		    const prev = modalStack.pop();
+		    if (prev) toggleModal(prev, true);
+		}
+		
+		// ---------- 예약 목록 모달----------
 		let managerModalInited = false;
 		let suppressAutoInit = false;
 

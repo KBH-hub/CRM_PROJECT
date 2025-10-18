@@ -644,8 +644,23 @@
 		// ✅ 페이지 로드 시 초기 캘린더 데이터를 가져옵니다.
 		fetchAndRenderCalendarData();
 		
-		// ---------- 예약 목록 모달----------
+		//모달 스택
+		const modalStack = [];
+		function toggleModal(id, show = true) {
+		    const el = document.getElementById(id);
+		    const inst = bootstrap.Modal.getOrCreateInstance(el, { backdrop: 'static', keyboard: false });
+		    show ? inst.show() : inst.hide();
+		}
 
+		function modalBack(btn) {
+		    const modalEl = btn.closest('.modal');
+		    if (!modalEl) return;
+		    toggleModal(modalEl.id, false);
+		    const prev = modalStack.pop();
+		    if (prev) toggleModal(prev, true);
+		}
+		
+		// ---------- 예약 목록 모달----------
 		let managerModalInited = false;
 		let suppressAutoInit = false;
 

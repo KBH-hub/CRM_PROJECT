@@ -1099,18 +1099,23 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
 //새로운 예약 등록 모달 (reservationModal) 관련 JavaScript
 (function() {
-    const reserveDateInput = document.getElementById('visitDate');
+    // ✅ 수정: '예약 등록' 모달의 ID ('reserveDate') 사용
+    const reserveDateInput = document.getElementById('reserveDate'); 
     
-    const reserveHourInput = document.getElementById('visitHour');
-    const reserveMinuteInput = document.getElementById('visitMinute');
+    // ✅ 수정: '예약 등록' 모달의 ID ('reserveHour') 사용
+    const reserveHourInput = document.getElementById('reserveHour'); 
+    // ✅ 수정: '예약 등록' 모달의 ID ('reserveMinute') 사용
+    const reserveMinuteInput = document.getElementById('reserveMinute');
     
-    const doctorDeptSelect = document.getElementById('doctorDept');
+    // ✅ 수정: '예약 등록' 모달의 ID ('doctorSelect') 사용
+    const doctorDeptSelect = document.getElementById('doctorSelect'); // ID 변경!
     
     function fillTimeOptions() {
-        // 기존 옵션 (placeholder) 유지, 나머지 삭제
+        // 이제 올바른 요소(#reserveHour)에 옵션을 채움
+        if (!reserveHourInput) return; // 요소가 없을 경우 대비
         reserveHourInput.innerHTML = '<option value="" selected disabled>시</option>';
-        for (let h = 8; h <= 17; h++) { // 08시부터 17시까지
-            const hourValue = String(h).padStart(2, '0'); // "08", "09", ... "17"
+        for (let h = 8; h <= 17; h++) { // 시간 범위 확인 (8~17시가 맞는지?)
+            const hourValue = String(h).padStart(2, '0');
             const option = document.createElement('option');
             option.value = hourValue;
             option.textContent = hourValue;
@@ -1120,12 +1125,11 @@ document.querySelectorAll('.modal').forEach(modalEl => {
     
     fillTimeOptions();
 
-    async function updatePossibleDoctors() {
-        const workDate = reserveDateInput.value;
-        // --- 변경 시작 ---
-        const selectedHour = reserveHourInput.value;    
-        const selectedMinute = reserveMinuteInput.value; 
-
+    async function updatePossibleDoctors() { 
+        // ✅ 내부 로직은 이전과 동일하게 작동 (참조하는 변수가 올바른 요소를 가리키므로)
+        const workDate = reserveDateInput.value; 
+        const selectedHour = reserveHourInput.value;
+        const selectedMinute = reserveMinuteInput.value;
      
 
         // 날짜, 시, 분 중 하나라도 선택되지 않았으면 드롭다운 비활성화

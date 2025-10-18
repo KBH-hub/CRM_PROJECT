@@ -14,6 +14,8 @@
 		<result property="reserveCount" column="reserveCount" />
 		<result property="patientNo" column="patient_no" />
 		<result property="doctorScheduleNo" column="doctor_schedule_no" />
+		<result property="employeeId" column="employee_id"/>
+		<result property="doctorCode" column="doctor_code"/> <result property="doctorScheduleNo" column="doctor_schedule_no"/>
 	</resultMap>
 	
 	
@@ -130,7 +132,7 @@
 		r.datetime
 	</select>
 
-	<select id="getReserveDetail" resultMap="ReserveMap">
+<!-- 	<select id="getReserveDetail" resultMap="ReserveMap">
 		SELECT
 		r.reserve_no,
 		p.patient_name,
@@ -150,7 +152,29 @@
 		WHERE r.reserve_no =
 		#{reserveNo}
 	</select>
+-->
+	<select id="getReserveDetail" resultMap="ReserveMap">
+        SELECT
+            r.reserve_no,
+            p.patient_name,
+            TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+            TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
+            p.phone,
+            d.department,
+            e.employee_name,
+            r.reason,
+            d.doctor_code,      
+            r.doctor_schedule_no   
+        FROM reserve r
+        JOIN patient p ON r.patient_no = p.patient_no
+        JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+        JOIN doctor d ON ds.doctor_code = d.doctor_code
+        JOIN employee e ON d.employee_id = e.employee_id 
+        WHERE r.reserve_no = #{reserveNo}
+    </select>
 
+
+	
  	<select id="getPatientName" resultMap="ReserveMap">
 		SELECT
 		p.patient_no,

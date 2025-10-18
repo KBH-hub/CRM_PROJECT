@@ -271,18 +271,20 @@ $(document).ready(function() {
   });
   
   $("#sendSMSBtn").click(function() {
-  var checked = $(".row-check:checked");
-    if (checked.length === 0) {
-      showAlert("메시지 발송할 환자를 선택하세요.");
-      return;
-    }
-    var ids = [];
-    checked.each(function() {
-      ids.push($(this).closest("tr").children().eq(1).text().trim());
-    });
-    const query = ids.map(id => "patientNo=" + encodeURIComponent(id)).join("&");
-    window.location.href = "SMSService.html?tab=common&"+query;
-  });
+	  const checked = $(".row-check:checked");
+	  if (checked.length === 0) {
+	    showAlert("메시지 발송할 환자를 선택하세요.");
+	    return;
+	  }
+
+	  const ids = [];
+	  checked.each(function() {
+	    ids.push($(this).closest("tr").children().eq(1).text().trim());
+	  });
+
+	  sessionStorage.setItem("selectedPatientNos", JSON.stringify(ids));
+	  window.location.href = "controller?cmd=SMSUI&tab=common";
+	});
 
   $(document).on("click", ".detail-btn", function() {
     var patientNo = $(this).closest("tr").children().eq(1).text().trim();

@@ -106,6 +106,7 @@
     white-space: nowrap; /* 텍스트 줄바꿈 방지 */
     overflow: hidden; /* 넘치는 텍스트 숨김 */
     text-overflow: ellipsis; /* 넘치는 텍스트 ... 처리 */
+    flex-grow: 1;
     max-width: 100%; /* 부모 너비를 넘지 않도록 */
     height: fit-content%; /* 내용에 맞춰 높이 조절 */
     /* 스크린샷의 색상들을 반영하여 여러 스타일 클래스 추가 가능 */
@@ -282,6 +283,7 @@
 <script src="sidebarReserve.js"></script>
 <script src="sidebarMyReserve.js"></script>
 
+
 	</main>
 		</div>
 	</div>
@@ -445,6 +447,18 @@
 
 			  const hours = [...Array(13)].map((_, i) => i + 7); // 07~19시
 
+			  // ✅ Map 생성: 모든 예약 데이터 한 번만 모음
+			  const hourlyCountsMap = new Map();
+			  if (Array.isArray(fetchedDailyReservationCounts)) {
+			    fetchedDailyReservationCounts.forEach(item => {
+			      const dayKey = item.reserveDay;
+			      const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
+			      const count = item.reserveCount || 1; // 혹시 count 없을 때 대비
+			      const mapKey = `${dayKey}_${hour}`;
+			      hourlyCountsMap.set(mapKey, (hourlyCountsMap.get(mapKey) || 0) + count);
+			    });
+			  }
+
 			  let html = '<table class="table table-bordered text-center align-middle week-view"><thead><tr><th>시간</th>';
 			  weekDays.forEach(d => {
 			    const headerDate = (d.getMonth() + 1) + '/' + d.getDate();
@@ -453,23 +467,16 @@
 			  });
 			  html += '</tr></thead><tbody>';
 
-			  // ✅ 시간별로 렌더링
+			  // ✅ 시간별 예약 출력
 			  hours.forEach(h => {
 			    const hourKey = String(h).padStart(2, '0');
 			    html += `<tr><td>${hourKey}:00</td>`;
 
-			    const hourlyCountsMap = new Map();
-			    if (Array.isArray(fetchedDailyReservationCounts)) {
-			        fetchedDailyReservationCounts.forEach(item => {
-			            const dayKey = item.reserveDay;
-			            const hour = item.reserveTime ? item.reserveTime.substring(0, 2) : '00';
-			            const count = item.reserveCount;
-			            const mapKey = `${dayKey}_${hour}`;
-			            hourlyCountsMap.set(mapKey, (hourlyCountsMap.get(mapKey) || 0) + count);
-			        });
-			    }
 			    weekDays.forEach(d => {
 			      const dayKey = fmt(d);
+			      const fullKey = `${dayKey}_${hourKey}`;
+
+			      // 해당 시간, 요일의 예약 리스트
 			      const reservationsInHour = fetchedDailyReservationCounts.filter(
 			        item => item.reserveDay === dayKey && item.reserveTime.startsWith(hourKey)
 			      );
@@ -482,7 +489,6 @@
 			          const displayTime = res.reserveTime.substring(0, 5);
 			          html += `
 			            <div class="reservation-block badge ${bgColorClass} m-1"
-			                 data-time="${displayTime}"
 			                 title="${res.department} ${res.employeeName}">
 			                 ${res.patientName} 님 ${displayTime}
 			            </div>`;
@@ -494,9 +500,23 @@
 			    html += '</tr>';
 			  });
 
+			  // ✅ 마지막에 총 예약 건수 행 추가
+			  html += '<tr><td class="fw-bold bg-light">총 예약</td>';
+			  weekDays.forEach(d => {
+			    const dayKey = fmt(d);
+			    let totalDayCount = 0;
+			    hours.forEach(h => {
+			      const fullKey = `${dayKey}_${String(h).padStart(2, '0')}`;
+			      totalDayCount += (hourlyCountsMap.get(fullKey) || 0);
+			    });
+			    html += `<td class="bg-light fw-bold">총 예약 ${totalDayCount}건</td>`;
+			  });
+			  html += '</tr>';
+
 			  html += '</tbody></table>';
 			  container.innerHTML = html;
 			}
+
 
 
 		function renderDay(){

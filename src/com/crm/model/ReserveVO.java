@@ -12,12 +12,25 @@ public class ReserveVO {
 	private int reserveCount;
 	private int patientNo;
 	private int doctorScheduleNo;
-
+	private String doctorCode;
+	
 	public ReserveVO() {}
 
 	public ReserveVO(String reserveDay, String reserveTime) {
 		setReserveDay(reserveDay);
 		setReserveTime(reserveTime);
+	}
+	
+	
+
+
+
+	public String getDoctorCode() {
+		return doctorCode;
+	}
+
+	public void setDoctorCode(String doctorCode) {
+		this.doctorCode = doctorCode;
 	}
 
 	public int getReserveNo() {
@@ -112,8 +125,11 @@ public class ReserveVO {
 	public String toString() {
 		return "ReserveVO [reserveNo=" + reserveNo + ", patientName=" + patientName + ", reserveDay=" + reserveDay
 				+ ", reserveTime=" + reserveTime + ", department=" + department + ", employeeName=" + employeeName
-				+ ", reserveCount=" + reserveCount + ", phone=" + phone + ", reason=" + reason + ", patientNo="
-				+ patientNo + ", doctorScheduleNo=" + doctorScheduleNo + "]\n";
+				+ ", phone=" + phone + ", reason=" + reason + ", reserveCount=" + reserveCount + ", patientNo="
+				+ patientNo + ", doctorScheduleNo=" + doctorScheduleNo + ", doctorCode=" + doctorCode + "]";
 	}
+
+	
+	
 
 }

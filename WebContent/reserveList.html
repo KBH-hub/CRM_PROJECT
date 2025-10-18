@@ -234,9 +234,6 @@ table, th, td {
 							<label class="form-label">담당의사 / 진료과</label> <select
 								class="form-select" id="doctorSelect">
 								<option value="" selected>-</option>
-								<option>신경외과 / 나신경 / DN002</option>
-								<option>정형외과 / 원장 / DO003</option>
-								<option>정형외과 / 김의사 / DO001</option>
 							</select>
 						</div>
 
@@ -285,18 +282,6 @@ table, th, td {
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>6102</td>
-								<td>이승희</td>
-								<td>010-1111-2222</td>
-								<td>2025-09-03</td>
-							</tr>
-							<tr>
-								<td>5800</td>
-								<td>이승희</td>
-								<td>010-2656-5566</td>
-								<td>2023-07-05</td>
-							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -450,17 +435,14 @@ table, th, td {
 							<div class="mb-3 col-md-4">
 								<label class="form-label">담당의사 / 진료과</label> <select
 									id="doctorDept" class="form-select" disabled>
-									<option>신경외과 / 나신경 / DN002</option>
-									<option>정형외과 / 원장 / DO003</option>
-									<option>정형외과 / 김의사 / DO001</option>
 								</select>
 							</div>
 
 							<div class="mb-3">
 								<label class="form-label">내원 사유</label> <input type="text"
-									id="visitReasonInput" class="form-control" value="수술 이후 손발 저림"
+									id="visitReasonInput" class="form-control"
 									readonly>
-								<textarea id="visitReasonTextarea" class="form-control d-none">수술 이후 손발 저림</textarea>
+								<textarea id="visitReasonTextarea" class="form-control d-none"></textarea>
 							</div>
 						</form>
 					</div>
@@ -757,17 +739,21 @@ function fillReservationDetailModal(data) {
         if (doctorDeptSelect) {
             doctorDeptSelect.selectedIndex = 0;
 
-            const targetDept = data.department || '';
-            const targetDoctor = data.employeeName || '';
-            const targetEmployeeNo = data.employeeNo || '';
+            const dept = data.department || '';
+            const doctorName = data.employeeName || '';
+            const doctorScheduleNo = data.doctorScheduleNo || '';
+            const employeeNo = data.employeeNo || ''; 
 
-            for (let i = 0; i < doctorDeptSelect.options.length; i++) {
-                const optionText = doctorDeptSelect.options[i].text;
-                if (optionText.includes(targetDept) && optionText.includes(targetDoctor) && optionText.includes(targetEmployeeNo)) {
-                    doctorDeptSelect.selectedIndex = i;
-                    break;
-                }
-            }
+            // 옵션 한 개로 채우기
+            doctorDeptSelect.innerHTML = '';
+            const opt = document.createElement('option');
+            opt.value = [doctorScheduleNo, employeeNo, dept, doctorName].join('|');
+            opt.textContent = `${dept} / ${doctorName}`;
+            opt.selected = true;
+            doctorDeptSelect.appendChild(opt);
+
+            // 상세 모달은 읽기 전용
+            doctorDeptSelect.setAttribute('disabled', true);
         }
 
         if (visitReasonInputElement) {
@@ -1544,8 +1530,7 @@ function openReserveListForCurrentView() {
                 alert("모든 필수 정보를 입력하거나 선택해주세요.");
                 return;
             }
-            
-            try {
+
                 const response = await fetch('controller?cmd=editReserve', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1584,11 +1569,6 @@ function openReserveListForCurrentView() {
             	} else {
                 	alert(result.message || '예약 수정에 실패했습니다.');
             	}
-
-            } catch (error) {
-                console.error('예약 수정 중 오류 발생:', error);
-                alert('예약 수정 처리 중 문제가 발생했습니다. 다시 시도해 주세요.');
-            }
         });
         
      

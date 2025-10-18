@@ -414,18 +414,19 @@ table, th, td {
 											readonly>
 									</div>
 									<div class="col-md-2 col-3">
-									 <select class="form-select" id="visitHour" required disabled>
+									<select class="form-select" id="visitHour" disabled>
+
 										<option value="" selected disabled>시</option>
-									 </select>                
-									</div>
-									               
-									<div class="col-md-2 col-3">
-										<select class="form-select" id="visitMinute" required disabled>
-											<option value="" selected disabled>분</option>
-											<option value="00">00</option>
-											<option value="30">30</option>
-											</select>                
-									</div>
+									</select>
+								</div>
+								<div class="col-md-2 col-3">
+									<select class="form-select" id="visitMinute" disabled>
+
+										<option value="" selected disabled>분</option>
+										<option value="00">00</option>
+										<option value="30">30</option>
+									</select>
+								</div>
 								</div>
 							</div>
 
@@ -525,6 +526,7 @@ function fillVisitHourOptions(selectedHour = '') { // 기본값으로 빈 문자
 
     let hourOptions = '<option value="" disabled>시</option>'; // 초기 '시' 옵션은 선택되지 않도록 변경
     for (let i = 8; i <= 19; i++) {
+    	if(i==12) continue;
         const hour = String(i).padStart(2, '0');
         // 현재 시간(hour)이 selectedHour와 일치하면 selected 속성 추가
         const isSelected = (hour === selectedHour) ? 'selected' : '';
@@ -1179,6 +1181,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         if (!reserveHourInput) return; 
         reserveHourInput.innerHTML = '<option value="" selected disabled>시</option>';
         for (let h = 8; h <= 17; h++) { 
+        	if(h==12) continue;
             const hourValue = String(h).padStart(2, '0');
             const option = document.createElement('option');
             option.value = hourValue;

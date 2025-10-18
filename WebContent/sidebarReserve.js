@@ -1,19 +1,18 @@
 async function loadSidebarReserve() {
-  try {
-    const resp = await fetch('controller?cmd=countDailyAllReserve&t=' + Date.now(), {
-      cache: 'no-store',
-      credentials: 'include'
-    });
+		try {
+		    const resp = await fetch('controller?cmd=countDailyAllReserve&t=' + Date.now(), {
+		      cache: 'no-store',
+		      credentials: 'include'
+		    });
 
-    if (!resp.ok) throw new Error('서버 응답 오류');
+		    if (!resp.ok) throw new Error('서버 응답 오류');
 
-    const data = await resp.json();
+		    const data = await resp.json();
+		    console.log('전체 예약 응답:', data);
 
-    // 서버 응답 구조: { result: [ { RESERVE_COUNT: 12 } ] }
-    const count = (data.result && data.result[0] && data.result[0].RESERVE_COUNT) || 0;
-
-    document.getElementById('allReserve').textContent = count;
-  } catch (err) {
-    console.error('사이드바 정보 불러오기 실패:', err);
-  }
+		    const count = (data[0] && data[0].reserveCount) || 0;
+		    document.getElementById('allReserve').textContent = count;
+		  } catch (err) {
+		    console.error('전체 예약 불러오기 실패:', err);
+		  }
 }

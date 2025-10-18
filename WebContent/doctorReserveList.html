@@ -274,6 +274,67 @@
 			</div>
 		</div>
 		</div>
+		<div class="modal fade" id="reservationDetailModal" tabindex="-1"
+			aria-hidden="true">
+			<div
+				class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content custom-modal-size">
+					<div class="modal-header">
+						<h5 class="modal-title fw-bold">예약 상세</h5>
+						<button class="btn btn-primary modal-back-btn">닫기</button>
+					</div>
+
+					<div class="modal-body">
+						<form id="reservationForm">
+							<div class="mb-3 col-md-4">
+								<label class="form-label">이름</label> <input type="text"
+									id="detailName" class="form-control" readonly>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label">일시</label>
+								<div class="row g-2 align-items-center">
+									<div class="col-md-4 col-12">
+										<input type="date" id="visitDate" class="form-control"
+											readonly>
+									</div>
+									<div class="col-md-2 col-3">
+									 <select class="form-select" id="visitHour" required disabled>
+										<option value="" selected disabled>시</option>
+									 </select>                
+									</div>
+									               
+									<div class="col-md-2 col-3">
+										<select class="form-select" id="visitMinute" required disabled>
+											<option value="" selected disabled>분</option>
+											<option value="00">00</option>
+											<option value="30">30</option>
+											</select>                
+									</div>
+								</div>
+							</div>
+
+							<div class="mb-3 col-md-4">
+								<label class="form-label">환자연락처</label> <input type="text"
+									id="detailPhone" class="form-control" value="" readonly>
+							</div>
+
+							<div class="mb-3 col-md-4">
+								<label class="form-label">담당의사 / 진료과</label> <select
+									id="doctorDept" class="form-select" disabled>
+									
+								</select>
+							</div>
+
+							
+						</form>
+					</div>
+
+					
+				</div>
+			</div>
+		</div>
+		
 
 
 <!-- ✅ Bootstrap JS -->
@@ -644,6 +705,94 @@
 		// ✅ 페이지 로드 시 초기 캘린더 데이터를 가져옵니다.
 		fetchAndRenderCalendarData();
 		
+		(function() {
+		    // ... 기존 DOM 요소 가져오는 부분 ...
+		    const reservationDetailModal = document.getElementById("reservationDetailModal");
+		    const visitDate = document.getElementById("visitDate");
+		    // const time = document.getElementById("visitTime"); // 이 줄은 이제 필요 없으므로 삭제하거나 주석 처리합니다.
+		    const visitHourSelect = document.getElementById("visitHour"); // 새로 추가
+		    const visitMinuteSelect = document.getElementById("visitMinute"); // 새로 추가
+		    const doctor = document.getElementById("doctorDept");
+		    const reasonInput = document.getElementById("visitReasonInput");
+		    const reasonArea = document.getElementById("visitReasonTextarea");
+		    window.fillReservationDetailModal = fillReservationDetailModal;
+		    
+		})();
+		
+		function fillReservationDetailModal(data) {
+		    
+
+		    if (data && !data.error) {
+		        const detailNameElement = document.getElementById('detailName');
+		        const visitDateElement = document.getElementById('visitDate');
+		        const visitHourSelect = document.getElementById('visitHour');
+		        const visitMinuteSelect = document.getElementById('visitMinute');
+		        const detailPhoneElement = document.getElementById('detailPhone');
+		        const doctorDeptSelect = document.getElementById('doctorDept'); // select 요소
+		        const visitReasonInputElement = document.getElementById('visitReasonInput');
+		        const visitReasonTextareaElement = document.getElementById('visitReasonTextarea');
+
+		        if (detailNameElement) {
+		            detailNameElement.value = data.patientName || '';
+		        }
+
+		        if (visitDateElement) {
+		            visitDateElement.value = data.reserveDay || '';
+		        }
+
+		        const reserveTime = data.reserveTime || '00:00';
+		        const [hour, minute] = reserveTime.split(':');
+
+		        
+		        if (detailPhoneElement) {
+		            detailPhoneElement.value = data.phone || '';
+		        }
+
+		        if (doctorDeptSelect) {
+		            doctorDeptSelect.selectedIndex = 0;
+
+		            const targetDept = data.department || '';
+		            const targetDoctor = data.employeeName || '';
+		            const targetEmployeeNo = data.employeeNo || '';
+
+		            for (let i = 0; i < doctorDeptSelect.options.length; i++) {
+		                const optionText = doctorDeptSelect.options[i].text;
+		                if (optionText.includes(targetDept) && optionText.includes(targetDoctor) && optionText.includes(targetEmployeeNo)) {
+		                    doctorDeptSelect.selectedIndex = i;
+		                    break;
+		                }
+		            }
+		        }
+
+		        if (visitReasonInputElement) {
+		            visitReasonInputElement.value = data.reason || '';
+		        }
+		        if (visitReasonTextareaElement) {
+		            visitReasonTextareaElement.value = data.reason || '';
+		        }
+
+		        const reservationDetailModalElement = document.getElementById('reservationDetailModal');
+		        if (reservationDetailModalElement) {
+		            reservationDetailModalElement.dataset.reserveNo = data.reserveNo;
+		        }
+
+		        const modalTitleElement = document.querySelector("#reservationDetailModal .modal-title");
+		        if (modalTitleElement) {
+		            modalTitleElement.innerText = "예약 상세";
+		        }
+
+		        if (visitDateElement) visitDateElement.setAttribute("readonly", true);
+		        if (visitHourSelect) visitHourSelect.setAttribute("disabled", true); 
+		        if (visitMinuteSelect) visitMinuteSelect.setAttribute("disabled", true); 
+		        if (doctorDeptSelect) doctorDeptSelect.setAttribute("disabled", true);
+		        if (visitReasonTextareaElement) visitReasonTextareaElement.classList.add("d-none");
+		        if (visitReasonInputElement) visitReasonInputElement.classList.remove("d-none");
+
+		        toggleModal("reservationDetailModal", true);
+		    } else {
+		        alert(data.error || "예약 상세 정보를 불러오지 못했습니다.");
+		    }
+		}
 		// ---------- 예약 목록 모달----------
 
 		let managerModalInited = false;
@@ -687,8 +836,11 @@
 		            // 현재 열려있는 '전체 예약 목록' 모달 숨기기 전에 스택에 저장
 		            const myReserveListModal = document.getElementById("myReserveListModal");
 		            if (myReserveListModal && bootstrap.Modal.getInstance(myReserveListModal) && bootstrap.Modal.getInstance(myReserveListModal)._isShown) {
-		                modalStack.push(myReserveListModal.id);
-		                toggleModal(myReserveListModal.id, false);
+		            	const modalInstance = bootstrap.Modal.getInstance(myReserveListModal);
+		            	if (modalInstance && modalInstance._isShown) {
+		            	    document.activeElement.blur(); // ✅ 포커스 제거 (경고 방지)
+		            	    modalInstance.hide(); // 모달 닫기
+		            	}
 		            }
 
 		            fillReservationDetailModal(data); // 상세 모달에 데이터 채우고 열기
@@ -752,6 +904,47 @@
 		  $day.val('');
 		}
 
+		// ---------- 모달 스택 ----------
+		const modalStack = [];
+
+		function toggleModal(id, show = true) {
+		    const el = document.getElementById(id);
+		    const inst = bootstrap.Modal.getOrCreateInstance(el, { backdrop: 'static', keyboard: false });
+		    show ? inst.show() : inst.hide();
+		}
+
+		function modalBack(btn) {
+		    const modalEl = btn.closest('.modal');
+		    if (!modalEl) return;
+		    toggleModal(modalEl.id, false);
+		    const prev = modalStack.pop();
+		    if (prev) toggleModal(prev, true);
+		}
+
+		document.querySelectorAll('.modal-back-btn').forEach(btn => {
+		    btn.addEventListener('click', e => {
+		        e.preventDefault();
+		        modalBack(btn);
+		    });
+		});
+
+		// 모달에서 모달 띄울 때 스택 기록
+		document.querySelectorAll('[data-bs-toggle="modal"]').forEach(btn => {
+		    btn.addEventListener('click', () => {
+		        const currentModal = btn.closest('.modal');
+		        if (currentModal) {
+		            modalStack.push(currentModal.id);
+		            const inst = bootstrap.Modal.getInstance(currentModal);
+		            if (inst) inst.hide();
+		        }
+		    });
+		});
+
+		document.querySelectorAll('.modal').forEach(modalEl => {
+		    modalEl.addEventListener('hidden.bs.modal', () => {
+		        document.body.classList.remove('modal-open');
+		    });
+		});
 		// ===== 이벤트 바인딩 =====
 
 		// 모달 열릴 때: 오늘 월 세팅 + 주 목록 생성(자동선택 안 함) + 기본 조회(주 조건 없이 오늘/시간만으로 조회 필요시 조정)

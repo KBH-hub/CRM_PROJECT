@@ -1612,32 +1612,74 @@ function openReserveListForCurrentView() {
     });
 
 
-    // 이 함수는 외부에서 호출되어야 합니다 (예: 예약 목록에서 특정 예약 클릭 시)
+    
     window.fillReservationDetailModal = fillReservationDetailModal;
     
 })();
 
- // 예약 상세 관련 JavaScript 끝
-    confirmDeleteBtn.addEventListener("click", () => {
-        const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
-        deleteModal.hide();
-
-        // 현재 열려있는 예약 상세 모달 닫기
-        const reservationDetailModalEl = document.getElementById("reservationDetailModal");
-        if (reservationDetailModalEl) {
-            const detailModal = bootstrap.Modal.getInstance(reservationDetailModalEl);
-            if (detailModal) detailModal.hide();
-        }
+    confirmDeleteBtn.addEventListener("click", async () => {
+        const deleteModalEl = document.getElementById("deleteConfirmModal");
+        const deleteModal = bootstrap.Modal.getInstance(deleteModalEl);
         
-        // ⭐ 이전에 열린 모달 스택 초기화 (혹시 모를 오류 방지) ⭐
-        modalStack.length = 0; // 스택 비우기
+      
+        const reservationDetailModalEl = document.getElementById("reservationDetailModal");
+        const reserveNoToDelete = reservationDetailModalEl.dataset.reserveNo;
 
-        // 삭제 후 '전체 예약 목록' 모달 다시 열기 (또는 페이지 새로고침)
-        const managerModalEl = document.getElementById("managerReservationModal");
-        if (managerModalEl) {
-            const managerModal = bootstrap.Modal.getOrCreateInstance(managerModalEl);
-            managerModal.show();
-            loadReserveList();
+        if (!reserveNoToDelete) {
+            alert("삭제할 예약 번호를 찾을 수 없습니다.");
+            if(deleteModal) deleteModal.hide();
+            return;
+        }
+
+        try {
+            
+            const response = await fetch('controller?cmd=deleteReserve', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ reserveNo: reserveNoToDelete })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json(); 
+
+            if (result.success) {
+                alert('예약이 성공적으로 삭제되었습니다.');
+
+           
+                if(deleteModal) deleteModal.hide();
+
+                
+                if (reservationDetailModalEl) {
+                    const detailModal = bootstrap.Modal.getInstance(reservationDetailModalEl);
+                    if (detailModal) detailModal.hide();
+                }
+                
+                modalStack.length = 0;
+
+              
+                const managerModalEl = document.getElementById("managerReservationModal");
+                if (managerModalEl) {
+                    const managerModal = bootstrap.Modal.getOrCreateInstance(managerModalEl);
+                    managerModal.show();
+                    loadReserveList(); 
+                }
+                
+
+            } else {
+               
+                alert(result.message || '예약 삭제에 실패했습니다.');
+                if(deleteModal) deleteModal.hide(); 
+            }
+
+        } catch (error) {
+            console.error('예약 삭제 중 오류 발생:', error);
+            alert('예약 삭제 처리 중 오류가 발생했습니다.');
+            if(deleteModal) deleteModal.hide(); 
         }
     });
 

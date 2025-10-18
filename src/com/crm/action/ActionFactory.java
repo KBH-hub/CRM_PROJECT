@@ -31,6 +31,7 @@ import com.crm.action.patient.PatientInfoUIAction;
 import com.crm.action.patient.PatientUIAction;
 import com.crm.action.reserveList.CountReserveMonthAction;
 import com.crm.action.reserveList.CountReserveWeekByTimeAction;
+import com.crm.action.reserveList.DeleteReserveAction;
 import com.crm.action.reserveList.EditReserveAction;
 import com.crm.action.reserveList.ReserveCalUIAction;
 import com.crm.action.reserveList.ReserveListUIAction;
@@ -202,6 +203,10 @@ public class ActionFactory {
 			
 		case "editReserve":
 			a = new EditReserveAction();
+			break;
+			
+		case "deleteReserve":
+			a = new DeleteReserveAction();
 			break;
 			
 		

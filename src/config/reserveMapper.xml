@@ -181,6 +181,9 @@
 		d.employee_id = e.employee_id
 		WHERE ds.work_date = TO_DATE(#{workDate},
 		'YYYY-MM-DD')
+		AND ds.del_flag IS NULL 
+		AND d.del_flag IS NULL 
+		AND e.del_flag IS NULL
 		AND (
 		(TO_CHAR(TO_DATE(#{reserveDateTime}, 'YYYY-MM-DD
 		HH24:MI'), 'HH24') &lt; 12 AND ds.am = 'Y')

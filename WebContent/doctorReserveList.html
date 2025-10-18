@@ -307,8 +307,6 @@
 									<div class="col-md-2 col-3">
 										<select class="form-select" id="visitMinute" required disabled>
 											<option value="" selected disabled>분</option>
-											<option value="00">00</option>
-											<option value="30">30</option>
 											</select>                
 									</div>
 								</div>
@@ -322,8 +320,13 @@
 							<div class="mb-3 col-md-4">
 								<label class="form-label">담당의사 / 진료과</label> <select
 									id="doctorDept" class="form-select" disabled>
-									
 								</select>
+							</div>
+							<div class="mb-3">
+								<label class="form-label">내원 사유</label> <input type="text"
+									id="visitReasonInput" class="form-control"
+									readonly>
+								<textarea id="visitReasonTextarea" class="form-control d-none"></textarea>
 							</div>
 
 							
@@ -720,79 +723,63 @@
 		})();
 		
 		function fillReservationDetailModal(data) {
-		    
-
 		    if (data && !data.error) {
 		        const detailNameElement = document.getElementById('detailName');
 		        const visitDateElement = document.getElementById('visitDate');
 		        const visitHourSelect = document.getElementById('visitHour');
 		        const visitMinuteSelect = document.getElementById('visitMinute');
 		        const detailPhoneElement = document.getElementById('detailPhone');
-		        const doctorDeptSelect = document.getElementById('doctorDept'); // select 요소
+		        const doctorDeptSelect = document.getElementById('doctorDept');
 		        const visitReasonInputElement = document.getElementById('visitReasonInput');
 		        const visitReasonTextareaElement = document.getElementById('visitReasonTextarea');
 
-		        if (detailNameElement) {
-		            detailNameElement.value = data.patientName || '';
-		        }
+		        // 이름, 날짜
+		        detailNameElement.value = data.patientName || '';
+		        visitDateElement.value = data.reserveDay || '';
 
-		        if (visitDateElement) {
-		            visitDateElement.value = data.reserveDay || '';
-		        }
-
+		        // 시/분 설정
 		        const reserveTime = data.reserveTime || '00:00';
 		        const [hour, minute] = reserveTime.split(':');
 
-		        
-		        if (detailPhoneElement) {
-		            detailPhoneElement.value = data.phone || '';
+		        visitHourSelect.innerHTML = ''; // 초기화
+		        for (let h = 7; h <= 19; h++) {
+		            const hh = String(h).padStart(2, '0');
+		            const opt = document.createElement('option');
+		            opt.value = hh;
+		            opt.textContent = `${hh}시`;
+		            if (hh === hour) opt.selected = true;
+		            visitHourSelect.appendChild(opt);
 		        }
 
-		        if (doctorDeptSelect) {
-		            doctorDeptSelect.selectedIndex = 0;
+		        visitMinuteSelect.innerHTML = '';
+		        ['00', '30'].forEach(m => {
+		            const opt = document.createElement('option');
+		            opt.value = m;
+		            opt.textContent = `${m}분`;
+		            if (m === minute) opt.selected = true;
+		            visitMinuteSelect.appendChild(opt);
+		        });
 
-		            const targetDept = data.department || '';
-		            const targetDoctor = data.employeeName || '';
-		            const targetEmployeeNo = data.employeeNo || '';
+		        // 연락처
+		        detailPhoneElement.value = data.phone || '';
 
-		            for (let i = 0; i < doctorDeptSelect.options.length; i++) {
-		                const optionText = doctorDeptSelect.options[i].text;
-		                if (optionText.includes(targetDept) && optionText.includes(targetDoctor) && optionText.includes(targetEmployeeNo)) {
-		                    doctorDeptSelect.selectedIndex = i;
-		                    break;
-		                }
-		            }
-		        }
+		        // 담당의사/진료과
+		        doctorDeptSelect.innerHTML = ''; // 초기화
+		        const option = document.createElement('option');
+		        option.textContent = `${data.department || ''} / ${data.employeeName || ''}`;
+		        doctorDeptSelect.appendChild(option);
 
-		        if (visitReasonInputElement) {
-		            visitReasonInputElement.value = data.reason || '';
-		        }
-		        if (visitReasonTextareaElement) {
-		            visitReasonTextareaElement.value = data.reason || '';
-		        }
+		        // 사유
+		        visitReasonInputElement.value = data.reason || '';
+		        visitReasonTextareaElement.value = data.reason || '';
 
-		        const reservationDetailModalElement = document.getElementById('reservationDetailModal');
-		        if (reservationDetailModalElement) {
-		            reservationDetailModalElement.dataset.reserveNo = data.reserveNo;
-		        }
-
-		        const modalTitleElement = document.querySelector("#reservationDetailModal .modal-title");
-		        if (modalTitleElement) {
-		            modalTitleElement.innerText = "예약 상세";
-		        }
-
-		        if (visitDateElement) visitDateElement.setAttribute("readonly", true);
-		        if (visitHourSelect) visitHourSelect.setAttribute("disabled", true); 
-		        if (visitMinuteSelect) visitMinuteSelect.setAttribute("disabled", true); 
-		        if (doctorDeptSelect) doctorDeptSelect.setAttribute("disabled", true);
-		        if (visitReasonTextareaElement) visitReasonTextareaElement.classList.add("d-none");
-		        if (visitReasonInputElement) visitReasonInputElement.classList.remove("d-none");
-
+		        // 모달 표시
 		        toggleModal("reservationDetailModal", true);
 		    } else {
 		        alert(data.error || "예약 상세 정보를 불러오지 못했습니다.");
 		    }
 		}
+
 		// ---------- 예약 목록 모달----------
 
 		let managerModalInited = false;

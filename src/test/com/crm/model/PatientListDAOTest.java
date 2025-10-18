@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.crm.model.ManageDoctorVO;
 import com.crm.model.MedicalRecordVO;
 import com.crm.model.PatientListDAO;
 import com.crm.model.PatientVO;
@@ -39,20 +40,41 @@ public class PatientListDAOTest {
 
         List<PatientVO> list = dao.getPatientList(map);
 
-        System.out.println("Á¶È¸ °á°ú °Ç¼ö: " + (list != null ? list.size() : 0));
+        System.out.println("ì¡°íšŒ ê²°ê³¼ ê±´ìˆ˜: " + (list != null ? list.size() : 0));
         list.forEach(vo -> System.out.println(
                 vo.getPatientNo() + " / " + vo.getPatientName() + " / " + vo.getPhone()+ " / " + vo.getMedicalDate()+ " / "
         + vo.getEmployeeName()+ " / " + vo.getDepartment()+ " / " + vo.getStatus()+ " / " + vo.getDiagnosis()));
 
-        assertNotNull("¸®½ºÆ®°¡ null ÀÔ´Ï´Ù.", list);
-        assertTrue("Á¶È¸ °á°ú ¾øÀ½", list.size() >= 0); // µ¥ÀÌÅÍ°¡ ¾ø¾îµµ ½ÇÆĞÇÏÁö ¾Êµµ·Ï
+        assertNotNull("ë¦¬ìŠ¤íŠ¸ê°€ null ì…ë‹ˆë‹¤.", list);
+        assertTrue("ì¡°íšŒ ê²°ê³¼ ì—†ìŒ", list.size() >= 0); // ë°ì´í„°ê°€ ì—†ì–´ë„ ì‹¤íŒ¨í•˜ì§€ ì•Šë„ë¡
 	}
+	
+	@Test
+	public void getTotalCountTest(){
+		Map<String, Object> map = new HashMap<>();
+        map.put("startDate", "");
+        map.put("endDate", "");
+        map.put("doctorCode", "");
+        map.put("patientName", "");
+        map.put("birth", "");
+        
+        int result = dao.getTotalCount(map);
+        System.out.println(result);
+	}
+	
+	@Test
+	public void getDoctorNameTest(){
+		List<ManageDoctorVO> list  = dao.getDoctorName("2025-10-13", "2025-10-19");
+		System.out.println(list);
+	}
+	
 	@Test
 	public void getPatientDetailTest(){
 		PatientVO vo = dao.getPatientDetail(6072);
 		System.out.println(vo.getPatientName());
-		assertEquals("±èº´¸¸", vo.getPatientName());
+		assertEquals("ê¹€ë³‘ë§Œ", vo.getPatientName());
 	}
+	
 	@Test
 	public void getMedicalRecordTest(){
 		List<MedicalRecordVO> list = dao.getMedicalRecord(6071);
@@ -61,18 +83,18 @@ public class PatientListDAOTest {
 	}
 	@Test
 	public void addPatientTest() {
-        int result = dao.addPatient("±èÅ×½ºÆ®","010-1111-1111");
-        assertTrue("insert ½ÇÆĞ", result>0);
+        int result = dao.addPatient("ê¹€í˜¸ë¹µ","010-1111-1111");
+        assertTrue("insert ì‹¤íŒ¨", result>0);
 	}
 	@Test
 	public void editPatientTest() {
-		int result = dao.editPatient("tt","010-2222-2222","¼­¿ïÆ¯º°½Ã ±İÃµ±¸ °¡»êµ¿","880301","³²","ÀÎÅÍ³İ °Ë»ö",21);
-		assertTrue("insert ½ÇÆĞ", result>0);
+		int result = dao.editPatient("ì•„í”„ê¸©~","010-2222-2222","ì„œìš¸íŠ¹ë³„ì‹œ ê¸ˆì²œêµ¬ ê°€ì‚°ë™","880301","ë‚¨","ì¸í„°ë„· ê²€ìƒ‰",2);
+		assertTrue("insert ì‹¤íŒ¨", result>0);
 	}
 	@Test
 	public void deletePatientTest() {
 		int result = dao.deletePatient(6064);
-        assertTrue("insert ½ÇÆĞ", result>0);
+        assertTrue("insert ì‹¤íŒ¨", result>0);
 	}
 
 }

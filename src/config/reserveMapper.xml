@@ -317,26 +317,35 @@
 		ds.doctor_code = d.doctor_code
 		JOIN employee e ON d.employee_id =
 		e.employee_id
-		<where>
-			r.del_flag IS NULL
-			<if test="employeeId != null and employeeId != ''">
-				AND e.employee_id = #{employeeId}
-				<if test="month != null and month != ''">
-					AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
-					<if test="weekStart != null and weekEnd != null">
-						AND TO_CHAR(r.datetime, 'YYYY-MM-DD') BETWEEN
-						#{weekStart} AND
-						#{weekEnd}
-						<if test="targetDate != null and targetDate != ''">
-							AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{targetDate}
-							<if test="targetHour != null and targetHour != ''">
-								AND TO_CHAR(r.datetime, 'HH24') = #{targetHour}
-							</if>
-						</if>
-					</if>
-				</if>
-			</if>
-		</where>
+		WHERE r.del_flag IS NULL
+		and e.employee_id = #{employeeId}
+		<choose>
+			<when test="day != null and day != ''">
+				AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{day}
+			</when>
+
+			<when
+				test="weekStart != null and weekStart != '' and weekEnd != null and weekEnd != ''">
+				AND r.datetime BETWEEN
+				TO_DATE(#{weekStart}, 'YYYY-MM-DD')
+				AND TO_DATE(#{weekEnd}, 'YYYY-MM-DD') + 0.99999
+			</when>
+
+			<when test="month != null and month != ''">
+				AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
+			</when>
+
+			<!-- 4) 아무 것도 없으면 전체(필요 시 제거 가능) -->
+			<otherwise>
+				<!-- no date filter -->
+			</otherwise>
+		</choose>
+
+		<!-- 시간(HH)은 독립적으로 적용 -->
+		<if test="hour != null and hour != ''">
+			AND TO_CHAR(r.datetime, 'HH24') = #{hour}
+		</if>
+
 		ORDER BY r.datetime
 	</select>
 	

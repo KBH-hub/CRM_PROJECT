@@ -42,8 +42,15 @@
 
     <!-- 메인 -->
     <main class="col-10 p-4">
+    
       <div class="container py-4">
-        <h2 class="text-center mb-4">보낸 메시지함</h2>
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <button type="button" id="backBtn" class="btn btn-outline-secondary btn-sm">
+    ← 뒤로가기
+  </button>
+  <h2 class="text-center flex-grow-1 m-0">보낸 메시지함</h2>
+  <div style="width:90px;"></div> <!-- 오른쪽 균형 맞춤용 빈 공간 -->
+</div>
 
         <!-- 탭 -->
         <ul class="nav nav-tabs justify-content-center mb-3" id="messageTabs">
@@ -380,6 +387,15 @@ function loadSidebar(activeKey) {
   }
 
 })();
+
+//✅ 뒤로가기 버튼 클릭 시
+$(document).on("click", "#backBtn", function () {
+  if (document.referrer && document.referrer !== location.href) {
+    history.back();
+  } else {
+    window.location.href = "controller?cmd=SMSUI";
+  }
+});
 </script>
 </body>
 </html>

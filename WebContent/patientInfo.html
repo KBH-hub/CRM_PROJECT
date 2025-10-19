@@ -195,8 +195,19 @@ $(document).ready(function() {
   }
 
   $("#reserveBtn").click(function() {
-	  window.location.href = "reserveList.html?tab=reserve&patientNo="+$("#patientNo").val();
-	  });
+	  const patientNo = $("#patientNo").val();
+	  const name = $("#patientName").val();
+	  const phone = $("#phone").val();
+
+	  if (!patientNo || !name || !phone) {
+	    showAlert("환자 정보가 올바르지 않습니다.");
+	    return;
+	  }
+
+	  const patientInfo = { patientNo, patientName: name, phone };
+	  sessionStorage.setItem("selectedPatientInfo", JSON.stringify(patientInfo));
+	  window.location.href = "controller?cmd=reserveListUI&from=patientDetail";
+	});
   $("#sendSMSBtn").click(function () {
 	  const id = $("#patientNo").val()?.trim();
 	  if (!id) {

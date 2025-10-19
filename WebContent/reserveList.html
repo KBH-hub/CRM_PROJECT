@@ -2052,8 +2052,22 @@ function resetReserveTableChecks() {
 	  $table.find('tbody .row-check').prop('checked', false);
 	}
 	
+$(document).ready(function() {
+	  const info = sessionStorage.getItem("selectedPatientInfo");
+	  if (info) {
+	    const patient = JSON.parse(info);
+	    $("#patientName").val(patient.patientName);
+	    $("#patientPhone").val(patient.phone);
+	    $("#patientNo").val(patient.patientNo);
+	    sessionStorage.removeItem("selectedPatientInfo");
+	  }
 
-
+	  const params = new URLSearchParams(window.location.search);
+	  if (params.get("from") === "patientDetail") {
+	    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("reservationModal"));
+	    modal.show();
+	  }
+	});
 </script>
 </body>
 </html>

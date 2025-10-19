@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 public class ReserveListDAO {
-	/** ���� 紐⑤�� (��/二�/��/��媛�) 蹂� 由ъ�ㅽ�� 議고��*/
 	public List<ReserveVO> getReserveList(String month, String weekStart, String weekEnd, String day, String hour) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
@@ -21,7 +20,7 @@ public class ReserveListDAO {
 		session.close();
 		return list;
 	}
-	/** ���� 罹�由곕�� (��/二�/��)蹂� ���� 嫄댁�� 議고��*/
+
 	public List<ReserveVO> countReserveMonth(String month) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		List<ReserveVO> list = session.selectList("reserveMapper.countReserveMonth", month);
@@ -56,7 +55,6 @@ public class ReserveListDAO {
 		return list;
 	}
 
-	/**���� ����*/
 	public ReserveVO getReserveDetail(int reserveNo) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		ReserveVO vo = session.selectOne("reserveMapper.getReserveDetail", reserveNo);
@@ -64,7 +62,6 @@ public class ReserveListDAO {
 		return vo;
 	}
 	
-	/**���� �깅�(���� �대� 議고��)*/
 	public List<ReserveVO> getPatientName(String patientName) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		List<ReserveVO> list = session.selectList("reserveMapper.getPatientName", patientName);
@@ -72,9 +69,6 @@ public class ReserveListDAO {
 		return list;
 	}
 	
-
-	
-	/**���� �깅� (���� ��媛��� 洹쇰Т ���� 議고��)*/
 	public List<ReserveVO> getPossibleDoctor(String workDate, String reserveDateTime) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, String> map = new HashMap<>();
@@ -84,7 +78,7 @@ public class ReserveListDAO {
 		session.close();
 		return list;
 	}
-	/**���� �깅�*/
+	
 	public int addReserve(ReserveVO vo) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> reserveCheck = new HashMap<>();
@@ -102,7 +96,6 @@ public class ReserveListDAO {
 		return res;
 	}
 
-	/**���� ����*/
 	public int editReserve(ReserveVO vo) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> reserveCheck = new HashMap<>();
@@ -120,7 +113,6 @@ public class ReserveListDAO {
 		return res;
 	}
 
-    /**���� ����*/
 	public int deleteReserve(List<Integer> reserveNoList) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		int res = session.update("reserveMapper.deleteReserve", reserveNoList);
@@ -129,7 +121,6 @@ public class ReserveListDAO {
 		return res;
 	}
 	
-	/**湲��� 珥� ���� 嫄댁��(�ъ�대��諛�)*/
 	public List<ReserveVO> countDailyAllReserve() {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		List<ReserveVO> list = session.selectList("reserveMapper.countDailyReserve");
@@ -137,7 +128,6 @@ public class ReserveListDAO {
 		return list;
 	}
 	
-	/**湲��� 蹂몄�� ���� 嫄댁��(�ъ�대��諛�)*/
 	public List<ReserveVO> countDailyMyReserve(String employeeId) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
@@ -148,7 +138,6 @@ public class ReserveListDAO {
 		return list;
 	}
 	
-	/**��媛� 蹂몄�� ���� 嫄댁��(罹�由곕��)*/
 	public List<ReserveVO> countMyReserveMonth(String employeeId, String month) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
@@ -162,7 +151,6 @@ public class ReserveListDAO {
 		return list;
 	}
 	
-	/**二쇨� 蹂몄�� ���� 嫄댁��(罹�由곕��)*/
 	public List<ReserveVO> countMyReserveWeek(String employeeId, String month, String weekStart, String weekEnd) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();
 		Map<String, Object> map = new HashMap<>();
@@ -176,20 +164,19 @@ public class ReserveListDAO {
 		return list;
 	}
 	
-	/**蹂몄�� ���� 由ъ�ㅽ��(紐⑤��)*/
-	public List<ReserveVO> getMyReserveList(String employeeId, String month, String weekStart, String weekEnd, String targetDate, String targetHour) {
-		SqlSession session = DBCP.getSqlSessionFactory().openSession();
-		Map<String, Object> map = new HashMap<>();
-		map.put("employeeId", employeeId);
-		map.put("month", month);
-		map.put("weekStart", weekStart);
-		map.put("weekEnd", weekEnd);
-		map.put("targetDate", targetDate);
-		map.put("targetHour", targetHour);
+	public List<ReserveVO> getMyReserveList(String employeeId, String month, String weekStart, String weekEnd, String day, String hour) {
+	    SqlSession session = DBCP.getSqlSessionFactory().openSession();
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("employeeId", employeeId);
+	    map.put("month", month);
+	    map.put("weekStart", weekStart);
+	    map.put("weekEnd", weekEnd);
+	    map.put("day", day);
+	    map.put("hour", hour);
 
-		List<ReserveVO> list = session.selectList("reserveMapper.getMyReserveList", map);
-		session.close();
-		return list;
+	    List<ReserveVO> list = session.selectList("reserveMapper.getMyReserveList", map);
+	    session.close();
+	    return list;
 	}
 	
 	public List<ReserveVO> getMyReserveListDay(String employeeId, String targetDate) {

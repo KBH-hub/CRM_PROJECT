@@ -213,13 +213,13 @@
 							<!-- 일 -->
 							<div class="col-md-3">
 								<label class="form-label">일</label> <select id="filterDay"
-									class="form-select" disabled>
+									class="form-select">
 									<option value="">주를 먼저 선택하세요</option>
 								</select>
 							</div>
 							<div class="col-md-3">
 								<label class="form-label">시간</label> <select id="filterHour"
-									class="form-select" disabled>
+									class="form-select">
 									<option value="">전체</option>
 									<option value="07">07시</option>
 									<option value="08">08시</option>
@@ -993,9 +993,10 @@
 		    month:     $('#filterMonth').val()     || '',
 		    weekStart: $('#filterWeekStart').val() || '',
 		    weekEnd:   $('#filterWeekEnd').val()   || '',
-		    day:       $('#filterDay').prop('disabled') ? '' : ($('#filterDay').val() || ''), // 주 미선택 시 day는 비움
-		    hour:      $('#filterHour').val()      || ''
+		    day: $('#filterDay').val() || '',
+		    hour: $('#filterHour').val() || ''
 		  };
+
 		  $.ajax({
 		    url: 'controller?cmd=getMyReserveListModal',
 		    method: 'get',

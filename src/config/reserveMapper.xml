@@ -327,55 +327,40 @@
 	</select>
 
 	<select id="getMyReserveList" parameterType="map" resultMap="ReserveMap">
-		SELECT
-		r.reserve_no,
-		p.patient_name,
-		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS
-		reserveDay,
-		TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
-		d.department,
-		e.employee_name,
-		r.reason
-		FROM reserve r
-		JOIN patient p ON
-		r.patient_no = p.patient_no
-		JOIN doctor_schedule ds ON
-		r.doctor_schedule_no = ds.doctor_schedule_no
-		JOIN doctor d ON
-		ds.doctor_code = d.doctor_code
-		JOIN employee e ON d.employee_id =
-		e.employee_id
-		WHERE r.del_flag IS NULL
-		and e.employee_id = #{employeeId}
-		<choose>
-			<when test="day != null and day != ''">
-				AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{day}
-			</when>
+  SELECT
+    r.reserve_no,
+    p.patient_name,
+    TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
+    TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
+    d.department,
+    e.employee_name,
+    r.reason
+  FROM reserve r
+  JOIN patient p ON r.patient_no = p.patient_no
+  JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+  JOIN doctor d ON ds.doctor_code = d.doctor_code
+  JOIN employee e ON d.employee_id = e.employee_id
+  <where>
+    r.del_flag IS NULL
+    AND e.employee_id = #{employeeId}
 
-			<when
-				test="weekStart != null and weekStart != '' and weekEnd != null and weekEnd != ''">
-				AND r.datetime BETWEEN
-				TO_DATE(#{weekStart}, 'YYYY-MM-DD')
-				AND TO_DATE(#{weekEnd}, 'YYYY-MM-DD') + 0.99999
-			</when>
+    <if test="month != null and month != ''">
+      AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
+    </if>
+    <if test="weekStart != null and weekEnd != null and weekStart != '' and weekEnd != ''">
+      AND r.datetime BETWEEN TO_DATE(#{weekStart}, 'YYYY-MM-DD')
+      AND TO_DATE(#{weekEnd}, 'YYYY-MM-DD') + 0.99999
+    </if>
+    <if test="day != null and day != ''">
+      AND TO_CHAR(r.datetime, 'YYYY-MM-DD') = #{day}
+    </if>
+    <if test="hour != null and hour != ''">
+      AND TO_CHAR(r.datetime, 'HH24') = #{hour}
+    </if>
+  </where>
+  ORDER BY r.datetime
+</select>
 
-			<when test="month != null and month != ''">
-				AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
-			</when>
-
-			<!-- 4) 아무 것도 없으면 전체(필요 시 제거 가능) -->
-			<otherwise>
-				<!-- no date filter -->
-			</otherwise>
-		</choose>
-
-		<!-- 시간(HH)은 독립적으로 적용 -->
-		<if test="hour != null and hour != ''">
-			AND TO_CHAR(r.datetime, 'HH24') = #{hour}
-		</if>
-
-		ORDER BY r.datetime
-	</select>
 	
 	<select id="getMyReserveListDay" parameterType="map" resultMap="ReserveMap">
 		SELECT

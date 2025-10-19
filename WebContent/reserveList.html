@@ -1246,6 +1246,7 @@ function resetPatientSearch(){
     document.getElementById('reservationModal').addEventListener('show.bs.modal', updatePossibleDoctors);
     document.getElementById('reservationModal').addEventListener('hidden.bs.modal', () => {
     	  resetPatientSearch();
+    	   $('#reservationModal form')[0].reset();
     	});
     window.updatePossibleDoctors = updatePossibleDoctors; 
 

@@ -243,7 +243,6 @@
 								class="table table-bordered text-center align-middle">
 								<thead class="table-light">
 									<tr>
-										<th scope="col"><input type="checkbox" class="selectAll"></th>
 										<th scope="col">이름</th>
 										<th scope="col">방문 예정 일</th>
 										<th scope="col">방문 예정 시간</th>
@@ -262,14 +261,6 @@
 					</div>
 
 
-				</div>
-				<div class="modal-footer d-flex justify-content-between">
-					<div class="d-flex gap-2">
-						<button id="sendReserveSMSSelectBtn" class="btn btn-primary"
-							data-bs-dismiss="modal">선택 메시지 보내기</button>
-						<button id="deleteReserveSelectBtn" class="btn btn-primary"
-							data-bs-dismiss="modal">선택 예약 삭제</button>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -798,15 +789,6 @@
 			  const selectAll = table.querySelector('thead .selectAll');
 			  const tbody = table.querySelector('tbody');
 
-			  // 헤더 전체선택 클릭 -> 현재 tbody의 모든 row-check 상태 일괄 변경
-			  if (selectAll) {
-			    selectAll.addEventListener('change', () => {
-			      const checks = tbody.querySelectorAll('.row-check');
-			      checks.forEach(c => c.checked = selectAll.checked);
-			    });
-			  }
-			  
-			  
 		    // ✅ 예약 목록 테이블의 상세 버튼 클릭 이벤트 수정
 		    document.getElementById('reserveTable').addEventListener('click', async e => {
 		        const btn = e.target.closest('.detail-btn');

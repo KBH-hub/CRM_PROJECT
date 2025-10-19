@@ -1014,8 +1014,6 @@
 		  }
 		  reserveList.forEach(r=>{
 			    const $tr = $('<tr>').attr('data-reserve-no', r.reserveNo || '');
-			    // 체크박스 열
-			    $tr.append('<td><input type="checkbox" class="row-check"></td>');
 			    // 데이터 열들
 			    $tr.append($('<td>').text(r.patientName  || ''));
 			    $tr.append($('<td>').text(r.reserveDay   || ''));

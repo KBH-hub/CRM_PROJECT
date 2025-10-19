@@ -260,7 +260,7 @@ table, th, td {
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">환자 검색</h5>
-					<button class="btn btn-primary modal-back-btn">닫기</button>
+					<button id="resetPatientSearch" class="btn btn-primary modal-back-btn">닫기</button>
 				</div>
 				<div class="modal-body">
 
@@ -1077,7 +1077,9 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 // ---------- 환자 검색 ----------
 (function(){
     let selected=null;
-
+	document.getElementById("resetPatientSearch").addEventListener("click",()=>{
+		resetPatientSearch();
+	});
     document.querySelectorAll("#patientSearchModal tbody tr").forEach(row=>{
         row.addEventListener("click",()=>{
             if(selected) selected.classList.remove("table-active");
@@ -1106,7 +1108,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
         const tbody = $("#patientSearchModal tbody");
 
         if (kw === "") {
-            tbody.html('<tr><td colspan="4" class="text-center text-muted">이름을 검색하ㄴㅇ</td></tr>');
+            tbody.html('<tr><td colspan="4" class="text-center text-muted">이름을 검색하세요.</td></tr>');
             return; 
         }
 
@@ -1136,8 +1138,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
                         $tr.append($('<td>').text(patient.patientNo || ''));
                         $tr.append($('<td>').text(patient.patientName || ''));
                         $tr.append($('<td>').text(patient.phone || ''));
-                        $tr.append($('<td>').text(patient.inDate || ''));
-
+                        $tr.append($('<td>').text((patient.inDate ? patient.inDate.split(' ')[0] : '')));
                        
                         tbody.append($tr);
                     });
@@ -1169,11 +1170,25 @@ document.querySelectorAll('.modal').forEach(modalEl => {
     document.getElementById("patientSearchInput").addEventListener("keydown",e=>{
         if(e.key==="Enter"){e.preventDefault();search();}
     });
-    document.getElementById("clearSearchBtn").addEventListener("click",()=>{
-        document.getElementById("patientSearchInput").value="";
-        document.querySelectorAll("#patientSearchModal tbody tr").forEach(r=>r.style.display="");
+    document.getElementById("clearSearchBtn").addEventListener("click", () => {
+    	resetPatientSearch();
     });
+
+
+
 })();
+
+function resetPatientSearch(){
+    const $tbody = $("#patientSearchModal tbody");
+    $("#patientSearchInput").val("");
+    if (typeof selected !== "undefined" && selected) {
+      selected.classList.remove("table-active");
+    }
+    selected = null;
+    $tbody
+      .empty()
+      .append('<tr><td colspan="4" class="text-center text-muted">이름을 검색하세요.</td></tr>');
+}
 
 //새로운 예약 등록 모달 (reservationModal) 관련 JavaScript
 (function() {
@@ -1229,7 +1244,9 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 
     // 예약 모달이 열릴 때마다 가능한 의사 목록을 다시 로드 (초기값 설정 등)
     document.getElementById('reservationModal').addEventListener('show.bs.modal', updatePossibleDoctors);
-    
+    document.getElementById('reservationModal').addEventListener('hidden.bs.modal', () => {
+    	  resetPatientSearch();
+    	});
     window.updatePossibleDoctors = updatePossibleDoctors; 
 
 })();
@@ -1901,7 +1918,7 @@ function openReserveListForCurrentView() {
  // ---------- 예약 등록 처리 ----------
     $('#addReserveSaveBtn').on('click', function(event) {
         event.preventDefault();
-
+		resetPatientSearch();
        
         const patientNo = $('#patientNo').val();
         const patientName = $('#patientName').val(); 

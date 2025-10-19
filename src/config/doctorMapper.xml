@@ -64,7 +64,7 @@
 	<update id="deleteDoctorSchedule" parameterType="string">
 	    UPDATE doctor_schedule
 	    SET del_flag = SYSDATE
-	    WHERE doctor_schedule_no = #{doctorCode}
+	    WHERE doctor_code = #{doctorCode}
 	</update>
 	
 	<select id="getDoctorList" resultMap="DoctorMap">

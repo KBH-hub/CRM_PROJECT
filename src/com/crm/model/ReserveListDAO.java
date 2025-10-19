@@ -71,6 +71,9 @@ public class ReserveListDAO {
 		session.close();
 		return list;
 	}
+	
+
+	
 	/**���� �깅� (���� ��媛��� 洹쇰Т ���� 議고��)*/
 	public List<ReserveVO> getPossibleDoctor(String workDate, String reserveDateTime) {
 		SqlSession session = DBCP.getSqlSessionFactory().openSession();

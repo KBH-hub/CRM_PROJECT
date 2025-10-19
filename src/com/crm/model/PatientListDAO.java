@@ -9,6 +9,15 @@ import org.apache.ibatis.session.SqlSession;
 
 public class PatientListDAO {
 	
+	/** 환자 이름 부분 검색d용으로 추가 */
+    public List<PatientVO> searchPatientsByName(String keyword) {
+        SqlSession session = DBCP.getSqlSessionFactory().openSession();
+       
+        List<PatientVO> list = session.selectList("patientMapper.searchByName", "%" + keyword + "%"); 
+        session.close();
+        return list;
+    }
+	
 	// ✅ AJAX 호출용 Map 버전
     public List<PatientVO> getPatientList(Map<String, Object> map) {
         SqlSession conn = DBCP.getSqlSessionFactory().openSession();

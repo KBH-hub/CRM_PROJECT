@@ -6,6 +6,7 @@ encoding//src/com/crm/action/login/LoginAction.java=UTF-8
 encoding//src/com/crm/action/login/SidebarAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/CountReserveWeekByTimeAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/DeleteReserveAction.java=UTF-8
+encoding//src/com/crm/action/reserveList/GetPatientNameAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/getPossibleDoctorAction.java=UTF-8
 encoding//src/com/crm/action/reserveList/getReserveDayAction.java=UTF-8
 encoding//src/com/crm/model/PatientListDAO.java=UTF-8

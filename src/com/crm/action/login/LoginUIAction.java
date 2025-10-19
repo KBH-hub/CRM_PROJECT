@@ -10,7 +10,7 @@ import com.crm.action.Action;
 
 public class LoginUIAction implements Action {
 
-	@Override	//6
+	@Override
 	public String execute(HttpServletRequest req) throws ServletException, IOException {
 		return "login.html";
 	}

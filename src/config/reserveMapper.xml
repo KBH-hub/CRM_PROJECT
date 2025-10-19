@@ -54,13 +54,10 @@
 				AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
 			</when>
 
-			<!-- 4) 아무 것도 없으면 전체(필요 시 제거 가능) -->
 			<otherwise>
-				<!-- no date filter -->
 			</otherwise>
 		</choose>
 
-		<!-- 시간(HH)은 독립적으로 적용 -->
 		<if test="hour != null and hour != ''">
 			AND TO_CHAR(r.datetime, 'HH24') = #{hour}
 		</if>
@@ -131,28 +128,7 @@
 		ORDER BY
 		r.datetime
 	</select>
-
-<!-- 	<select id="getReserveDetail" resultMap="ReserveMap">
-		SELECT
-		r.reserve_no,
-		p.patient_name,
-		TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay,
-		TO_CHAR(r.datetime, 'HH24:MI') AS reserveTime,
-		p.phone,
-		d.department,
-		e.employee_name,
-		r.reason
-		FROM reserve r
-		JOIN patient p ON r.patient_no =
-		p.patient_no
-		JOIN doctor_schedule ds ON r.doctor_schedule_no =
-		ds.doctor_schedule_no
-		JOIN doctor d ON ds.doctor_code = d.doctor_code
-		JOIN employee e ON d.employee_id = e.employee_id
-		WHERE r.reserve_no =
-		#{reserveNo}
-	</select>
--->
+	
 	<select id="getReserveDetail" resultMap="ReserveMap">
         SELECT
             r.reserve_no,
@@ -272,7 +248,6 @@
 		</foreach>
 	</update>
 
-	<!-- 나중에 기존 count 메서드 사용할 수 있으면 재사용하기 -->
 	<select id="countDailyReserve" parameterType="map" resultMap="ReserveMap">
 		SELECT TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserveDay, COUNT(*) AS
 		reserveCount

@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <title>Redirecting...</title>
 <script>
-  // 서버에서 전달받은 URL로 이동
   const redirectUrl = '<%= request.getAttribute("redirectUrl") %>';
   if (redirectUrl) {
     window.location.href = redirectUrl;

@@ -20,7 +20,6 @@
 						class="btn btn-outline-secondary btn-sm">← 뒤로가기</button>
 					<h2 class="text-center flex-grow-1 m-0">의사 명단</h2>
 					<div style="width: 90px;"></div>
-					<!-- 오른쪽 균형 맞춤용 빈 공간 -->
 				</div>
 				<div class="container bg-white border rounded shadow-sm p-4">
 
@@ -109,7 +108,6 @@ function loadDoctorList() {
 	  });
 	}
 	
-//✅ 뒤로가기 버튼 클릭 시
 $(document).on("click", "#backBtn", function () {
   if (document.referrer && document.referrer !== location.href) {
     history.back();

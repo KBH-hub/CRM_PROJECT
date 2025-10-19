@@ -22,7 +22,6 @@ public class getReserveDetailAction implements Action {
 		if(reserveNoStr != null && !reserveNoStr.isEmpty()){
 			reserveNo = Integer.parseInt(reserveNoStr);
 		}else {
-			System.out.println("예약 찾지 못함");
 			return "/WEB-INF/json/result.jsp";
 		}
 		

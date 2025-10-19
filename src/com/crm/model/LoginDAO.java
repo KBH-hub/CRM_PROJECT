@@ -15,12 +15,11 @@ public class LoginDAO {
         login.put("pw", pw);
         String authority = session.selectOne("loginMapper.selectLogin", login);
         
-        if (authority != null) { // 로그인 성공 시 log 기록 시도
+        if (authority != null) {
             Map<String, Object> logMap = new HashMap<>();
             logMap.put("employeeId", employeeId);
             logMap.put("loginIp", loginIp);
 
-         // 로그 insert 성공 시 1 실패시 0
             int inserted = session.insert("loginMapper.insertLoginLog", logMap);
             if (inserted==0) System.out.println("로그 기록 실패");
             session.commit();

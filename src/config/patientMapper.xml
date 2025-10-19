@@ -113,7 +113,6 @@
 		WHERE rn &gt;= #{startRow, jdbcType=NUMERIC}
 	</select>
 	
-	<!-- ✅ 전체 건수 -->
 	<select id="getTotalCount" parameterType="map" resultType="int">
 	  SELECT COUNT(*)
 	  FROM PATIENT P

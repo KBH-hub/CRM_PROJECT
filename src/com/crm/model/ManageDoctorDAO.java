@@ -67,7 +67,6 @@ public class ManageDoctorDAO {
 		int result = 0;
 		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
 		result = conn.update("doctorMapper.deleteDoctorSchedule", doctorCode);
-		System.out.println(result);
 		if (result>0){
 			conn.commit();
 		} else {

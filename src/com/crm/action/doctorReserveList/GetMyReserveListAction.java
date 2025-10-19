@@ -34,7 +34,6 @@ public class GetMyReserveListAction implements Action {
         
 		List<ReserveVO> weeklyReservationCounts = dao.getMyReserveListDay(employeeId, targetDate);
 		request.setAttribute("result", weeklyReservationCounts);
-		System.out.println(weeklyReservationCounts);
         
     
 		return "/WEB-INF/json/result.jsp";

@@ -22,11 +22,9 @@ input[readonly] {
 </head>
 <body class="p-3">
 
-	<!-- 예약 등록 열기 버튼 -->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 		data-bs-target="#reservationModal">예약 등록</button>
 
-	<!-- 예약 등록 모달 -->
 	<div class="modal fade" id="reservationModal" tabindex="-1"
 		aria-hidden="true">
 		<div
@@ -89,7 +87,6 @@ input[readonly] {
 		</div>
 	</div>
 
-	<!-- 환자 검색 모달 -->
 	<div class="modal fade" id="patientSearchModal" tabindex="-1"
 		aria-hidden="true">
 		<div
@@ -101,7 +98,6 @@ input[readonly] {
 				</div>
 				<div class="modal-body">
 
-					<!-- 검색창 추가 -->
 					<div class="input-group mb-3">
 						<input type="text" id="patientSearchInput" class="form-control"
 							placeholder="환자 이름">
@@ -147,7 +143,6 @@ input[readonly] {
 	document.addEventListener("DOMContentLoaded", () => {
 	  let selectedRow = null;
 
-	  // 환자 행 클릭 시 선택 표시
 	  document.querySelectorAll("#patientSearchModal tbody tr").forEach(row => {
 	    row.addEventListener("click", () => {
 	      if (selectedRow) selectedRow.classList.remove("table-active");
@@ -156,7 +151,6 @@ input[readonly] {
 	    });
 	  });
 
-	  // 선택 버튼 눌렀을 때 값 전달
 	  document.getElementById("selectPatientBtn").addEventListener("click", () => {
 	    if (selectedRow) {
 	      const cells = selectedRow.querySelectorAll("td");
@@ -165,19 +159,16 @@ input[readonly] {
 	      document.getElementById("patientName").value = name;
 	      document.getElementById("patientPhone").value = phone;
 
-	      // 환자 검색 모달 닫기
 	      const patientSearchModalEl = document.getElementById("patientSearchModal");
 	      const patientSearchModal = bootstrap.Modal.getInstance(patientSearchModalEl);
 	      patientSearchModal.hide();
 
-	      // 예약 등록 모달 다시 열기
 	      const reservationModalEl = document.getElementById("reservationModal");
 	      const reservationModal = bootstrap.Modal.getOrCreateInstance(reservationModalEl);
 	      reservationModal.show();
 	    }
 	  });
 
-	  // X 버튼 누른 뒤, 모달 완전히 닫히면 예약 등록 모달 자동 열기
 	  const patientSearchModalEl = document.getElementById("patientSearchModal");
 	  patientSearchModalEl.addEventListener("hidden.bs.modal", () => {
 	    const reservationModalEl = document.getElementById("reservationModal");
@@ -185,7 +176,6 @@ input[readonly] {
 	    reservationModal.show();
 	  });
 
-	  // 검색 함수
 	  const searchPatients = () => {
 	    const keyword = document.getElementById("patientSearchInput").value.trim();
 	    const rows = document.querySelectorAll("#patientSearchModal tbody tr");

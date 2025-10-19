@@ -23,7 +23,7 @@ public class getReserveDayAction implements Action {
 		if(targetDate == null || targetDate.isEmpty()){
 			
 			 System.err.println("ERROR:targetDate 파라미터가 누락되었거나 비어있습니다.");
-	            request.setAttribute("result", new ArrayList<ReserveVO>()); // 빈 JSON 배열 반환
+	            request.setAttribute("result", new ArrayList<ReserveVO>());
 	            return "/WEB-INF/json/result.jsp";
 		}
 		

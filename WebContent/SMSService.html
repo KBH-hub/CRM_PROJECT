@@ -14,7 +14,6 @@
 	rel="stylesheet">
 
 <style>
-/* 부드러운 페이드 전환 */
 .fade-section {
 	opacity: 0;
 	transition: opacity 0.4s ease-in-out;
@@ -41,14 +40,14 @@
 }
 
 #tampleteTable td {
-  white-space: normal;     /* 자동 줄바꿈 허용 */
-  word-break: break-word;  /* 긴 단어도 줄바꿈 */
-  background-color: #fff;  /* 내용은 흰색 */
+  white-space: normal;    
+  word-break: break-word; 
+  background-color: #fff; 
 }
 
 #tampleteTable tbody td:nth-child(2) {
   text-align: left;
-  padding-left: 12px; /* 살짝 여백 추가 (선택사항) */
+  padding-left: 12px; 
 }
 
 #tampleteTable tbody tr {
@@ -66,16 +65,13 @@
 	<div class="container-fluid">
 		<div class="row">
 
-			<!-- 여기서 사이드바를 주입 -->
 			<div id="sidebar-slot" class="col-2 p-0"></div>
 
-			<!-- 메인 -->
 			<main class="col-10 p-4">
 			
 			<div class="container py-4">
 				<h2 class="text-center mb-4">메시지 서비스</h2>
 
-				<!-- ✅상단 탭 -->
 				<ul class="nav nav-tabs justify-content-center mb-3"
 					id="messageTabs">
 					<li class="nav-item">
@@ -86,11 +82,9 @@
 					</li>
 				</ul>
 
-				<!-- ✅ 예약 메시지 구역 -->
 				<div class="reserveSMS fade-section show">
 
 					<div class="row justify-content-center align-items-start mt-3">
-						<!-- 왼쪽 영역 -->
 						<div class="col-md-6 text-center">
 							<textarea id="templateContentBox"
 								class="form-control w-75 mx-auto mb-3" rows="10"
@@ -112,7 +106,6 @@
 									</thead>
 									<tbody id="reserveRecipientTableBody"
 										style="background: transparent;">
-										<!-- modal -->
 									</tbody>
 								</table>
 							</div>
@@ -130,7 +123,6 @@
 							</div>
 						</div>
 
-						<!-- ✅ 오른쪽 영역 -->
 						<div class="col-md-6">
 							<div class="d-flex justify-content-center mb-2">
 								<input id="templateName" type="text" class="form-control w-75"
@@ -150,7 +142,6 @@
 										</tr>
 									</thead>
 									<tbody>
-										<!-- JS에서 렌더링 -->
 									</tbody>
 								</table>
 							</div>
@@ -160,7 +151,6 @@
 					</div>
 				</div>
 
-				<!-- ✅ 일반 메시지 구역 -->
 				<div class="commonSMS fade-section">
 					<div class="text-center">
 						<textarea id="contentBox" class="form-control w-75 mx-auto mb-3"
@@ -178,7 +168,6 @@
 									</tr>
 								</thead>
 								<tbody id="recipientTableBody" style="background: transparent;">
-									<!-- modal -->
 								</tbody>
 							</table>
 						</div>
@@ -196,7 +185,6 @@
 
 
 
-			<!-- ✅ 예약메시지-명단추가 모달 -->
 			<div class="modal fade" id="managerReservationModal" tabindex="-1"
 				aria-hidden="true">
 				<div
@@ -223,11 +211,9 @@
 										<label class="form-label">주(월~일)</label> <select
 											id="filterWeek" class="form-select">
 											<option value="">주 선택</option>
-											<!-- JS가 9월 15일 - 9월 21일 형식 옵션 자동 생성 -->
 										</select> <input type="hidden" id="filterWeekStart"> <input
 											type="hidden" id="filterWeekEnd">
 									</div>
-									<!-- 일 -->
 									<div class="col-md-3">
 										<label class="form-label">일</label> <select id="filterDay"
 											class="form-select" disabled>
@@ -291,7 +277,6 @@
 
 
 			</div>
-			<!-- ✅ 일반메시지-명단추가 모달 -->
 			<div class="modal fade" id="patientListModal" tabindex="-1"
 				aria-hidden="true">
 				<div
@@ -381,7 +366,6 @@
 	</div>
 	<script>
 	
-	  // sidebar.html을 불러와서 #sidebar-slot에 삽입
 	function loadSidebar(activeKey) {
 	  $.ajax({
 	    url: "./sidebar.html",
@@ -397,7 +381,6 @@
 	  });
 	}
 
-	  // 이 페이지의 활성 키만 바꿔주면 됨
 	  loadSidebar('SMSService');
 	  </script>
 
@@ -411,15 +394,11 @@
 		  });
 		  modal.show();
 		}
-	//template 리스트 불러오기
 	$(function(){
-		//페이지 로드 시, 전체 리스트 출력
 		loadTemplate();
 		
-		//검색 버튼
 		$("#btnSearch").on("click", loadTemplate);
 		
-		//엔터로 검색
 		$("#templateName").on("keydown", function(e){
 			if (e.key == "Enter") loadTemplate();
 		});
@@ -445,7 +424,6 @@
     	  });
      }
 	
-    //초기화 버튼
 	$(".btnReset").on("click", function() {
 		reset();
 	});
@@ -454,7 +432,7 @@
 		  $("#templateContentBox").val("");
 		  $("#templateNameBox").val("");
 		  $("#tampleteTable .active-template").removeClass("active-template");
-		  $("#templateName").val(""); // 템플릿 검색어도 비우고 싶으면 유지
+		  $("#templateName").val("");
 		  
 		  $("#contentBox").val("");
 		  $("#recipientTableBody").empty();
@@ -463,18 +441,15 @@
 		  $("#reserveRecipientTableBody").empty();
 		  $("#reserveRecipientCount").text("수신자 : 0명");
 		  
-		  // 선택 상태(공통) 초기화
 		  selectedIds = [];
 		  selectedRecipients = [];
 
-		  // 모달 내 체크박스들 초기화(선택 전체/행 체크)
 		  $('.select-all').each(function(){
 		    this.checked = false;
 		    this.indeterminate = false;
 		  });
 		  $('.row-check').prop('checked', false);
     }
- // JSON 배열 → 테이블 렌더링
     function renderList(list) {
       const $tbody = $("#tampleteTable tbody").empty();
 
@@ -501,7 +476,6 @@
         $tr.children().eq(0).text(name);
         $tr.children().eq(1).text(content);
 
-        // ✅ 클릭 시 왼쪽 박스 채우고 행 하이라이트
         $tr.on("click", function () {
           $("#templateNameBox").val(name);
           $("#templateContentBox").val(content);
@@ -514,10 +488,8 @@
       });
     }
 
-    //보낸 메시지함 클릭
      $("#reserveSMSRecord").on("click", ()=> location.href="controller?cmd=SMSRecordUI");
     
-	// ✅ 기본html 관련 js 
 	  const reserveBtn = document.getElementById('reserveBtn');
 	  const commonBtn  = document.getElementById('commonBtn');
 	  const reserveSec = document.querySelector('.reserveSMS');
@@ -544,7 +516,6 @@
 	    reset();
 	  });
 
-	//======일반메시지 보내기=======
 	$("#sendCommonSMSbtn").on("click", function(){
 		 const content = $("#contentBox").val().trim();
 
@@ -569,7 +540,7 @@
 			  traditional: true,
 			  dataType: "json",
 			  success: function(data){
-				  const res = String(data).trim(); // "success"
+				  const res = String(data).trim();
 				    if (res === "success"){
 				      showAlert("메시지 전송 성공", reset);
 				    } else {
@@ -584,7 +555,6 @@
 
 	})
 	
-		//======예약자 메시지 보내기=======
 	$("#sendReserveSMSbtn").on("click", function(){
 		 const templateName = $("#templateNameBox").val().trim();
 
@@ -609,7 +579,7 @@
 			  traditional: true,
 			  dataType: "json",
 			  success: function(data){
-				  const res = String(data).trim(); // "success"
+				  const res = String(data).trim(); 
 				    if (res === "success"){
 				      showAlert("메시지 전송 성공", reset);
 				    } else {
@@ -624,9 +594,7 @@
 
 	})
 	  
-	// ✅ 명단추가 모달 js
 	document.addEventListener('DOMContentLoaded', () => {
-  // 각 모달(또는 원하는 컨테이너)마다 select-all 로직을 연결
   ['#managerReservationModal', '#patientListModal'].forEach(selector => {
     const container = document.querySelector(selector);
     if (!container) return;
@@ -636,13 +604,11 @@
 
     if (!selectAll) return;
 
-    // 전체선택 클릭
     selectAll.addEventListener('change', () => {
       getRows().forEach(cb => cb.checked = selectAll.checked);
       selectAll.indeterminate = false;
     });
 
-    // 행 체크 변경(이벤트 위임으로 동적 추가에도 대응)
     container.addEventListener('change', (e) => {
       if (!e.target.classList.contains('row-check')) return;
       const rows = getRows();
@@ -659,14 +625,11 @@
     });
   });
 });
-	// 예약목록 모달
-	// ===== 유틸 =====
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
 const ymd = d => { const t=new Date(d.getTime()); const Y=t.getFullYear(), M=String(t.getMonth()+1).padStart(2,'0'), D=String(t.getDate()).padStart(2,'0'); return `${Y}-${M}-${D}`; };
 const formatKo = d => `${d.getMonth()+1}월 ${d.getDate()}일`;
 const getMonday = d => { const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const dow=(x.getDay()+6)%7; x.setDate(x.getDate()-dow); x.setHours(0,0,0,0); return x; };
 
-// 월의 주(월~일) 목록 만들기
 function buildWeeksForMonth(year, month){
   const first = new Date(year, month-1, 1);
   const last  = new Date(year, month, 0);
@@ -680,7 +643,6 @@ function buildWeeksForMonth(year, month){
   return weeks;
 }
 
-// 주 셀렉트 옵션 렌더 (선택은 하지 않음 → 사용자가 직접 고르게)
 function renderWeekOptions(year, month){
   const $sel = $('#filterWeek').empty().append('<option value="">주 선택</option>');
   buildWeeksForMonth(year, month).forEach(({start, end})=>{
@@ -689,12 +651,10 @@ function renderWeekOptions(year, month){
     $sel.append(new Option(label, val));
   });
 
-  // 주를 강제로 자동 선택하지 않음 → day는 계속 disabled 상태 유지
   $('#filterWeekStart, #filterWeekEnd').val('');
   $('#filterDay').prop('disabled', true).empty().append('<option value="">주를 먼저 선택하세요</option>');
 }
 
-// 선택된 주의 7일을 day 옵션으로 렌더
 function renderDayOptionsByWeek(){
   const ws = $('#filterWeekStart').val(), we = $('#filterWeekEnd').val();
   const $day = $('#filterDay').empty();
@@ -708,13 +668,9 @@ function renderDayOptionsByWeek(){
     const d = addDays(start, i);
     $day.append(new Option(formatKo(d), ymd(d)));
   }
-  // 기본은 '전체'
   $day.val('');
 }
 
-// ===== 이벤트 바인딩 =====
-
-// 모달 열릴 때: 오늘 월 세팅 + 주 목록 생성(자동선택 안 함) + 기본 조회(주 조건 없이 오늘/시간만으로 조회 필요시 조정)
 document.getElementById('managerReservationModal')
   .addEventListener('shown.bs.modal', () => {
     const today = new Date();
@@ -723,11 +679,9 @@ document.getElementById('managerReservationModal')
     $('#filterMonth').val(`${yyyy}-${mm}`);
     $('#filterHour').val('').prop('disabled', true);
     renderWeekOptions(yyyy, parseInt(mm,10));
-    // 필요하다면 여기서 오늘이 속한 주를 자동 선택하도록 바꿀 수도 있음(지금은 사용자 선택 강제)
-    loadReserveList(); // 주가 비어있으면 week/day 없이 조회 (백엔드에서 month/hour만 적용되도록 <choose>로 처리)
+    loadReserveList(); 
   });
 
-// 월 변경 → 주 옵션 재생성 + day 비활성화 + 즉시 조회
 $('#filterMonth').on('change', function(){
   const v = $(this).val();
   $('#filterHour').val('').prop('disabled', true);
@@ -743,9 +697,8 @@ $('#filterMonth').on('change', function(){
   loadReserveList();
 });
 
-// ✅ 주 선택 → hidden 세팅 + 7일 옵션 생성 + 즉시 조회
 $('#filterWeek').on('change', function(){
-  const val = $(this).val(); // "YYYY-MM-DD|YYYY-MM-DD" 또는 ""
+  const val = $(this).val(); 
   $('#filterHour').val('').prop('disabled', true);
   if (!val){
     $('#filterWeekStart,#filterWeekEnd').val('');
@@ -760,7 +713,6 @@ $('#filterWeek').on('change', function(){
   loadReserveList();
 });
 
-// 일 선택 - 주 선택시 가능
 $('#filterDay').on('change', function(){
   const hasDay = (($(this).val() || '') !== '');
   if (hasDay) {
@@ -771,17 +723,15 @@ $('#filterDay').on('change', function(){
   loadReserveList();
 });
 
-// 시간 선택 → 즉시 조회
 $('#filterHour').on('change', loadReserveList);
 
-// ===== 예약목록 조회 AJAX =====
 function loadReserveList(){
   const params = {
     cmd: 'reserveListModal',
     month:     $('#filterMonth').val()     || '',
     weekStart: $('#filterWeekStart').val() || '',
     weekEnd:   $('#filterWeekEnd').val()   || '',
-    day:       $('#filterDay').prop('disabled') ? '' : ($('#filterDay').val() || ''), // 주 미선택 시 day는 비움
+    day:       $('#filterDay').prop('disabled') ? '' : ($('#filterDay').val() || ''), 
     hour:      $('#filterHour').val()      || ''
   };
   $.ajax({
@@ -802,9 +752,7 @@ function renderReserveList(reserveList){
   }
   reserveList.forEach(r=>{
 	    const $tr = $('<tr>').attr('data-reserve-no', r.reserveNo || '');
-	    // 체크박스 열
 	    $tr.append('<td><input type="checkbox" class="row-check"></td>');
-	    // 데이터 열들
 	    $tr.append($('<td>').text(r.patientName  || ''));
 	    $tr.append($('<td>').text(r.reserveDay   || ''));
 	    $tr.append($('<td>').text(r.reserveTime  || ''));
@@ -814,7 +762,6 @@ function renderReserveList(reserveList){
 	  });
 }
 
-	// ========환자추가 모달=========
 function renderTable(list) {
   var $tbody = $("#patientTableBody");
   $tbody.empty();
@@ -943,14 +890,13 @@ function validateDates() {
 
   $("#startDate, #endDate, #doctorSelect").change(validateDates);
  
-  //선택한 수신자들을 여기 보관
   let selectedIds = [];
   let selectedRecipients = [];
   
   $("#sendCommonSMSSelectBtn").click(function () {
 	  const ids = [];
 	  $("#patientTableBody .row-check:checked").each(function () {
-	    ids.push($(this).closest("tr").children().eq(1).text().trim()); // 두번째 칸: 환자등록번호
+	    ids.push($(this).closest("tr").children().eq(1).text().trim());
 	  });
 	  if (ids.length === 0) {
 	    showAlert("선택된 환자가 없습니다.");
@@ -961,7 +907,7 @@ function validateDates() {
 	    url: "controller?cmd=getCommonRecipient",
 	    type: "POST",
 	    data: { patientNo: ids },
-	    traditional: true,   // 배열 전송
+	    traditional: true, 
 	    dataType: "json",
 	    success: function (list) {
 	      const $tbody = $("#recipientTableBody").empty();
@@ -971,9 +917,7 @@ function validateDates() {
 	        return;
 	      }
 	      
-	      // ✅ 전역 보관
-	      selectedIds = ids.slice(); // 복사 저장
-	      // 응답 VO에 patientNo가 없으면, ids 순서대로 매칭
+	      selectedIds = ids.slice();
 	      selectedRecipients = list.map(r => ({
 	        patientNo: r.patientNo || "",
 	        patientName: r.patientName || "",
@@ -1012,7 +956,7 @@ function validateDates() {
 	    url: "controller?cmd=getReserveRecipient",
 	    type: "POST",
 	    data: { reserveNo: ids },
-	    traditional: true,   // 배열 전송
+	    traditional: true,  
 	    dataType: "json",
 	    success: function (list) {
 	      const $tbody = $("#reserveRecipientTableBody").empty();
@@ -1022,9 +966,7 @@ function validateDates() {
 	        return;
 	      }
 	      
-	      // ✅ 전역 보관
-	      selectedIds = ids.slice(); // 복사 저장
-	      // 응답 VO에 patientNo가 없으면, ids 순서대로 매칭
+	      selectedIds = ids.slice(); 
 	      selectedRecipients = list.map(r => ({
 	        reserveNo: r.reserveNo || "",
 	        patientName: r.patientName || "",

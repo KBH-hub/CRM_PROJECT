@@ -8,7 +8,6 @@ async function loadSidebarMyReserve() {
         if (!resp.ok) throw new Error('서버 응답 오류');
 
         const data = await resp.json();
-        console.log('서버 응답:', data);
 
         const count = (data[0] && data[0].reserveCount) || 0;
         document.getElementById('myReserve').textContent = count;

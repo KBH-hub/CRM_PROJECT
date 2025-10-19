@@ -47,8 +47,8 @@ public class SMSDAOTest {
 	public void getReserveSMSTest(){
 		int page = 2;
 	    int pageSize = 10;
-	    int startRow = (page - 1) * pageSize + 1; // 11
-	    int endRow = page * pageSize;             // 20
+	    int startRow = (page - 1) * pageSize + 1;
+	    int endRow = page * pageSize;  
 	    
 		Map<String, Object> map = new HashMap<>();
         map.put("startRow", startRow);
@@ -67,8 +67,8 @@ public class SMSDAOTest {
 	public void getCommonSMSTest() {
 		int page = 2;
 	    int pageSize = 10;
-	    int startRow = (page - 1) * pageSize + 1; // 11
-	    int endRow = page * pageSize;             // 20
+	    int startRow = (page - 1) * pageSize + 1; 
+	    int endRow = page * pageSize;  
 	    
 		Map<String, Object> map = new HashMap<>();
         map.put("startRow", startRow);

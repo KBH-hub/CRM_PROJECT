@@ -23,11 +23,9 @@ input[readonly] {
 </head>
 <body class="p-3">
 
-	<!-- 예약 상세 열기 버튼 -->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 		data-bs-target="#reservationDetailModal">예약 상세</button>
 
-	<!-- 예약 상세 모달 -->
 	<div class="modal fade" id="reservationDetailModal" tabindex="-1"
 		aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -74,10 +72,8 @@ input[readonly] {
 
 						<div class="mb-3">
 							<label class="form-label">내원 사유</label>
-							<!-- 상세 모드용 input -->
 							<input type="text" id="visitReasonInput" class="form-control"
 								value="수술 이후 손발 저림" readonly>
-							<!-- 수정 모드용 textarea -->
 							<textarea id="visitReasonTextarea" class="form-control d-none">수술 이후 손발 저림</textarea>
 						</div>
 					</form>
@@ -87,7 +83,6 @@ input[readonly] {
 					<button id="editBtn" class="btn btn-primary">수정</button>
 					<button id="saveBtn" class="btn btn-success d-none">저장</button>
 
-					<!-- 삭제 버튼은 확인 모달 띄움 -->
 					<button class="btn btn-danger" data-bs-toggle="modal"
 						data-bs-target="#deleteConfirmModal">삭제</button>
 
@@ -112,7 +107,6 @@ input[readonly] {
 	</div>
 	
 
-	<!-- 삭제 확인 모달 -->
 	<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content text-center border border-danger">
@@ -141,7 +135,6 @@ input[readonly] {
 	  const reasonInput = document.getElementById("visitReasonInput");
 	  const reasonTextarea = document.getElementById("visitReasonTextarea");
 
-	  // 수정 버튼 클릭 시
 	  editBtn.addEventListener("click", (e) => {
 	    e.preventDefault();
 	    dateInput.removeAttribute("readonly");
@@ -157,7 +150,6 @@ input[readonly] {
 	    saveBtn.classList.remove("d-none");
 	  });
 
-	  // 저장 버튼 클릭 시
 	  saveBtn.addEventListener("click", (e) => {
 	    e.preventDefault();
 	    dateInput.setAttribute("readonly", true);
@@ -175,12 +167,11 @@ input[readonly] {
 	    alert("예약 정보가 저장되었습니다.");
 	  });
 
-	  // 삭제 확인 버튼 클릭 시
 	  confirmDeleteBtn.addEventListener("click", () => {
 	    const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
 	    deleteModal.hide();
 
-	    alert("예약이 삭제되었습니다."); // 실제 삭제 로직 연결 가능
+	    alert("예약이 삭제되었습니다.");
 	  });
 	});
 	</script>

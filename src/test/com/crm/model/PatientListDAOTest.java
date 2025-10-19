@@ -26,8 +26,8 @@ public class PatientListDAOTest {
 	public void getPatientListTest(){
 		int page = 2;
 	    int pageSize = 10;
-	    int startRow = (page - 1) * pageSize + 1; // 11
-	    int endRow = page * pageSize;             // 20
+	    int startRow = (page - 1) * pageSize + 1;
+	    int endRow = page * pageSize;
 	    
 		Map<String, Object> map = new HashMap<>();
         map.put("startDate", "");
@@ -46,7 +46,7 @@ public class PatientListDAOTest {
         + vo.getEmployeeName()+ " / " + vo.getDepartment()+ " / " + vo.getStatus()+ " / " + vo.getDiagnosis()));
 
         assertNotNull("리스트가 null 입니다.", list);
-        assertTrue("조회 결과 없음", list.size() >= 0); // 데이터가 없어도 실패하지 않도록
+        assertTrue("조회 결과 없음", list.size() >= 0);
 	}
 	
 	@Test

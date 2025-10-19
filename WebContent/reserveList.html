@@ -248,7 +248,6 @@ table, th, td {
 				<div class="modal-footer justify-content-center">
 					<button id="addReserveSaveBtn" class="btn btn-primary">저장</button>
 					<button class="btn btn-primary modal-back-btn">취소</button>
-					<button class="btn btn-primary">문자보내기</button>
 				</div>
 			</div>
 		</div>
@@ -859,12 +858,12 @@ function fillReservationDetailModal(data) {
         const editBtn = document.getElementById("editBtn");
         const saveBtn = document.getElementById("saveBtn");
         const deleteBtn = document.getElementById("deleteBtn");
-        const messageBtn = document.getElementById("messageBtn");
+        const sendReserveSMSBtn = document.getElementById("sendReserveSMSBtn");
 
         if (editBtn) editBtn.classList.remove("d-none");
         if (saveBtn) saveBtn.classList.add("d-none");
         if (deleteBtn) deleteBtn.classList.remove("d-none");
-        if (messageBtn) messageBtn.classList.remove("d-none");
+        if (sendReserveSMSBtn) sendReserveSMSBtn.classList.remove("d-none");
 
         if (visitDateElement) visitDateElement.setAttribute("readonly", true);
         if (visitHourSelect) visitHourSelect.setAttribute("disabled", true); 
@@ -1543,7 +1542,7 @@ function openReserveListForCurrentView() {
     const editBtn = document.getElementById("editBtn");
     const saveBtn = document.getElementById("saveBtn");
     const deleteBtn = document.getElementById("deleteBtn");
-    const messageBtn = document.getElementById("messageBtn");
+    const sendReserveSMSBtn = document.getElementById("sendReserveSMSBtn");
 
     // ------- fillTimeOptions 함수 복사 및 수정 (새로운 예약 모달과 유사하게) -------
     // visitHourSelect에 시간 옵션을 채우는 함수
@@ -1595,7 +1594,7 @@ function openReserveListForCurrentView() {
         editBtn.classList.add("d-none"); // 수정 버튼 숨김
         saveBtn.classList.remove("d-none"); // 저장 버튼 보임
         deleteBtn.classList.add("d-none"); // 삭제 버튼 숨김
-        messageBtn.classList.add("d-none"); // 메시지 보내기 버튼 숨김
+        sendReserveSMSBtn.classList.add("d-none"); // 메시지 보내기 버튼 숨김
     });
 
  // 저장 버튼 클릭 시 이벤트 핸들러
@@ -1666,7 +1665,7 @@ function openReserveListForCurrentView() {
             		saveBtn.classList.add("d-none");
             		editBtn.classList.remove("d-none");
             		deleteBtn.classList.remove("d-none");
-            		messageBtn.classList.remove("d-none");
+            		sendReserveSMSBtn.classList.remove("d-none");
 
             		fetchAndRenderCalendarData(); 
             		// 만약 managerReservationModal이 열려 있다면 목록도 새로고침
@@ -1696,7 +1695,7 @@ function openReserveListForCurrentView() {
         saveBtn.classList.add("d-none");
         editBtn.classList.remove("d-none");
         deleteBtn.classList.remove("d-none");
-        messageBtn.classList.remove("d-none");
+        sendReserveSMSBtn.classList.remove("d-none");
     });
 
 

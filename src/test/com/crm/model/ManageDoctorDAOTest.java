@@ -21,7 +21,7 @@ static ManageDoctorDAO dao;
 	}
 	@Test
 	public void getDoctorScheduleTest(){
-		List<ManageDoctorVO> list = dao.getDoctorSchedule("2025-09-15", "2025-09-15");
+		List<ManageDoctorVO> list = dao.getDoctorSchedule("2025-10-15", "2025-10-19");
 		System.out.println(list);
 		assertTrue(list.size()>0);
 	}
@@ -43,7 +43,7 @@ static ManageDoctorDAO dao;
 	}
 	@Test
 	public void deleteDoctorScheduleTest(){
-		int result = dao.deleteDoctorSchedule("30");
+		int result = dao.deleteDoctorSchedule("568");
 		assertTrue("½ÇÆÐ", result>0);
 	}
 	@Test

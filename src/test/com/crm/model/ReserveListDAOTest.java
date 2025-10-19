@@ -36,7 +36,7 @@ public class ReserveListDAOTest {
 	
 	@Test
 	public void getReserveListWeekTest() {
-		List<ReserveVO> list = dao.getReserveList("2025-09", "15", "21", null, null);
+		List<ReserveVO> list = dao.getReserveList("2025-10", "13", "19", null, null);
 		assertTrue(list.size()>0);
 		System.out.println("[二쇨컙 �삁�빟 由ъ뒪�듃(紐⑤떖)]");
         for (ReserveVO r : list) {
@@ -47,7 +47,7 @@ public class ReserveListDAOTest {
 	
 	@Test
 	public void getReserveListDayTest() {
-		List<ReserveVO> list = dao.getReserveList("2025-09", "15", "21", "17", null);
+		List<ReserveVO> list = dao.getReserveList("2025-10", "13", "20", "19", null);
 		assertTrue(list.size()>0);
 		System.out.println("[�씪媛� �삁�빟 由ъ뒪�듃(紐⑤떖)]");
         for (ReserveVO r : list) {
@@ -58,7 +58,7 @@ public class ReserveListDAOTest {
 	
 	@Test
 	public void getReserveListTimeTest() {
-		List<ReserveVO> list = dao.getReserveList("2025-09", "15", "21", "17", "13");
+		List<ReserveVO> list = dao.getReserveList("2025-10", "15", "21", "19", "17");
 		assertTrue(list.size()>0);
 		System.out.println("[�떆媛� 蹂� �삁�빟 由ъ뒪�듃(紐⑤떖)]");
         for (ReserveVO r : list) {
@@ -168,11 +168,11 @@ public class ReserveListDAOTest {
     @Test
     public void editReserveTest() {
         ReserveVO vo = new ReserveVO();
-        vo.setReserveNo(26);    
-        vo.setDoctorScheduleNo(86);   
-        vo.setReserveDay("2025-10-13");
+        vo.setReserveNo(51);    
+        vo.setDoctorScheduleNo(655);   
+        vo.setReserveDay("2025-10-15");
         vo.setReserveTime("17:30");
-        vo.setReason("諛쒕ぉ遺��긽");
+        vo.setReason("히히");
 
         int res = dao.editReserve(vo);
         assertTrue(res > 0);

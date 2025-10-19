@@ -174,6 +174,22 @@
 			</main>
 		</div>
 	</div>
+	
+	<div class="modal fade" id="alertModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content text-center border border-primary">
+				<div class="modal-body">
+					<p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+					<div class="d-flex justify-content-center">
+						<button type="button" class="btn btn-primary px-4"
+							data-bs-dismiss="modal">확인</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 
 	<script>
 // sidebar.html을 불러와서 #sidebar-slot에 삽입
@@ -192,6 +208,16 @@ function loadSidebar(activeKey) {
   });
 }
   loadSidebar('SMSService');
+  
+  function showAlert(message, onClose) {
+	  $("#alertMessage").text(message);
+	  var modal = new bootstrap.Modal(document.getElementById("alertModal"));
+	  $("#alertModal").on("hidden.bs.modal", function handler() {
+	    if (typeof onClose === "function") onClose();
+	    $("#alertModal").off("hidden.bs.modal", handler);
+	  });
+	  modal.show();
+	}
 </script>
 
 	<script
@@ -287,7 +313,7 @@ function loadSidebar(activeKey) {
       },
       error: function(xhr, status, err) {
         console.error("getReserveSMS error:", status, err, xhr?.responseText);
-        alert("보낸 메시지(예약) 목록을 불러오는 중 오류가 발생했습니다.");
+        showAlert("보낸 메시지(예약) 목록을 불러오는 중 오류가 발생했습니다.");
         renderReserveTable([]);
         if (activeTab === 'reserve') renderPager(1, 1);
       }
@@ -316,7 +342,7 @@ function loadSidebar(activeKey) {
       },
       error: function(xhr, status, err) {
         console.error("getCommonSMS error:", status, err, xhr?.responseText);
-        alert("보낸 메시지(일반) 목록을 불러오는 중 오류가 발생했습니다.");
+        showAlert("보낸 메시지(일반) 목록을 불러오는 중 오류가 발생했습니다.");
         renderCommonTable([]);
         if (activeTab === 'common') renderPager(1, 1);
       }

@@ -331,6 +331,21 @@
 		
 
 
+<div class="modal fade" id="alertModal" tabindex="-1"
+	aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content text-center border border-primary">
+			<div class="modal-body">
+				<p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
+				<div class="d-flex justify-content-center">
+					<button type="button" class="btn btn-primary px-4"
+						data-bs-dismiss="modal">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- ✅ Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -361,6 +376,16 @@
 		  });
 		}
 		loadSidebar("reserve");
+		
+		function showAlert(message, onClose) {
+			  $("#alertMessage").text(message);
+			  var modal = new bootstrap.Modal(document.getElementById("alertModal"));
+			  $("#alertModal").on("hidden.bs.modal", function handler() {
+			    if (typeof onClose === "function") onClose();
+			    $("#alertModal").off("hidden.bs.modal", handler);
+			  });
+			  modal.show();
+			}
 
 		
 		const container = document.getElementById('container');
@@ -433,7 +458,7 @@
 
 		    } catch (error) {
 		        console.error('캘린더 데이터를 가져오는 중 오류 발생:', error);
-		        alert('예약 데이터를 불러오지 못했습니다. 다시 시도해 주세요.');
+		        showAlert('예약 데이터를 불러오지 못했습니다. 다시 시도해 주세요.');
 		     
 		        container.innerHTML = '<p class="text-danger">예약 데이터를 불러오는 데 실패했습니다.</p>';
 		    }
@@ -767,7 +792,7 @@
 		        // 모달 표시
 		        toggleModal("reservationDetailModal", true);
 		    } else {
-		        alert(data.error || "예약 상세 정보를 불러오지 못했습니다.");
+		    	showAlert(data.error || "예약 상세 정보를 불러오지 못했습니다.");
 		    }
 		}
 
@@ -798,7 +823,7 @@
 		        const reserveNo = tr.dataset.reserveNo; // tr에 설정된 data-reserve-no 값 가져오기
 
 		        if (!reserveNo) {
-		            alert('예약 번호를 찾을 수 없습니다.');
+		        	showAlert('예약 번호를 찾을 수 없습니다.');
 		            return;
 		        }
 
@@ -824,7 +849,7 @@
 
 		        } catch (error) {
 		            console.error('예약 상세 정보를 가져오는 중 오류 발생:', error);
-		            alert('예약 상세 정보를 불러오지 못했습니다. 다시 시도해 주세요.');
+		            showAlert('예약 상세 정보를 불러오지 못했습니다. 다시 시도해 주세요.');
 		        }
 		    });
 		})(); 

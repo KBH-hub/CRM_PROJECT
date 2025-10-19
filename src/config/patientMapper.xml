@@ -106,7 +106,7 @@
 		      </if>
 		    </where>
 		
-		    ORDER BY P.PATIENT_NO
+		    ORDER BY P.PATIENT_NO DESC
 		  ) A
 		  WHERE ROWNUM &lt;= #{endRow, jdbcType=NUMERIC}
 		)

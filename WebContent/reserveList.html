@@ -714,7 +714,6 @@ function renderMonth(){
     
     let firstDayOfWeek = new Date(y, m, 1).getDay();
     
-    if(firstDayOfWeek === 0) firstDayOfWeek = 7;
 
     const daysInMonth = new Date(y, m + 1, 0).getDate();
     const wd = ['일','월','화','수','목','금','토'];

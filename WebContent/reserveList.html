@@ -247,7 +247,7 @@ table, th, td {
 
 				<div class="modal-footer justify-content-center">
 					<button id="addReserveSaveBtn" class="btn btn-primary">저장</button>
-					<button class="btn btn-primary modal-back-btn">취소</button>
+					<button id="cancelAddReserveBtn" class="btn btn-primary modal-back-btn">취소</button>
 				</div>
 			</div>
 		</div>
@@ -260,7 +260,7 @@ table, th, td {
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">환자 검색</h5>
-					<button id="resetPatientSearch" class="btn btn-primary modal-back-btn">닫기</button>
+					<button id="closePatientSearch" class="btn btn-primary modal-back-btn">닫기</button>
 				</div>
 				<div class="modal-body">
 
@@ -1077,7 +1077,7 @@ document.querySelectorAll('.modal').forEach(modalEl => {
 // ---------- 환자 검색 ----------
 (function(){
     let selected=null;
-	document.getElementById("resetPatientSearch").addEventListener("click",()=>{
+	document.getElementById("closePatientSearch").addEventListener("click",()=>{
 		resetPatientSearch();
 	});
     document.querySelectorAll("#patientSearchModal tbody tr").forEach(row=>{

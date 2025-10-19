@@ -4,39 +4,52 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>의사 명단</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 </head>
 <body class="bg-body-tertiary">
-<div class="container-fluid">
-  <div class="row g-0">
+	<div class="container-fluid">
+		<div class="row g-0">
 
-    <div id="sidebar-slot" class="col-2 p-0"></div>
-    <main class="col-10 p-4">
-    <h2 class="mb-3 border-bottom pb-2">의사 명단</h2>
-      <div class="container bg-white border rounded shadow-sm p-4">
+			<div id="sidebar-slot" class="col-2 p-0"></div>
+			<main class="col-10 p-4">
+			<div class="container py-4">
+				<div class="d-flex align-items-center justify-content-between mb-4">
+					<button type="button" id="backBtn"
+						class="btn btn-outline-secondary btn-sm">← 뒤로가기</button>
+					<h2 class="text-center flex-grow-1 m-0">의사 명단</h2>
+					<div style="width: 90px;"></div>
+					<!-- 오른쪽 균형 맞춤용 빈 공간 -->
+				</div>
+				<div class="container bg-white border rounded shadow-sm p-4">
 
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover align-middle text-center">
-            <thead class="table-light">
-              <tr>
-                <th style="width: 20%">의사코드</th>
-                <th style="width: 30%">이름</th>
-                <th style="width: 50%">진료과</th>
-              </tr>
-            </thead>
-   		    <tbody id="doctorTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </main>
-  </div>
-</div>
+					<div class="table-responsive">
+						<table
+							class="table table-bordered table-hover align-middle text-center">
+							<thead class="table-light">
+								<tr>
+									<th style="width: 20%">의사코드</th>
+									<th style="width: 30%">이름</th>
+									<th style="width: 50%">진료과</th>
+								</tr>
+							</thead>
+							<tbody id="doctorTableBody"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			</main>
+		</div>
+	</div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="sidebar.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="sidebar.js"></script>
 
-<script>
+	<script>
 function loadSidebar(activeKey) {
 	  $.ajax({
 	    url: "./sidebar.html",
@@ -95,7 +108,15 @@ function loadDoctorList() {
 	    }
 	  });
 	}
-
+	
+//✅ 뒤로가기 버튼 클릭 시
+$(document).on("click", "#backBtn", function () {
+  if (document.referrer && document.referrer !== location.href) {
+    history.back();
+  } else {
+    window.location.href = "controller?cmd=doctorScheduleUI";
+  }
+});
 loadDoctorList();
 </script>
 </body>

@@ -4,142 +4,178 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>보낸 메시지함</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="sidebar.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <style>
-.fade-section { opacity:0; transition:opacity 0.4s ease-in-out; display:none; }
-.fade-section.show { display:block; opacity:1; }
+.fade-section {
+	opacity: 0;
+	transition: opacity 0.4s ease-in-out;
+	display: none;
+}
 
-.commonSMS tbody tr:hover { background-color:#f6f6f6; cursor:pointer; }
+.fade-section.show {
+	display: block;
+	opacity: 1;
+}
+
+.commonSMS tbody tr:hover {
+	background-color: #f6f6f6;
+	cursor: pointer;
+}
 
 /* 공용 페이저 하나만 스타일링 */
 #pager .page-item.active .page-link {
-  background:#212529; color:#fff; border-color:#212529; border-radius:.6rem;
+	background: #212529;
+	color: #fff;
+	border-color: #212529;
+	border-radius: .6rem;
 }
+
 #pager .page-item.disabled .page-link {
-  color:#bbb; pointer-events:none; background:transparent; border-color:transparent;
+	color: #bbb;
+	pointer-events: none;
+	background: transparent;
+	border-color: transparent;
 }
+
 #pager .page-link {
-  border:none; background:transparent; color:#4a4a4a;
+	border: none;
+	background: transparent;
+	color: #4a4a4a;
 }
 
 .ellipsis-cell {
-  white-space: nowrap;        /* 줄바꿈 X */
-  overflow: hidden;           /* 넘친 글자 숨김 */
-  text-overflow: ellipsis;    /* ... 표시 */
-  max-width: 250px;           /* 셀 폭 고정 (원하는 너비로 조정) */
+	white-space: nowrap; /* 줄바꿈 X */
+	overflow: hidden; /* 넘친 글자 숨김 */
+	text-overflow: ellipsis; /* ... 표시 */
+	max-width: 250px; /* 셀 폭 고정 (원하는 너비로 조정) */
 }
-
 </style>
 </head>
 <body class="bg-body-tertiary">
-<div class="container-fluid">
-  <div class="row">
+	<div class="container-fluid">
+		<div class="row">
 
-    <!-- 사이드바 -->
-    <div id="sidebar-slot" class="col-2 p-0"></div>
+			<!-- 사이드바 -->
+			<div id="sidebar-slot" class="col-2 p-0"></div>
 
-    <!-- 메인 -->
-    <main class="col-10 p-4">
-    
-      <div class="container py-4">
-<div class="d-flex align-items-center justify-content-between mb-4">
-  <button type="button" id="backBtn" class="btn btn-outline-secondary btn-sm">
-    ← 뒤로가기
-  </button>
-  <h2 class="text-center flex-grow-1 m-0">보낸 메시지함</h2>
-  <div style="width:90px;"></div> <!-- 오른쪽 균형 맞춤용 빈 공간 -->
-</div>
+			<!-- 메인 -->
+			<main class="col-10 p-4">
 
-        <!-- 탭 -->
-        <ul class="nav nav-tabs justify-content-center mb-3" id="messageTabs">
-          <li class="nav-item"><button id="reserveBtn" class="nav-link active">예약 메시지</button></li>
-          <li class="nav-item"><button id="commonBtn" class="nav-link">일반 메시지</button></li>
-        </ul>
+			<div class="container py-4">
+				<div class="d-flex align-items-center justify-content-between mb-4">
+					<button type="button" id="backBtn"
+						class="btn btn-outline-secondary btn-sm">← 뒤로가기</button>
+					<h2 class="text-center flex-grow-1 m-0">보낸 메시지함</h2>
+					<div style="width: 90px;"></div>
+					<!-- 오른쪽 균형 맞춤용 빈 공간 -->
+				</div>
 
-        <!-- 예약 -->
-        <div class="reserveSMS fade-section show text-center">
-          <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center">
-              <thead class="table-light">
-                <tr>
-                  <th>일련번호</th>
-                  <th>수신인</th>
-                  <th>전화번호</th>
-                  <th>발신인</th>
-                  <th>일시</th>
-                  <th>템플릿명</th>
-                </tr>
-              </thead>
-              <tbody id="reserveSMSTableBody"></tbody>
-            </table>
-          </div>
-        </div>
+				<!-- 탭 -->
+				<ul class="nav nav-tabs justify-content-center mb-3"
+					id="messageTabs">
+					<li class="nav-item"><button id="reserveBtn"
+							class="nav-link active">예약 메시지</button></li>
+					<li class="nav-item"><button id="commonBtn" class="nav-link">일반
+							메시지</button></li>
+				</ul>
 
-        <!-- 일반 -->
-        <div class="commonSMS fade-section">
-          <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center">
-              <thead class="table-light">
-                <tr>
-                  <th>일련번호</th>
-                  <th>수신인</th>
-                  <th>발신인</th>
-                  <th>전화번호</th>
-                  <th>일시</th>
-                  <th>내용</th>
-                </tr>
-              </thead>
-              <tbody id="commonSMSTableBody"></tbody>
-            </table>
-          </div>
-        </div>
+				<!-- 예약 -->
+				<div class="reserveSMS fade-section show text-center">
+					<div class="table-responsive">
+						<table class="table table-bordered align-middle text-center">
+							<thead class="table-light">
+								<tr>
+									<th>일련번호</th>
+									<th>수신인</th>
+									<th>전화번호</th>
+									<th>발신인</th>
+									<th>일시</th>
+									<th>템플릿명</th>
+								</tr>
+							</thead>
+							<tbody id="reserveSMSTableBody"></tbody>
+						</table>
+					</div>
+				</div>
 
-        <!-- 🔸 공용 페이저: 섹션 밖 공통 위치에 하나만 -->
-        <nav aria-label="페이지 이동" class="d-flex justify-content-center my-3">
-          <ul id="pager" class="pagination pagination-sm align-items-center gap-2"></ul>
-        </nav>
+				<!-- 일반 -->
+				<div class="commonSMS fade-section">
+					<div class="table-responsive">
+						<table class="table table-bordered align-middle text-center">
+							<thead class="table-light">
+								<tr>
+									<th>일련번호</th>
+									<th>수신인</th>
+									<th>발신인</th>
+									<th>전화번호</th>
+									<th>일시</th>
+									<th>내용</th>
+								</tr>
+							</thead>
+							<tbody id="commonSMSTableBody"></tbody>
+						</table>
+					</div>
+				</div>
 
-      </div>
+				<!-- 🔸 공용 페이저: 섹션 밖 공통 위치에 하나만 -->
+				<nav aria-label="페이지 이동" class="d-flex justify-content-center my-3">
+					<ul id="pager"
+						class="pagination pagination-sm align-items-center gap-2"></ul>
+				</nav>
 
-      <!-- 상세 모달 -->
-      <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-          <div class="modal-content border border-primary rounded-3">
-            <div class="modal-header">
-              <h5 class="modal-title fw-bold w-100 text-center">보낸 메시지 상세보기</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
-            </div>
-            <div class="modal-body">
-              <div class="row mb-2">
-                <div class="col-2 text-end fw-bold">수신인</div>
-                <div class="col-4" id="modalReceiver">-</div>
-                <div class="col-2 text-end fw-bold">발신인</div>
-                <div class="col-4" id="modalSender">-</div>
-              </div>
-              <div class="row mb-2">
-                <div class="col-2 text-end fw-bold">전화번호</div>
-                <div class="col-4" id="modalPhone">-</div>
-                <div class="col-2 text-end fw-bold">일시</div>
-                <div class="col-4" id="modalDate">-</div>
-              </div>
-              <div class="row mt-3">
-                <div class="col-2 text-end fw-bold">보낸내용</div>
-                <div class="col-10"><div class="bg-light p-2 rounded" id="modalContent">(내용 없음)</div></div>
-              </div>
-            </div>
-            <div class="modal-footer justify-content-center border-0 pb-3 pt-0">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-</div>
+			</div>
 
-<script>
+			<!-- 상세 모달 -->
+			<div class="modal fade" id="messageModal" tabindex="-1"
+				aria-hidden="true">
+				<div
+					class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+					<div class="modal-content border border-primary rounded-3">
+						<div class="modal-header">
+							<h5 class="modal-title fw-bold w-100 text-center">보낸 메시지
+								상세보기</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"
+								aria-label="닫기"></button>
+						</div>
+						<div class="modal-body">
+							<div class="row mb-2">
+								<div class="col-2 text-end fw-bold">수신인</div>
+								<div class="col-4" id="modalReceiver">-</div>
+								<div class="col-2 text-end fw-bold">발신인</div>
+								<div class="col-4" id="modalSender">-</div>
+							</div>
+							<div class="row mb-2">
+								<div class="col-2 text-end fw-bold">전화번호</div>
+								<div class="col-4" id="modalPhone">-</div>
+								<div class="col-2 text-end fw-bold">일시</div>
+								<div class="col-4" id="modalDate">-</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-2 text-end fw-bold">보낸내용</div>
+								<div class="col-10">
+									<div class="bg-light p-2 rounded" id="modalContent">(내용
+										없음)</div>
+								</div>
+							</div>
+						</div>
+						<div
+							class="modal-footer justify-content-center border-0 pb-3 pt-0">
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">확인</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			</main>
+		</div>
+	</div>
+
+	<script>
 // sidebar.html을 불러와서 #sidebar-slot에 삽입
 function loadSidebar(activeKey) {
   $.ajax({
@@ -158,9 +194,10 @@ function loadSidebar(activeKey) {
   loadSidebar('SMSService');
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
+	<script>
 (() => {
   const reserveBtn = document.getElementById('reserveBtn');
   const commonBtn  = document.getElementById('commonBtn');

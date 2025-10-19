@@ -222,6 +222,13 @@ $(document).ready(function() {
     $.each(["#patientName", "#phone", "#address", "#birth", "#gender", "#path"], function(_, id) {
       $(id).prop("disabled", false);
     });
+    
+    $("#patientName").attr("placeholder", "ex) 홍길동");
+    $("#phone").attr("placeholder", "ex) 010-1111-2222");
+    $("#address").attr("placeholder", "ex) 서울특별시 금천구");
+    $("#birth").attr("placeholder", "ex) 990101");
+    $("#path").attr("placeholder", "ex) 인터넷 검색");
+    
     $("#editBtn, #reserveBtn, #sendSMSBtn, #deleteBtn, #patientInfo").addClass("d-none");
     $("#saveBtn, #patientEdit").removeClass("d-none");
 

@@ -255,12 +255,12 @@
 		PHONE,
 		IN_DATE
 		) VALUES (
-		PATIENT_NO.NEXTVAL,
+		PATIENT_NO.NEXTVAL+6090,
 		#{patientName}, #{phone}, SYSDATE)
 	</insert>
 	
 	<select id="getCurrentPatientNo" resultType="int">
-    	SELECT PATIENT_NO.CURRVAL FROM DUAL
+    	SELECT PATIENT_NO.CURRVAL+6090 FROM DUAL
 	</select>
 
 	<update id="deletePatient">
